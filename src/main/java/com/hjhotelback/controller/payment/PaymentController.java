@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
+import com.hjhotelback.dto.payment.PaymentRequestDTO;
 import com.hjhotelback.service.payment.PaymentService;
 
 
@@ -35,8 +37,8 @@ public class PaymentController {
 	
     // 결제 등록
     @PostMapping
-    public String createPayment() {
-    	return "createPayment: 결제 등록";
+    public void createPayment(@RequestBody PaymentRequestDTO paymentRequestDTO) {
+    	paymentService.createPayment(paymentRequestDTO);
     }
     
     // 결제 상태 변경
