@@ -28,7 +28,9 @@ dependencies {
     // =============================
     // MyBatis
     // =============================
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1' // MyBatis 통합
+    // implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1' // MyBatis 통합
+  	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+  	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 
     // =============================
     // JWT (JSON Web Token) - 주석 처리됨

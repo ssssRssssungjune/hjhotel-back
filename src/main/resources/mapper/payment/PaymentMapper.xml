@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjhotelback.mapper.payment.PaymentMapper">
+
+	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentDTO">
+		SELECT payment_id, reservation_id, amount, payment_method, status, transaction_id, payment_date 
+        FROM payment;
+	</select>
+</mapper>
