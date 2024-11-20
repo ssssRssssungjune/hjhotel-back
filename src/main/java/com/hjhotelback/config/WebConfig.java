@@ -1,0 +1,2 @@
+// Placeholder content for WebConfig.java
+// This file is located in backend/src/main/java/com/hotel/config/WebConfig.java
