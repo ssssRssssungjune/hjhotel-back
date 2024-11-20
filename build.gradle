@@ -18,33 +18,51 @@ repositories {
 }
 
 dependencies {
+    // =============================
     // Spring Boot Starters
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // =============================
+    implementation 'org.springframework.boot:spring-boot-starter' // Spring Boot 기본 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-web' // Spring MVC 및 REST API용 Starter
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // 데이터 유효성 검증 (Validation)
 
+    // =============================
     // MyBatis
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1'
+    // =============================
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1' // MyBatis 통합
 
-    // JWT
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // =============================
+    // JWT (JSON Web Token) - 주석 처리됨
+    // =============================
+    // implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT API
+    // runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT 구현체
+    // runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JWT와 Jackson 연동
 
-    // Swagger (OpenAPI)
-    //implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    // =============================
+    // Swagger (OpenAPI) - 주석 처리됨
+    // =============================
+    // implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0' // Swagger UI 제공
 
-    // H2 Database (for development)
-    //runtimeOnly 'com.h2database:h2'
+    // =============================
+    // Database
+    // =============================
+    // H2 Database (for development) - 주석 처리됨
+    // runtimeOnly 'com.h2database:h2'
 
     // MySQL Connector (for production)
-    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java:8.0.33' // MySQL 드라이버
+    runtimeOnly 'mysql:mysql-connector-java' // MySQL 드라이버 (런타임)
 
+    // =============================
+    // JPA - 주석 처리됨
+    // =============================
+    // implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Spring Data JPA (MyBatis 사용 시 비활성화)
+
+    // =============================
     // Testing
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.springframework.security:spring-security-test'
+    // =============================
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot 테스트 의존성
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
+    testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트
 }
 
 tasks.named('test') {
