@@ -1,2 +1,5 @@
-// Placeholder content for PaymentController.java
-// This file is located in backend/src/main/java/com/hotel/controller/payment/PaymentController.java
+package com.hjhotelback.controller.payment;
+
+public class PaymentController {
+
+}
