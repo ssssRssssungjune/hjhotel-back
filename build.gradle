@@ -33,6 +33,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot 테스트 의존성
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
     testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 tasks.named('test') {
