@@ -7,7 +7,7 @@
   <p>💾 <strong>MySQL</strong>을 활용해 안정적인 데이터 저장과 처리 구현 ✅</p>
   <p>🔗 <strong>React 프론트엔드</strong>와 연동 가능한 <strong>RESTful API</strong> 설계 🖥️</p>
   <p style="font-style: italic; color: #7f8c8d;">✨ 헬로잘바조가 스마트한 호텔 운영을 지원합니다! 🚀</p>
-  <p style="font-style: italic; color: #16a085;">(저희도 곧 이걸로 호텔 차릴 겁니다, 농담 아니에요!) 🏢😎</p>
+  <p style="font-style: italic; color: #16a085;">(저희도 곧 이걸로 호텔 차릴 겁니다!!!) 🏢😎</p>
   <p style="color: #e74c3c; font-weight: bold;">🥲 <em>라는 꿈을 꾸꼬 있습니다... ㅎㅎㅎ</em> 🌙</p>
   <hr style="margin: 20px auto; width: 80%; border: 1px solid #ecf0f1;">
   <p style="color: #34495e; font-size: 14px;">#SpringBoot #MyBatis #RESTfulAPI #Backend #HotelManagement</p>
