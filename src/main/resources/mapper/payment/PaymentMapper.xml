@@ -18,20 +18,27 @@
 		JOIN reservation rs ON py.reservation_id = rs.reservation_id;
 	</select>
 	
-	<insert id="createPayment" parameterType="com.hjhotelback.dto.payment.PaymentCreateDTO">
+	<insert id="createPayment" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (
-				reservation_id, 
-				amount, 
-				payment_method, 
-				status, 
-				transaction_id
-			)
+	        reservation_id,
+	        amount,
+	        payment_method,
+	        status,
+	        transaction_id,
+	        created_at,
+	        updated_at
+	    )
 	    VALUES (
-		    	#{reservationId}, 
-		    	#{amount}, 
-		    	#{paymentMethod}, 
-		    	#{status}, 
-		    	#{transactionId}
-	    	);
+	        #{reservationId},
+	        #{amount},
+	        #{paymentMethod},
+	        #{status},
+	        #{transactionId},
+	        NOW(),
+	        NOW()
+	    )
+	    <selectKey resultType="int" keyProperty="paymentId" order="AFTER">
+	        SELECT LAST_INSERT_ID()
+	    </selectKey>
 	</insert>
 </mapper>

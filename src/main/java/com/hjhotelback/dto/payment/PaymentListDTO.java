@@ -16,18 +16,19 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PaymentDTO {
+public class PaymentListDTO {
 	private Integer paymentId;
 	private Integer reservationId;
 	private BigDecimal amount;
 	private String paymentMethod;
 	private String status;
 	private String transactionId;
+	private Integer memberId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
     // 생성 시점에 자동으로 시간 설정
-    public PaymentDTO(Integer reservationId, BigDecimal amount, String paymentMethod, String status, String transactionId) {
+    public PaymentListDTO(Integer reservationId, BigDecimal amount, String paymentMethod, String status, String transactionId) {
         this.reservationId = reservationId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
