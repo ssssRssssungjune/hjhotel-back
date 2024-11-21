@@ -10,7 +10,10 @@ public class PaymentDTO {
 	private String paymentMethod;
 	private String status;
 	private String transactionId;
-	private LocalDateTime paymentDate;
+	private Integer memberId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    
 	public Integer getPaymentId() {
 		return paymentId;
 	}
@@ -47,11 +50,24 @@ public class PaymentDTO {
 	public void setTransactionId(String transactionId) {
 		this.transactionId = transactionId;
 	}
-	public LocalDateTime getPaymentDate() {
-		return paymentDate;
+	public Integer getMemberId() {
+		return memberId;
 	}
-	public void setPaymentDate(LocalDateTime paymentDate) {
-		this.paymentDate = paymentDate;
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
 	}
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+    
 	
 }

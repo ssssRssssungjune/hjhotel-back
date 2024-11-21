@@ -5,8 +5,17 @@
 <mapper namespace="com.hjhotelback.mapper.payment.PaymentMapper">
 
 	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentDTO">
-		SELECT payment_id, reservation_id, amount, payment_method, status, transaction_id, payment_date 
-        FROM payment;
+		SELECT py.payment_id, 
+				py.reservation_id, 
+				py.amount, 
+				py.payment_method, 
+				py.status, 
+				py.transaction_id,
+				rs.member_id,
+				py.created_at, 
+				py.updated_at
+		FROM payment py
+		JOIN reservation rs ON py.reservation_id = rs.reservation_id;
 	</select>
 	
 	<insert id="createPayment" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
