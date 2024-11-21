@@ -1,5 +1,6 @@
 package com.hjhotelback.controller.payment;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hjhotelback.dto.payment.PaymentCreateDTO;
 import com.hjhotelback.dto.payment.PaymentDTO;
-import com.hjhotelback.dto.payment.PaymentRequestDTO;
 import com.hjhotelback.service.payment.PaymentService;
 
 
@@ -37,8 +39,23 @@ public class PaymentController {
 	
     // 결제 등록
     @PostMapping
-    public void createPayment(@RequestBody PaymentRequestDTO paymentRequestDTO) {
-    	paymentService.createPayment(paymentRequestDTO);
+    public void createPayment(
+		@RequestParam Integer reservationId,
+		@RequestParam BigDecimal amount,
+		@RequestParam String paymentMethod,
+		@RequestParam String status,
+		@RequestParam String transactionId
+	) {
+    	// DTO 생성
+    	PaymentCreateDTO paymentCreateDTO = new PaymentCreateDTO();
+    	paymentCreateDTO.setReservationId(reservationId);
+    	paymentCreateDTO.setAmount(amount);
+    	paymentCreateDTO.setPaymentMethod(paymentMethod);
+        paymentCreateDTO.setStatus(status);
+        paymentCreateDTO.setTransactionId(transactionId);
+    	
+        // 서비스 호출
+        paymentService.createPayment(paymentCreateDTO);
     }
     
     // 결제 상태 변경
