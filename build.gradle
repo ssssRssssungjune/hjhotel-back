@@ -1,71 +1,45 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.5'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.springframework.boot' version '3.3.5' // Spring Boot 플러그인
+    id 'io.spring.dependency-management' version '1.1.6' // 의존성 관리를 위한 플러그인
 }
 
-group = 'com.mysite'
-version = '0.0.1-SNAPSHOT'
+group = 'com.mysite' // 프로젝트 그룹 ID
+version = '0.0.1-SNAPSHOT' // 프로젝트 버전
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(17) // Java 17 사용
     }
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral() // Maven Central 저장소 사용
 }
 
 dependencies {
-    // =============================
     // Spring Boot Starters
-    // =============================
     implementation 'org.springframework.boot:spring-boot-starter' // Spring Boot 기본 의존성
     implementation 'org.springframework.boot:spring-boot-starter-web' // Spring MVC 및 REST API용 Starter
     implementation 'org.springframework.boot:spring-boot-starter-validation' // 데이터 유효성 검증 (Validation)
 
-    // =============================
     // MyBatis
-    // =============================
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis 통합
 
-    // =============================
-    // JWT (JSON Web Token) - 주석 처리됨
-    // =============================
-    // implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT API
-    // runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT 구현체
-    // runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JWT와 Jackson 연동
-
-
-
-    // =============================
     // Database
-    // =============================
-    // H2 Database (for development) - 주석 처리됨
-    // runtimeOnly 'com.h2database:h2'
+    implementation 'mysql:mysql-connector-java:8.0.33' // MySQL 드라이버 최신 안정 버전
 
-    // MySQL Connector (for production)
-    implementation 'mysql:mysql-connector-java:8.0.33' // MySQL 드라이버
-    runtimeOnly 'mysql:mysql-connector-java' // MySQL 드라이버 (런타임)
-
-    // =============================
-    // JPA - 주석 처리됨
-    // =============================
-    // implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Spring Data JPA (MyBatis 사용 시 비활성화)
-
-    // =============================
     // Testing
-    // =============================
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot 테스트 의존성
-//    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
-//    testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
+    testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트
 
-    //lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform() // JUnit 플랫폼 사용
 }
