@@ -1,12 +1,13 @@
 package com.hjhotelback.mapper.member;
 
-import com.hjhotelback.dto.member.MemberRegisterRequest;
-import org.apache.ibatis.annotations.Insert;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface MemberMapper {
-    @Insert("INSERT INTO member (email, password, name, phone, created_at) " +
-            "VALUES (#{email}, #{password}, #{name}, #{phone}, NOW())")
-    void insertMember(MemberRegisterRequest request);
+
+    // 이메일로 비밀번호 조회
+    @Select("SELECT password FROM member WHERE email = #{email}")
+    public String findPasswordByEmail(String email);
 }
