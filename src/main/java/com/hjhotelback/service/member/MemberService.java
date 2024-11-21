@@ -14,23 +14,27 @@ public class MemberService {
         this.memberMapper = memberMapper;
     }
 
+    // 회원가입
     public void registerMember(MemberRegisterRequest request) {
-        // MemberMapper 호출: 필드를 개별적으로 전달
+        // user_id 포함하여 회원가입 처리
         memberMapper.insertMember(
+                request.getUserId(),
                 request.getEmail(),
-                request.getPassword(),
+                request.getPassword(), // 암호화 없이 평문 저장
                 request.getName(),
                 request.getPhone()
         );
     }
 
+    // 로그인 인증
     public boolean authenticateMember(MemberLoginRequest request) {
-        String storedPassword = memberMapper.findPasswordByEmail(request.getEmail());
+        // user_id를 기반으로 비밀번호 조회
+        String storedPassword = memberMapper.findPasswordByUserId(request.getUserId());
         if (storedPassword == null) {
-            return false;  // 이메일 존재하지 않음
+            return false; // user_id가 존재하지 않음
         }
 
-        // 비밀번호 비교
+        // 비밀번호 평문 비교
         return request.getPassword().equals(storedPassword);
     }
 }
