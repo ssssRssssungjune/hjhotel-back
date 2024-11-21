@@ -1,0 +1,32 @@
+package com.hjhotelback.service.room;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hjhotelback.dto.room.RoomDto;
+import com.hjhotelback.dto.room.RoomDto_Client;
+import com.hjhotelback.dto.room.RoomStatus;
+import com.hjhotelback.mapper.room.RoomRepository;
+
+@Service
+public class RoomService {
+	
+	@Autowired
+	private RoomRepository roomRepository;
+	
+	public List<RoomDto_Client> getRooms(){
+		
+		return roomRepository.AllRooms();
+	}
+	
+	public List<RoomDto> getAdminRooms(){
+		return roomRepository.AllAdminRooms();
+	}
+	
+	public List<RoomDto> getStatus(RoomStatus roomStatus){
+		return roomRepository.AllStatus(status);
+	}
+	
+}
