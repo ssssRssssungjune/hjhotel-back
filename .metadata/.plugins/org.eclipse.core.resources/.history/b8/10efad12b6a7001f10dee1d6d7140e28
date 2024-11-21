@@ -1,0 +1,20 @@
+package com.hjhotelback.controller.room;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hjhotelback.dto.room.RoomDto;
+import com.hjhotelback.service.room.RoomService;
+
+@RestController
+public class RoomController {
+	@Autowired
+	private RoomService roomService;
+	
+	@GetMapping("/api/rooms")
+	public List<RoomDto> getRooms(){
+		return roomService.getRooms();	}
+}
