@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
+import com.hjhotelback.dto.reservation.ResReservation;
 import com.hjhotelback.service.reservation.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,8 @@ public class ReservationController {
     }
 
     @GetMapping("/")
-    public void GETReservationDetail(@RequestParam int id){
-        _service.getReservationDetail(id);
+    public ResReservation.Detail GETReservationDetail(@RequestParam int id){
+        return _service.getReservationDetail(id);
     }
 
     @GetMapping("/admin")

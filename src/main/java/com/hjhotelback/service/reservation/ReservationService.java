@@ -3,6 +3,7 @@ package com.hjhotelback.service.reservation;
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
+import com.hjhotelback.dto.reservation.ResReservation;
 import com.hjhotelback.mapper.reservation.ReservationMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,6 @@ public class ReservationService {
         POST/api/reservation	
     */
 
-    public enum Status{
-        PENDING,
-        CONFIRMED,
-        CANCELLED,
-        COMPLETED
-    }
-
     private final ReservationMapper _mapper;
 
     //24.11.21 한택 [변수이름]
@@ -35,8 +29,8 @@ public class ReservationService {
 
     }
 
-    public void getReservationDetail(int reservationId){
-        _mapper.getReservationById(reservationId);
+    public ResReservation.Detail getReservationDetail(int reservationId){
+        return _mapper.getReservationById(reservationId);
     }
 
     public void getReservationList(){

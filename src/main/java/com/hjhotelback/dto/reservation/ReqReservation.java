@@ -15,8 +15,8 @@ public class ReqReservation {
         public int totalAmount;
     }
 
+    //0 : PENDING , 1 : CONFIRMED , 2 : CANCELLED , 3 : COMPLETED
     public class Modify{
-        //0 : PENDING , 1 : CONFIRMED , 2 : CANCELLED , 3 : COMPLETED
         public int itype;
     }
 }
