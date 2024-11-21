@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
+import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.service.payment.PaymentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +37,10 @@ public class PaymentController {
 		return paymentService.getPaymentsList();
 	}
 	
-	// 특정 결제 내역 조회
-	@GetMapping("1") // {payment_id}
-	public String getPaymentById() {
-		return "getPaymentById: 특정 결제 내역 조회";
+	// 특정 결제 내역 상세 조회
+	@GetMapping("{paymentId}/details")
+	public PaymentDetailDTO getPaymentById(@PathVariable("paymentId") Integer paymentId) {
+		return paymentService.getPaymentById(paymentId);
 	}
 	
     // 결제 등록

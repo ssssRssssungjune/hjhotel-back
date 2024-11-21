@@ -18,7 +18,29 @@
 		JOIN reservation rs ON py.reservation_id = rs.reservation_id;
 	</select>
 	
-	<insert id="createPayment" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
+	<select id="getPaymentById" resultType="com.hjhotelback.dto.payment.PaymentDetailDTO">
+		SELECT py.payment_id, 
+	       py.reservation_id, 
+	       m.name AS member_name, 
+	       py.payment_method, 
+	       py.status AS payment_status, 
+	       py.amount,
+	       py.transaction_id, 
+	       py.created_at AS payment_date,
+	       py.updated_at AS payment_status_update,
+           GROUP_CONCAT(
+            CONCAT(pp.created_at, ' : ', pp.status) 
+            ORDER BY pp.created_at ASC
+             SEPARATOR '\n') AS payment_process_log
+		FROM payment py
+		JOIN reservation rs ON py.reservation_id = rs.reservation_id
+		LEFT JOIN payment_process pp ON py.reservation_id = pp.reservation_id
+		JOIN member m ON m.member_id = rs.member_id
+		WHERE payment_id = #{paymentId}
+		GROUP BY py.payment_id, py.reservation_id, m.name, py.payment_method, py.status, py.amount, py.transaction_id, py.created_at, py.updated_at;
+	</select>
+	
+	<insert id="createPayment" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (
 	        reservation_id,
 	        amount,
@@ -37,8 +59,5 @@
 	        NOW(),
 	        NOW()
 	    )
-	    <selectKey resultType="int" keyProperty="paymentId" order="AFTER">
-	        SELECT LAST_INSERT_ID()
-	    </selectKey>
 	</insert>
 </mapper>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
+import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 
 @Service
@@ -22,5 +23,10 @@ public class PaymentService {
 	// 결제 등록
 	public void createPayment(PaymentDTO paymentDTO) {
 		paymentMapper.createPayment(paymentDTO);
+	}
+	
+	// 특정 결제 상세 조회
+	public PaymentDetailDTO getPaymentById(Integer paymentId) {
+		return paymentMapper.getPaymentById(paymentId);
 	}
 }
