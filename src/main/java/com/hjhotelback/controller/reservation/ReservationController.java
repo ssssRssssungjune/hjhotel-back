@@ -57,7 +57,7 @@ public class ReservationController {
 
     }
 
-    //24.11.20 한택 [주의점] : status PENDING이면 삭제 , PENDING이 아닐 경우에는 status CANCELLED로 변경
+    //24.11.20 한택 [주의] : status PENDING이면 삭제 , PENDING이 아닐 경우에는 status CANCELLED로 변경
     @DeleteMapping("{reservation_id}/cancel")
     public void DELETECancelReservation(){
 

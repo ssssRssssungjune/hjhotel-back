@@ -7,7 +7,7 @@
 
    
 
-    <!-- 사용자/관리자 예약상세 조회 RS,M,R-->
+    <!-- 사용자/관리자 예약상세 조회 -->
     <select id="getReservationById" resultType="com.hjhotelback.dto.reservation.ResReservation$Detail">
         select RS.reservation_id AS reservation_id, M.name AS user_name, RT.name AS room_type, RT.base_occupancy AS base_occupancy, 
             RT.max_occupancy AS max_occupancy, R.room_number AS room_number, RS.check_in AS check_in, RS.check_out AS check_out, 
@@ -39,7 +39,7 @@
         UPDATE reservation SET room_id = #{roomId} WHERE reservation_id = #{reservationId};
     </update>
 
-    <!-- 관리자 예약 상태 변경 [보류]-{CANCELLED도 포함}-->
+    <!-- 관리자 예약 상태 변경 24.11.21 한택 [보류]-{CANCELLED도 포함}-->
     <update id="changeReservationStatusById">
         UPDATE reservation SET status = #{status} WHERE reservation_id = #{reservationId} AND status != 'COMPLETED';
     </update>
