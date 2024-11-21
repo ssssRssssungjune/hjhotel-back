@@ -1,0 +1,19 @@
+// Placeholder content for RoomDto.java
+// This file is located in backend/src/main/java/com/hotel/dto/room/RoomDto.java
+
+import java.sql.Date;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+public class RoomDto{
+	private Integer roomId;
+	private Integer roomTypeId;
+	private String roomNumber;
+	private Integer floor;
+	private Date createAt;
+	private String status;
+	private String view;	
+	
+}

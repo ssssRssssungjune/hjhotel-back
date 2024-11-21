@@ -1,0 +1,7 @@
+package com.hjhotelback.mapper.room;
+
+import java.util.List;
+
+public interface RoomRepository {
+	 List<RoomDto>getRooms();
+}
