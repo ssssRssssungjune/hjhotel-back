@@ -50,7 +50,7 @@ public class PaymentController {
 			@RequestParam(name = "reservationId") Integer reservationId,
             @RequestParam(name = "amount") BigDecimal amount,
             @RequestParam(name = "paymentMethod") String paymentMethod,
-            @RequestParam(name = "status") String status,
+            @RequestParam(name = "paymentStatus") String paymentStatus,
             @RequestParam(name = "transactionId") String transactionId) {
 		try {
 	        // 결제 정보 생성
@@ -58,7 +58,7 @@ public class PaymentController {
 	        paymentDTO.setReservationId(reservationId);
 	        paymentDTO.setAmount(amount);
 	        paymentDTO.setPaymentMethod(paymentMethod);
-	        paymentDTO.setStatus(status);
+	        paymentDTO.setPaymentStatus(paymentStatus);
 	        paymentDTO.setTransactionId(transactionId);
 	        
 	        // 생성 시점에 자동으로 날짜 설정

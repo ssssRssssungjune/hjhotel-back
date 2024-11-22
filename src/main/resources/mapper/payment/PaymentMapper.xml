@@ -47,7 +47,7 @@
 	        reservation_id,
 	        amount,
 	        payment_method,
-	        status,
+	        payment_status,
 	        transaction_id,
 	        created_at,
 	        updated_at
@@ -56,7 +56,7 @@
 	        #{reservationId},
 	        #{amount},
 	        #{paymentMethod},
-	        #{status},
+	        #{paymentStatus},
 	        #{transactionId},
 	        NOW(),
 	        NOW()
