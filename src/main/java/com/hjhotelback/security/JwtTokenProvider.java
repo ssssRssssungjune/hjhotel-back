@@ -1,33 +1,46 @@
 package com.hjhotelback.security;
 
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
 import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
+
+import static javax.crypto.Cipher.SECRET_KEY;
 
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey SECRET_KEY;
-    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    public JwtTokenProvider() {
-        // HS256 알고리즘을 위한 키 생성
-        this.SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.RS256);
+    private SecretKey key;
+    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간 (밀리초)
+
+    @PostConstruct
+    protected void init() {
+        // Base64로 인코딩된 시크릿 키를 디코딩하여 바이트 배열로 변환
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        // 바이트 배열로부터 SecretKey 객체 생성
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     // JWT 생성
     public String generateToken(String userId) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
+
         return Jwts.builder()
-                .setSubject(userId) // 사용자 ID 설정
-                .setIssuedAt(new Date()) // 발행 시간
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간
-                .signWith(SECRET_KEY) // 서명
+                .setSubject(userId)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key)
                 .compact();
     }
 
@@ -35,22 +48,23 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY) // 서명 검증 키 설정
+                    .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token); // 토큰 검증 및 Claims 파싱
+                    .parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            return false; // 서명 검증 실패
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
         }
     }
 
-    // JWT에서 사용자 ID 추출
+    // Claims 추출 부분 수정 (JJWT 최신 버전 대응)
     public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY) // 서명 검증 키 설정
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.getSubject(); // subject 필드 반환
+        return claims.getSubject();
     }
+
 }

@@ -19,9 +19,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(@RequestBody MemberRegisterRequest request) {
-        String token = authService.registerUser(request); // 회원가입 후 JWT 생성
+        String token = authService.registerUser(request);
+        System.out.println("Generated Token: " + token); // 토큰 확인
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
+
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody MemberLoginRequest request) {
