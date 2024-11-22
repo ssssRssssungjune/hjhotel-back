@@ -84,10 +84,14 @@ public class PaymentController {
     	return "updatePaymentStatus: 결제 상태 변경";
     }
     
-    // 24.11.22 지은 [예정 작업] : 결제 내역 - 특정 결제 내역 삭제
-    @DeleteMapping("/1") // {payment_id}
-    public String deletePayment() {
-    	return "deletePayment: 결제 내역 삭제";
+    // 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
+    @DeleteMapping("/{paymentId}") // {payment_id}
+    public ResponseEntity<Void> deletePayment(@PathVariable("paymentId") Integer paymentId) {
+    	boolean isDeleted = paymentService.deletePayment(paymentId);
+    	if (isDeleted) {
+    		return ResponseEntity.noContent().build();
+    	} else {
+    		return ResponseEntity.notFound().build();
+    	}
     }
-
 }

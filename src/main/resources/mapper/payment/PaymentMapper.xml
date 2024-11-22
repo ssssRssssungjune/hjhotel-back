@@ -3,8 +3,8 @@
   PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.payment.PaymentMapper">
-
-
+	
+	<!-- 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회 -->
 	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentListDTO">
 		SELECT 
 			p.payment_id, 
@@ -21,12 +21,11 @@
 		JOIN member m ON m.member_id = rs.member_id;
 	</select>
 	
-	
+	<!-- 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회 -->
 	<resultMap id="paymentProcessLogsResultMap" type="com.hjhotelback.dto.payment.PaymentProcessLogDTO">
 		<result property="createdAt" column="process_created_at" />
 		<result property="status" column="process_status"/>
 	</resultMap>
-	
 	<resultMap id="paymentDetailResultMap" type="com.hjhotelback.dto.payment.PaymentDetailDTO">
 		<id property="paymentId" column="payment_id" />
 		<result property="processId" column="process_id"/>
@@ -40,8 +39,6 @@
 		<result property="paymentUpdate" column="payment_update"/>
 		<collection property="paymentProcessLogs" ofType="com.hjhotelback.dto.payment.PaymentProcessLogDTO" resultMap="paymentProcessLogsResultMap"/>
 	</resultMap>
-	
-	
 	<select id="getPaymentById" resultMap="paymentDetailResultMap">
 	    SELECT 
 		    p.payment_id,
@@ -64,7 +61,7 @@
 		ORDER BY pp.created_at ASC;
 	</select>
 	
-	
+	<!-- 24.11.21 지은 [완료] : 결제 내역 - 결제 내역 등록 -->
 	<insert id="createPayment" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (
 	        reservation_id,
@@ -85,4 +82,10 @@
 	        NOW()
 	    )
 	</insert>
+	
+	<!-- 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제 -->
+	<delete id="deletePayment" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
+		DELETE FROM payment 
+		WHERE payment_id = #{paymentId};
+	</delete>
 </mapper>

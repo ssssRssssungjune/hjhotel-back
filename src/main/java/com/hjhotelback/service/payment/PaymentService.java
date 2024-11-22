@@ -16,20 +16,25 @@ public class PaymentService {
 	@Autowired
 	private PaymentMapper paymentMapper;
 	
-	// 결제 내역 목록 조회
+	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
 	public List<PaymentListDTO> getPaymentsList() {
 		return paymentMapper.getPaymentsList();
 	};
 	
-	// 결제 등록
+	// 24.11.21 지은 [완료] : 결제 내역 - 결제 내역 등록
 	public void createPayment(PaymentDTO paymentDTO) {
 		paymentMapper.createPayment(paymentDTO);
 	}
 	
-	// 특정 결제 상세 조회
+	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회
 	public PaymentDetailDTO getPaymentById(Integer paymentId) {
-		
 		return paymentMapper.getPaymentById(paymentId);
+	}
+	
+	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
+	public boolean deletePayment(Integer paymentId) {
+		int deletedCount = paymentMapper.deletePayment(paymentId);
+		return deletedCount > 0;
 	}
 
 }
