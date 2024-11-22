@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.payment.PaymentMapper">
 
+
 	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentListDTO">
 		SELECT 
 			p.payment_id, 
@@ -19,6 +20,7 @@
 		JOIN reservation rs ON p.reservation_id = rs.reservation_id
 		JOIN member m ON m.member_id = rs.member_id;
 	</select>
+	
 	
 	<resultMap id="paymentProcessLogsResultMap" type="com.hjhotelback.dto.payment.PaymentProcessLogDTO">
 		<result property="createdAt" column="process_created_at" />
@@ -62,31 +64,6 @@
 		ORDER BY pp.created_at ASC;
 	</select>
 	
-	
-<!-- 	<select id="getPaymentById" resultMap="paymentDetailResultMap">
-		SELECT 
-			p.payment_id,
-			pp.process_id,
-			p.reservation_id, 
-			m.name AS member_name, 
-			p.payment_method, 
-			p.payment_status,
-			p.amount,
-			p.transaction_id, 
-			p.created_at AS payment_date,
-			p.updated_at AS payment_update,
-			GROUP_CONCAT(
-   				CONCAT(IFNULL(pp.created_at, 'N/A'), ' : ', IFNULL(pp.status, 'N/A')) 
-				ORDER BY pp.created_at ASC
-				SEPARATOR '\n'
-			) AS payment_process_log
-		FROM payment p
-		JOIN reservation rs ON p.reservation_id = rs.reservation_id
-		LEFT JOIN payment_process pp ON p.reservation_id = pp.reservation_id
-		JOIN member m ON m.member_id = rs.member_id
-		WHERE payment_id = #{paymentId}
-		GROUP BY p.payment_id, pp.process_id, p.reservation_id, m.name, p.payment_method, p.payment_status, p.amount, p.transaction_id, p.created_at, p.updated_at;
-	</select> -->
 	
 	<insert id="createPayment" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (
