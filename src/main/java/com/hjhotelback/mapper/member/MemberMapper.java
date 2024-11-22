@@ -15,4 +15,7 @@ public interface MemberMapper {
     // user_id로 비밀번호 조회 (로그인에 사용)
     @Select("SELECT password FROM member WHERE user_id = #{userId}")
     String findPasswordByUserId(String userId);
+
+    @Select("SELECT COUNT(*) > 0 FROM member WHERE user_id = #{userId}")
+    boolean existsByUserId(String userId);
 }

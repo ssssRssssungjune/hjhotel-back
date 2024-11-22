@@ -1,7 +1,7 @@
 package com.hjhotelback.controller.member;
 
-import com.hjhotelback.dto.member.MemberLoginRequest;
-import com.hjhotelback.dto.member.MemberRegisterRequest;
+import com.hjhotelback.dto.member.auth.MemberLoginRequest;
+import com.hjhotelback.dto.member.auth.MemberRegisterRequest;
 import com.hjhotelback.service.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,15 +33,15 @@ public class MemberController {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginMember(@RequestBody MemberLoginRequest request) {
-        boolean isAuthenticated = memberService.authenticateMember(request);
-
-        if (isAuthenticated) {
-            return ResponseEntity.ok("로그인 성공!");
-        } else {
-            return ResponseEntity.status(401).body("로그인 실패: 잘못된 이메일 또는 비밀번호입니다.");
-        }
+//    @PostMapping("/login")
+//    public ResponseEntity<String> loginMember(@RequestBody MemberLoginRequest request) {
+//       boolean isAuthenticated = memberService.authenticateMember(request);
+//
+//        if (isAuthenticated) {
+//            return ResponseEntity.ok("로그인 성공!");
+//        } else {
+//            return ResponseEntity.status(401).body("로그인 실패: 잘못된 이메일 또는 비밀번호입니다.");
+//        }
 
     }
-}
+//}

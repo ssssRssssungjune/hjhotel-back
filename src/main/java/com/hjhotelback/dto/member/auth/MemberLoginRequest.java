@@ -1,4 +1,4 @@
-package com.hjhotelback.dto.member;
+package com.hjhotelback.dto.member.auth;
 
 import lombok.Data;
 
