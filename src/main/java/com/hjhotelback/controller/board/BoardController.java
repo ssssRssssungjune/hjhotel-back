@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hjhotelback.dto.board.BoardDTO;
 import com.hjhotelback.service.board.BoardService;
 
 @RestController
@@ -44,8 +45,8 @@ public class BoardController {
      */
     
     @GetMapping
-    public ResponseEntity<List<BoardDTO>> getAllBoards(@RequestParam(defaultVal = "1")int page){
-    	return ResponseEntity.ok(boardService.getAllBoards(id));
+    public ResponseEntity<List<BoardDTO>> getAllBoards(@RequestParam(defaultValue = "1")int page){
+    	return ResponseEntity.ok(boardService.getAllBoards(page));
     }
     /**
      * 게시글 상세보기
@@ -71,7 +72,7 @@ public class BoardController {
      */
     @Secured("ROLE_ADMIN")//관리자만 삭제 가능
     @DeleteMapping("/{id}")
-    public ResponseEntity<void> deleteBoard(@PathVariable Long id){
+    public ResponseEntity<Void> deleteBoard(@PathVariable Long id){
     	boardService.deleteBoard(id);
     	return ResponseEntity.noContent().build();
     }
@@ -80,7 +81,7 @@ public class BoardController {
      */
     
     @GetMapping("/search")
-    public ResponseEntity<List<BoardDTO>>seachBoards(
+    public ResponseEntity<List<BoardDTO>>searchBoards(
     		@RequestParam(required = false) String keyword,
     		@RequestParam(defaultValue = "1") int page){
     	return ResponseEntity.ok(boardService.searchBoards(keyword,page));
