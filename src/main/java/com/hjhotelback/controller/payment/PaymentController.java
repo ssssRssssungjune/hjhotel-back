@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
+import com.hjhotelback.dto.payment.PaymentListDTO;
 import com.hjhotelback.service.payment.PaymentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class PaymentController {
 
 	// 결제 내역 목록 조회
 	@GetMapping
-	public List<PaymentDTO> getPayments() {
+	public List<PaymentListDTO> getPayments() {
 		return paymentService.getPaymentsList();
 	}
 	

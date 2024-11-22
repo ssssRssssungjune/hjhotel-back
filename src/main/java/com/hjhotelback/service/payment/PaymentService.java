@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
+import com.hjhotelback.dto.payment.PaymentListDTO;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 
 @Service
@@ -16,7 +17,7 @@ public class PaymentService {
 	private PaymentMapper paymentMapper;
 	
 	// 결제 내역 목록 조회
-	public List<PaymentDTO> getPaymentsList() {
+	public List<PaymentListDTO> getPaymentsList() {
 		return paymentMapper.getPaymentsList();
 	};
 	

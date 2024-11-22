@@ -19,22 +19,33 @@ import lombok.ToString;
 public class PaymentListDTO {
 	private Integer paymentId;
 	private Integer reservationId;
-	private BigDecimal amount;
-	private String paymentMethod;
-	private String status;
-	private String transactionId;
 	private Integer memberId;
+	private String memberName;
+	private String paymentMethod;
+	private String paymentStatus;
+	private BigDecimal amount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
+    
     // 생성 시점에 자동으로 시간 설정
-    public PaymentListDTO(Integer reservationId, BigDecimal amount, String paymentMethod, String status, String transactionId) {
+    public PaymentListDTO(
+        Integer paymentId,
+        Integer reservationId, 
+        Integer memberId,
+        String memberName,
+        String paymentMethod, 
+        String paymentStatus,
+        BigDecimal amount, 
+        String transactionId) {
+        this.paymentId = paymentId;
         this.reservationId = reservationId;
-        this.amount = amount;
+        this.memberId = memberId;
+        this.memberName = memberName;
         this.paymentMethod = paymentMethod;
-        this.status = status;
-        this.transactionId = transactionId;
-        this.createdAt = LocalDateTime.now();  // 현재 시간
-        this.updatedAt = LocalDateTime.now();  // 현재 시간
+        this.paymentStatus = paymentStatus;
+        this.amount = amount;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }

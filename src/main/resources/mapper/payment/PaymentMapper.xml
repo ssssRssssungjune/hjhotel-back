@@ -4,18 +4,20 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.payment.PaymentMapper">
 
-	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentDTO">
-		SELECT py.payment_id, 
-				py.reservation_id, 
-				py.amount, 
-				py.payment_method, 
-				py.status, 
-				py.transaction_id,
-				rs.member_id,
-				py.created_at, 
-				py.updated_at
-		FROM payment py
-		JOIN reservation rs ON py.reservation_id = rs.reservation_id;
+	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentListDTO">
+		SELECT 
+			p.payment_id, 
+			p.reservation_id, 
+			rs.member_id,
+			m.name member_name,
+			p.payment_method, 
+			p.payment_status,
+			p.amount, 
+			p.created_at,
+			p.updated_at
+		FROM payment p
+		JOIN reservation rs ON p.reservation_id = rs.reservation_id
+		JOIN member m ON m.member_id = rs.member_id;
 	</select>
 	
 	<select id="getPaymentById" resultType="com.hjhotelback.dto.payment.PaymentDetailDTO">
