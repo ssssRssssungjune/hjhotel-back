@@ -28,6 +28,8 @@ public class PaymentService {
 	
 	// 특정 결제 상세 조회
 	public PaymentDetailDTO getPaymentById(Integer paymentId) {
+		
 		return paymentMapper.getPaymentById(paymentId);
 	}
+
 }

@@ -20,27 +20,73 @@
 		JOIN member m ON m.member_id = rs.member_id;
 	</select>
 	
-	<select id="getPaymentById" resultType="com.hjhotelback.dto.payment.PaymentDetailDTO">
-		SELECT py.payment_id, 
-	       py.reservation_id, 
-	       m.name AS member_name, 
-	       py.payment_method, 
-	       py.status AS payment_status, 
-	       py.amount,
-	       py.transaction_id, 
-	       py.created_at AS payment_date,
-	       py.updated_at AS payment_status_update,
-           GROUP_CONCAT(
-            CONCAT(pp.created_at, ' : ', pp.status) 
-            ORDER BY pp.created_at ASC
-             SEPARATOR '\n') AS payment_process_log
-		FROM payment py
-		JOIN reservation rs ON py.reservation_id = rs.reservation_id
-		LEFT JOIN payment_process pp ON py.reservation_id = pp.reservation_id
+	<resultMap id="paymentProcessLogsResultMap" type="com.hjhotelback.dto.payment.PaymentProcessLogDTO">
+		<result property="createdAt" column="process_created_at" />
+		<result property="status" column="process_status"/>
+	</resultMap>
+	
+	<resultMap id="paymentDetailResultMap" type="com.hjhotelback.dto.payment.PaymentDetailDTO">
+		<id property="paymentId" column="payment_id" />
+		<result property="processId" column="process_id"/>
+		<result property="reservationId" column="reservation_id"/>
+		<result property="memberName" column="member_name"/>
+		<result property="paymentMethod" column="payment_method"/>
+		<result property="paymentStatus" column="payment_status"/>
+		<result property="amount" column="amount"/>
+		<result property="transactionId" column="transaction_id"/>
+		<result property="paymentDate" column="payment_date"/>
+		<result property="paymentUpdate" column="payment_update"/>
+		<collection property="paymentProcessLogs" ofType="com.hjhotelback.dto.payment.PaymentProcessLogDTO" resultMap="paymentProcessLogsResultMap"/>
+	</resultMap>
+	
+	
+	<select id="getPaymentById" resultMap="paymentDetailResultMap">
+	    SELECT 
+		    p.payment_id,
+		    pp.process_id,
+		    p.reservation_id, 
+		    m.name AS member_name, 
+		    p.payment_method, 
+		    p.payment_status,
+		    p.amount,
+		    p.transaction_id, 
+		    p.created_at AS payment_date,
+		    p.updated_at AS payment_update,
+		    pp.created_at AS process_created_at,
+		    pp.status AS process_status
+		FROM payment p
+		JOIN reservation rs ON p.reservation_id = rs.reservation_id
+		LEFT JOIN payment_process pp ON p.reservation_id = pp.reservation_id
+		JOIN member m ON m.member_id = rs.member_id
+		WHERE p.payment_id = #{paymentId}
+		ORDER BY pp.created_at ASC;
+	</select>
+	
+	
+<!-- 	<select id="getPaymentById" resultMap="paymentDetailResultMap">
+		SELECT 
+			p.payment_id,
+			pp.process_id,
+			p.reservation_id, 
+			m.name AS member_name, 
+			p.payment_method, 
+			p.payment_status,
+			p.amount,
+			p.transaction_id, 
+			p.created_at AS payment_date,
+			p.updated_at AS payment_update,
+			GROUP_CONCAT(
+   				CONCAT(IFNULL(pp.created_at, 'N/A'), ' : ', IFNULL(pp.status, 'N/A')) 
+				ORDER BY pp.created_at ASC
+				SEPARATOR '\n'
+			) AS payment_process_log
+		FROM payment p
+		JOIN reservation rs ON p.reservation_id = rs.reservation_id
+		LEFT JOIN payment_process pp ON p.reservation_id = pp.reservation_id
 		JOIN member m ON m.member_id = rs.member_id
 		WHERE payment_id = #{paymentId}
-		GROUP BY py.payment_id, py.reservation_id, m.name, py.payment_method, py.status, py.amount, py.transaction_id, py.created_at, py.updated_at;
-	</select>
+		GROUP BY p.payment_id, pp.process_id, p.reservation_id, m.name, p.payment_method, p.payment_status, p.amount, p.transaction_id, p.created_at, p.updated_at;
+	</select> -->
 	
 	<insert id="createPayment" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (

@@ -3,6 +3,8 @@ package com.hjhotelback.mapper.payment;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
@@ -13,5 +15,6 @@ public interface PaymentMapper {
 
 	List<PaymentListDTO> getPaymentsList();
 	void createPayment(PaymentDTO paymentDTO);
-	PaymentDetailDTO getPaymentById(Integer paymentId);
+	@ResultMap("paymentDetailResultMap")
+	PaymentDetailDTO getPaymentById(@Param("paymentId") Integer paymentId);
 }
