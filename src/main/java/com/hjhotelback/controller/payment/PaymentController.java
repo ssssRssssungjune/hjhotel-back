@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -78,14 +79,24 @@ public class PaymentController {
 	    }
     }
     
-    // 24.11.22 지은 [예정 작업] : 결제 내역 - 특정 결제 내역 상태 변경
-    @PutMapping("/1/status") // {payment_id}
-    public String updatePaymentStatus() {
-    	return "updatePaymentStatus: 결제 상태 변경";
+    // 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경
+    @PutMapping("/{paymentId}/status")
+    public ResponseEntity<String> updatePaymentStatus(
+    		@PathVariable("paymentId") Integer paymentId,
+    		@RequestBody PaymentDTO paymentDTO) {
+    	
+    	paymentDTO.setPaymentId(paymentId);
+    	boolean isUpdated = paymentService.updatePaymentStatus(paymentDTO);
+    	
+    	if (isUpdated) {
+    		return ResponseEntity.ok("Payment status updated successfully.");
+    	} else {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment not found.");
+    	}
     }
     
     // 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
-    @DeleteMapping("/{paymentId}") // {payment_id}
+    @DeleteMapping("/{paymentId}")
     public ResponseEntity<Void> deletePayment(@PathVariable("paymentId") Integer paymentId) {
     	boolean isDeleted = paymentService.deletePayment(paymentId);
     	if (isDeleted) {

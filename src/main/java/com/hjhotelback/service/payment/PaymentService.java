@@ -1,5 +1,6 @@
 package com.hjhotelback.service.payment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class PaymentService {
 	public boolean deletePayment(Integer paymentId) {
 		int deletedCount = paymentMapper.deletePayment(paymentId);
 		return deletedCount > 0;
+	}
+	
+	// 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경 -> 수정 여기서부터
+	public boolean updatePaymentStatus(PaymentDTO paymentDTO) {
+		paymentDTO.setUpdatedAt(LocalDateTime.now());
+		return paymentMapper.updatePaymentStatus(paymentDTO);
 	}
 
 }

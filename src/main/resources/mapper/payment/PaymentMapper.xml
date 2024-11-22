@@ -88,4 +88,11 @@
 		DELETE FROM payment 
 		WHERE payment_id = #{paymentId};
 	</delete>
+	
+	<!-- 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경 -->
+	<update id="updatePaymentStatus" parameterType="map">
+		UPDATE payment 
+		SET payment_status = #{paymentStatus}
+		WHERE payment_id = #{paymentId};
+	</update>
 </mapper>

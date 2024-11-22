@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Update;
 
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
@@ -25,4 +26,7 @@ public interface PaymentMapper {
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
 	int deletePayment(@Param("paymentId") Integer paymentId);
+	
+	// 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경
+	int updatePaymentStatus(PaymentDTO paymentDTO);
 }
