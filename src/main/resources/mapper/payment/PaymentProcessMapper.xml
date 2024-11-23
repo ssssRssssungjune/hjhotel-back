@@ -23,5 +23,23 @@
 		JOIN reservation r ON r.reservation_id = pp.reservation_id
 		ORDER BY pp.created_at DESC;
 	</select>
+	
+	<!-- 24.11.23 지은 [완료] : 결제 프로세스 등록 -->
+	<insert id="insertPaymentProcess" useGeneratedKeys="true" keyProperty="processId"  parameterType="com.hjhotelback.dto.payment.PaymentProcessDTO">
+		INSERT INTO payment_process (
+	        reservation_id, 
+	        provider, 
+	        session_id, 
+	        process_status, 
+	        redirect_url
+		)
+		VALUES (
+	        #{reservationId}, 
+	        #{provider}, 
+	        #{sessionId}, 
+	        #{processStatus}, 
+	        #{redirectUrl}
+		);
+	</insert>
 
 </mapper>
