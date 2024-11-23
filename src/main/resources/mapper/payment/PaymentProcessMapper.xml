@@ -41,5 +41,11 @@
 	        #{redirectUrl}
 		);
 	</insert>
+	
+	<!-- 24.11.23 지은 [완료] : 특정 결제 프로세스 삭제 -->
+	<delete id="deletePaymentProcess" parameterType="com.hjhotelback.dto.payment.PaymentProcessDTO">
+		DELETE FROM payment_process
+		WHERE process_id = #{processId};
+	</delete>
 
 </mapper>

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,10 +52,15 @@ public class PaymentProcessController {
 		return "특정 결제 프로세스 상태 수정";
 	}
 	
-	// 24.11.23 지은 [작업 예정] : 특정 결제 프로세스 삭제
-	@DeleteMapping("1")//{process_id}
-	public String deletePaymentProcess() {
-		return "특정 결제 프로세스 삭제";
+	// 24.11.23 지은 [완료] : 특정 결제 프로세스 삭제
+	@DeleteMapping("{processId}")
+	public ResponseEntity<?> deletePaymentProcess(@PathVariable("processId") Integer processId) {
+		try {
+			paymentProcessService.deletePaymentProcess(processId);
+			return ResponseEntity.status(HttpStatus.OK).body("success delete data" + processId);
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());		
+		}
 	}
 
 }

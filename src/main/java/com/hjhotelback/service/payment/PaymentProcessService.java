@@ -25,4 +25,9 @@ public class PaymentProcessService {
 		paymentProcessMapper.insertPaymentProcess(paymentProcessDTO);
 	}
 	
+	// 24.11.23 지은 [완료] : 특정 결제 프로세스 삭제
+	public void deletePaymentProcess(Integer processId) {
+		paymentProcessMapper.deletePaymentProcess(processId);
+	}
+	
 }
