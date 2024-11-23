@@ -3,7 +3,9 @@ package com.hjhotelback.controller.payment;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
+import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.hjhotelback.service.payment.PaymentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,9 @@ public class PaymentController {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private PaymentMapper paymentMapper;
 
 	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
 	@GetMapping
@@ -79,20 +84,47 @@ public class PaymentController {
 	    }
     }
     
-    // 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경
+    // 24.11.23 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
     @PutMapping("/{paymentId}/status")
-    public ResponseEntity<String> updatePaymentStatus(
+    public ResponseEntity<Map<String, Object>> updatePaymentStatus(
     		@PathVariable("paymentId") Integer paymentId,
-    		@RequestBody PaymentDTO paymentDTO) {
+    		@RequestParam(name = "newStatus") String newStatus) {
     	
-    	paymentDTO.setPaymentId(paymentId);
-    	boolean isUpdated = paymentService.updatePaymentStatus(paymentDTO);
-    	
-    	if (isUpdated) {
-    		return ResponseEntity.ok("Payment status updated successfully.");
-    	} else {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment not found.");
+    	try {
+	    	// 상태 업데이트를 위한 DTO 생성
+	        PaymentDTO newPaymentDTO = new PaymentDTO();
+	        newPaymentDTO.setPaymentId(paymentId);
+	        newPaymentDTO.setPaymentStatus(newStatus);
+	        newPaymentDTO.setUpdatedAt(LocalDateTime.now());
+	        
+	        boolean isUpdated = paymentService.updatePaymentStatus(newPaymentDTO);
+	        
+	        log.info("test", isUpdated);
+	        
+	        // 상태 업데이트가 성공한 경우
+	        if (isUpdated) {
+	            Map<String, Object> response = new HashMap<>();
+	            response.put("statusUpdated", true);
+	            response.put("message", "Payment status updated successfully.");
+	            return ResponseEntity.ok(response); // HTTP 200 OK
+	        } else {
+	            // 상태가 변경되지 않았거나 결제 정보가 없을 경우
+	            Map<String, Object> response = new HashMap<>();
+	            response.put("statusUpdated", false);
+	            response.put("message", "Payment status not changed or payment not found.");
+	            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(response); // HTTP 304 Not Modified
+	        }
+	        
+    	} catch(Exception e) {
+    		// 예외 발생 시
+            log.error("Error updating payment status", e);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("statusUpdated", false);
+            response.put("message", "Error updating payment status.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // HTTP 500 Internal Server Error
     	}
+        
     }
     
     // 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제

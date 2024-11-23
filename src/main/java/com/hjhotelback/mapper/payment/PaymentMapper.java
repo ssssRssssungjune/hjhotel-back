@@ -28,5 +28,8 @@ public interface PaymentMapper {
 	int deletePayment(@Param("paymentId") Integer paymentId);
 	
 	// 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경
-	int updatePaymentStatus(PaymentDTO paymentDTO);
+	void updatePaymentStatus(PaymentDTO newPaymentDTO);
+	
+	// 24.11.23 지은 [완료] : 결제 내역 - payment DB 속성 전체 가져오기
+	PaymentDTO getPaymentByIdStatus(@Param("paymentId") Integer paymentId);
 }

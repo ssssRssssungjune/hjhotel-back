@@ -38,10 +38,16 @@ public class PaymentService {
 		return deletedCount > 0;
 	}
 	
-	// 24.11.22 지은 [작업 중] : 결제 내역 - 특정 결제 내역 상태 변경 -> 수정 여기서부터
-	public boolean updatePaymentStatus(PaymentDTO paymentDTO) {
-		paymentDTO.setUpdatedAt(LocalDateTime.now());
-		return paymentMapper.updatePaymentStatus(paymentDTO);
+	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
+	public boolean updatePaymentStatus(PaymentDTO newPaymentDTO) {
+
+        if (newPaymentDTO != null) {
+            paymentMapper.updatePaymentStatus(newPaymentDTO);
+            return true;
+        }
+
+        // 결제 정보가 없거나 상태가 동일하면 false 반환
+        return false;
 	}
 
 }
