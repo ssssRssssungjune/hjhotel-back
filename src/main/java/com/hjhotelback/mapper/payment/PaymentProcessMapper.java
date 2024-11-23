@@ -18,4 +18,7 @@ public interface PaymentProcessMapper {
 
 	// 24.11.23 지은 [완료] : 특정 결제 프로세스 삭제
 	void deletePaymentProcess(Integer processId);
+	
+	// 24.11.24 지은 [완료] : 특정 결제 프로세스 상태 수정
+	void updatePaymentProcessStatus(PaymentProcessDTO newPaymentProcessDTO);
 }

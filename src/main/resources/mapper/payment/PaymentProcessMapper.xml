@@ -48,4 +48,12 @@
 		WHERE process_id = #{processId};
 	</delete>
 
+	<!-- 24.11.24 지은 [완료] : 특정 결제 프로세스 상태 수정 -->
+	<update id="updatePaymentProcessStatus" parameterType="com.hjhotelback.dto.payment.PaymentProcessDTO">
+		UPDATE payment_process
+		SET
+	        process_status = #{processStatus},
+	        created_at = #{createdAt}
+		WHERE process_id = #{processId};
+	</update>
 </mapper>

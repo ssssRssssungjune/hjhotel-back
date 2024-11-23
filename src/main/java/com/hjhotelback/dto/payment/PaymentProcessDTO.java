@@ -3,6 +3,7 @@ package com.hjhotelback.dto.payment;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +12,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PaymentProcessDTO {
     private Integer processId;
     private Integer reservationId;

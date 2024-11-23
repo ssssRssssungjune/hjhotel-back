@@ -30,4 +30,15 @@ public class PaymentProcessService {
 		paymentProcessMapper.deletePaymentProcess(processId);
 	}
 	
+	// 24.11.24 지은 [완료] : 특정 결제 프로세스 상태 수정
+	public boolean updatePaymentProcessStatus(PaymentProcessDTO newPaymentProcessDTO) {
+		if (newPaymentProcessDTO != null) {
+			paymentProcessMapper.updatePaymentProcessStatus(newPaymentProcessDTO);
+			return true;
+		}
+		
+        // 결제 정보가 없거나 상태가 동일하면 false 반환
+        return false;
+	}
+	
 }
