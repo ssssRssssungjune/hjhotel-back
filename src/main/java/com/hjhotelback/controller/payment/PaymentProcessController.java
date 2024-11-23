@@ -14,25 +14,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/payment-processes")
 public class PaymentProcessController {
 
-	// 전체 결제 프로세스 내역 조회
+	// 24.11.23 지은 [작업 중] : 전체 결제 프로세스 내역 조회
 	@GetMapping
 	public String getAllPaymentProcesses() {
 		return "전체 결제 프로세스 내역 조회";
 	}
 
-	// 결제 프로세스 등록
+	// 24.11.23 지은 [작업 예정] : 결제 프로세스 등록
 	@PostMapping
 	public String createPaymentProcess() {
 		return "결제 프로세스 등록";
 	}
 	
-	// 특정 결제 프로세스 상태 수정
+	// 24.11.23 지은 [작업 예정] : 특정 결제 프로세스 상태 수정
 	@PutMapping("1/status") //{process_id}
 	public String updatePaymentProcessStatus() {
 		return "특정 결제 프로세스 상태 수정";
 	}
 	
-	// 특정 결제 프로세스 삭제
+	// 24.11.23 지은 [작업 예정] : 특정 결제 프로세스 삭제
 	@DeleteMapping("1")//{process_id}
 	public String deletePaymentProcess() {
 		return "특정 결제 프로세스 삭제";

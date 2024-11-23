@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
+import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.hjhotelback.service.payment.PaymentService;
 
@@ -56,7 +57,7 @@ public class PaymentController {
 			@RequestParam(name = "reservationId") Integer reservationId,
             @RequestParam(name = "amount") BigDecimal amount,
             @RequestParam(name = "paymentMethod") String paymentMethod,
-            @RequestParam(name = "paymentStatus") String paymentStatus,
+            @RequestParam(name = "paymentStatus") PaymentStatus paymentStatus,
             @RequestParam(name = "transactionId") String transactionId) {
 		try {
 	        // 결제 정보 생성
@@ -88,7 +89,7 @@ public class PaymentController {
     @PutMapping("/{paymentId}/status")
     public ResponseEntity<Map<String, Object>> updatePaymentStatus(
     		@PathVariable("paymentId") Integer paymentId,
-    		@RequestParam(name = "newStatus") String newStatus) {
+    		@RequestParam(name = "newStatus") PaymentStatus newStatus) {
     	
     	try {
 	    	// 상태 업데이트를 위한 DTO 생성

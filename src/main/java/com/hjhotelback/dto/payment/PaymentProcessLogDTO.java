@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class PaymentProcessLogDTO {
     private LocalDateTime createdAt;
-    private String status;
+    private String processStatus;
 }

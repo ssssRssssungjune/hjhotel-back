@@ -24,7 +24,7 @@
 	<!-- 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회 -->
 	<resultMap id="paymentProcessLogsResultMap" type="com.hjhotelback.dto.payment.PaymentProcessLogDTO">
 		<result property="createdAt" column="process_created_at" />
-		<result property="status" column="process_status"/>
+		<result property="processStatus" column="process_status"/>
 	</resultMap>
 	<resultMap id="paymentDetailResultMap" type="com.hjhotelback.dto.payment.PaymentDetailDTO">
 		<id property="paymentId" column="payment_id" />
@@ -52,7 +52,7 @@
 		    p.created_at AS payment_date,
 		    p.updated_at AS payment_update,
 		    pp.created_at AS process_created_at,
-		    pp.status AS process_status
+		    pp.process_status AS process_status
 		FROM payment p
 		JOIN reservation rs ON p.reservation_id = rs.reservation_id
 		LEFT JOIN payment_process pp ON p.reservation_id = pp.reservation_id

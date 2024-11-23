@@ -20,14 +20,14 @@ public class PaymentDTO {
 	private Integer paymentId;
 	private Integer reservationId;
 	private String paymentMethod;
-	private String paymentStatus;
+	private PaymentStatus paymentStatus;
 	private BigDecimal amount;
 	private String transactionId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
     // 생성 시점에 자동으로 시간 설정
-    public PaymentDTO(Integer reservationId, String paymentMethod, String paymentStatus, BigDecimal amount, String transactionId) {
+    public PaymentDTO(Integer reservationId, String paymentMethod, PaymentStatus paymentStatus, BigDecimal amount, String transactionId) {
         this.reservationId = reservationId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;

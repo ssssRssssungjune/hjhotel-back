@@ -22,7 +22,7 @@ public class PaymentListDTO {
 	private Integer memberId;
 	private String memberName;
 	private String paymentMethod;
-	private String paymentStatus;
+	private PaymentStatus paymentStatus;
 	private BigDecimal amount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -35,7 +35,7 @@ public class PaymentListDTO {
         Integer memberId,
         String memberName,
         String paymentMethod, 
-        String paymentStatus,
+        PaymentStatus paymentStatus,
         BigDecimal amount, 
         String transactionId) {
         this.paymentId = paymentId;
