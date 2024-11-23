@@ -1,43 +1,38 @@
 package com.hjhotelback.controller.member.auth;
 
-import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
-import com.hjhotelback.dto.member.auth.MemberRegisterRequestDto;
 import com.hjhotelback.dto.member.auth.JwtResponseDto;
+import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
+import com.hjhotelback.dto.member.auth.SignupRequest;
 import com.hjhotelback.service.member.auth.AuthService;
+import com.hjhotelback.service.member.auth.MemberService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth") // 인증 관련 엔드포인트
+@RequestMapping("/api/auth")
 public class AuthController {
 
+    private final MemberService memberService;
     private final AuthService authService;
 
-    // 생성자 주입
-    public AuthController(AuthService authService) {
+    // 두 서비스 의존성을 하나의 생성자로 통합
+    public AuthController(MemberService memberService, AuthService authService) {
+        this.memberService = memberService;
         this.authService = authService;
     }
 
-    /**
-     * 회원가입 요청
-     * @param request 회원가입 요청 데이터 (MemberRegisterRequestDto)
-     * @return JWT 토큰을 포함한 응답 (JwtResponseDto)
-     */
-    @PostMapping("/register")
-    public ResponseEntity<JwtResponseDto> register(@RequestBody MemberRegisterRequestDto request) {
-        String token = authService.registerUser(request); // 회원가입 후 JWT 발급
-        System.out.println("Generated Token: " + token); // 디버그용 출력
-        return ResponseEntity.ok(new JwtResponseDto(token)); // JWT 응답 반환
+    // 회원가입 엔드포인트
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
+        authService.registerUser(signupRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
     }
 
-    /**
-     * 로그인 요청
-     * @param request 로그인 요청 데이터 (MemberLoginRequestDto)
-     * @return JWT 토큰을 포함한 응답 (JwtResponseDto)
-     */
+    // 로그인 엔드포인트
     @PostMapping("/login")
-    public ResponseEntity<JwtResponseDto> login(@RequestBody MemberLoginRequestDto request) {
-        String token = authService.loginUser(request); // 로그인 후 JWT 발급
-        return ResponseEntity.ok(new JwtResponseDto(token)); // JWT 응답 반환
+    public ResponseEntity<JwtResponseDto> login(@RequestBody MemberLoginRequestDto loginRequest) {
+        JwtResponseDto response = memberService.login(loginRequest);
+        return ResponseEntity.ok(response);
     }
 }

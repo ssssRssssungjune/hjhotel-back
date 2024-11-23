@@ -1,7 +1,8 @@
 package com.hjhotelback.controller.member;
 
-import com.hjhotelback.dto.member.auth.MemberRegisterRequestDto;
-import com.hjhotelback.service.member.MemberService;
+import com.hjhotelback.dto.member.auth.SignupRequest;
+import com.hjhotelback.service.member.auth.MemberService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> registerMember(@RequestBody MemberRegisterRequestDto request) {
+    public ResponseEntity<Map<String, String>> registerMember(@RequestBody SignupRequest request) {
         memberService.registerMember(request);
 
         // JSON 형식으로 응답

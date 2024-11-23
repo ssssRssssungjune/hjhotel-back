@@ -1,41 +1,32 @@
 package com.hjhotelback.service.member.auth;
 
-import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
-import com.hjhotelback.dto.member.auth.MemberRegisterRequestDto;
-import com.hjhotelback.mapper.member.MemberMapper;
-import com.hjhotelback.security.JwtTokenProvider;
+import com.hjhotelback.dto.member.auth.SignupRequest;
+import com.hjhotelback.mapper.member.auth.MemberMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    private final MemberMapper memberMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberMapper memberMapper; // 회원 정보를 처리할 매퍼
+    private final PasswordEncoder passwordEncoder; // 비밀번호 암호화
 
-    public AuthService(MemberMapper memberMapper, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(MemberMapper memberMapper, PasswordEncoder passwordEncoder) {
         this.memberMapper = memberMapper;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // 회원가입 로직
-    public String registerUser(MemberRegisterRequestDto request) {
-        if (memberMapper.existsByUserId(request.getUserId())) {
-            throw new IllegalArgumentException("이미 존재하는 사용자 ID입니다.");
-        }
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        memberMapper.insertMember(request.getUserId(), request.getEmail(), encodedPassword, request.getName(), request.getPhone());
-        return jwtTokenProvider.createToken(request.getUserId()); // JWT 생성
-    }
+    public void registerUser(SignupRequest signupRequest) {
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
-    // 로그인 로직
-    public String loginUser(MemberLoginRequestDto request) {
-        String storedPassword = memberMapper.findPasswordByUserId(request.getUserId());
-        if (storedPassword == null || !passwordEncoder.matches(request.getPassword(), storedPassword)) {
-            throw new IllegalArgumentException("잘못된 사용자 ID 또는 비밀번호입니다.");
-        }
-        return jwtTokenProvider.createToken(request.getUserId()); // JWT 생성
+        // 회원 정보 저장
+        memberMapper.insertMember(
+                signupRequest.getUserId(),
+                signupRequest.getEmail(),
+                encodedPassword,
+                signupRequest.getName(),
+                signupRequest.getPhone()
+        );
     }
 }
