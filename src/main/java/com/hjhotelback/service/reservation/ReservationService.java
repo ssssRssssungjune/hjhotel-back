@@ -1,5 +1,7 @@
 package com.hjhotelback.service.reservation;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
@@ -35,8 +37,8 @@ public class ReservationService {
         return _mapper.getReservationById(reservationId);
     }
 
-    public void getReservationList(){
-
+    public List<ResReservation.List> getReservationList(){
+        return _mapper.getReservationList();
     }
 
     public void updateReservation(){

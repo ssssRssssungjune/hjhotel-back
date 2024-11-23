@@ -1,6 +1,7 @@
 package com.hjhotelback.mapper.reservation;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +12,7 @@ import com.hjhotelback.dto.reservation.ResReservation;
 public interface ReservationMapper {
 
     //관리자 예약 목록 조회
-    public ResReservation.List getReservationList();
+    public List<ResReservation.List> getReservationList();
     
     //사용자/관리자 예약 상세 조회
     public ResReservation.Detail getReservationById(int reservationId);
