@@ -1,7 +1,7 @@
 package com.hjhotelback.service.member;
 
-import com.hjhotelback.dto.member.auth.MemberLoginRequest;
-import com.hjhotelback.dto.member.auth.MemberRegisterRequest;
+import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
+import com.hjhotelback.dto.member.auth.MemberRegisterRequestDto;
 import com.hjhotelback.mapper.member.MemberMapper;
 import com.hjhotelback.security.JwtTokenProvider; // JWT 유틸리티
 import org.springframework.security.crypto.password.PasswordEncoder; // PasswordEncoder 추가
@@ -21,7 +21,7 @@ public class MemberService {
     }
 
     // 회원가입
-    public String registerMember(MemberRegisterRequest request) {
+    public String registerMember(MemberRegisterRequestDto request) {
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
@@ -39,7 +39,7 @@ public class MemberService {
     }
 
     // 로그인 인증
-    public String authenticateMember(MemberLoginRequest request) {
+    public String authenticateMember(MemberLoginRequestDto request) {
         // user_id를 기반으로 비밀번호 조회
         String storedPassword = memberMapper.findPasswordByUserId(request.getUserId());
         if (storedPassword == null) {

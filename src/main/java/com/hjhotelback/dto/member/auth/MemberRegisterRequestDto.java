@@ -3,7 +3,7 @@ package com.hjhotelback.dto.member.auth;
 import lombok.Data;
 
 @Data
-public class MemberRegisterRequest {
+public class MemberRegisterRequestDto {
     private String userId;
     private String email;
     private String password;
