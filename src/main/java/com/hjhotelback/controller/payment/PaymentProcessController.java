@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.payment.PaymentProcessListDTO;
-import com.hjhotelback.mapper.payment.PaymentProcessMapper;
 import com.hjhotelback.service.payment.PaymentProcessService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +23,6 @@ public class PaymentProcessController {
 	@Autowired
 	private PaymentProcessService paymentProcessService;
 	
-	@Autowired
-	private PaymentProcessMapper paymentProcessMapper;
 
 	// 24.11.23 지은 [완료] : 전체 결제 프로세스 내역 조회
 	@GetMapping
