@@ -3,4 +3,25 @@
   PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.payment.PaymentProcessMapper">
+
+	<!-- 24.11.23 지은 [완료] : 전체 결제 프로세스 내역 조회 -->
+	<select id="getAllPaymentProcesses" resultType="com.hjhotelback.dto.payment.PaymentProcessListDTO">
+		SELECT 
+			p.payment_id, 
+			pp.process_id, 
+			pp.reservation_id, 
+			p.payment_method, 
+			pp.provider, 
+			pp.session_id, 
+			pp.process_status, 
+			pp.created_at, 
+			p.transaction_id, 
+			pp.redirect_url,
+			pp.created_at
+		FROM payment_process pp
+		JOIN payment p ON p.reservation_id = pp.reservation_id
+		JOIN reservation r ON r.reservation_id = pp.reservation_id
+		ORDER BY pp.created_at DESC;
+	</select>
+
 </mapper>
