@@ -2,7 +2,10 @@ package com.hjhotelback.mapper.member.auth;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.Map;
 
 @Mapper
 public interface MemberMapper {
@@ -15,4 +18,8 @@ public interface MemberMapper {
 
     @Select("SELECT password FROM member WHERE user_id = #{userId}")
     String findPasswordByUserId(String userId);
+
+    @Select("SELECT user_id AS userId, name FROM member WHERE user_id = #{userId}")
+    Map<String, String> findMemberByUserId(@Param("userId") String userId);
+
 }

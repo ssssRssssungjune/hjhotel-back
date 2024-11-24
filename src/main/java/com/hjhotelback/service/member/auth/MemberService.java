@@ -9,6 +9,8 @@ import com.hjhotelback.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class MemberService {
 
@@ -47,4 +49,13 @@ public class MemberService {
         String token = jwtTokenProvider.generateToken(loginRequest.getUserId());
         return new JwtResponseDto(token, loginRequest.getUserId());
     }
+
+    public Map<String, String> getUserInfo(String userId) {
+        // Mapper 호출 결과가 null인 경우 빈 Map 반환
+        Map<String, String> userInfo = memberMapper.findMemberByUserId(userId);
+        return userInfo != null ? userInfo : Map.of(); // 빈 Map 반환
+    }
 }
+
+
+
