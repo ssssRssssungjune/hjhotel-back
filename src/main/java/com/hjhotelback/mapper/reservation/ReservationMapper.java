@@ -12,13 +12,13 @@ import com.hjhotelback.dto.reservation.ResReservation;
 public interface ReservationMapper {
 
     //관리자 예약 목록 조회
-    public List<ResReservation.List> getReservationList();
+    public List<ResReservation.Detail> getReservationList();
     
     //사용자/관리자 예약 상세 조회
     public ResReservation.Detail getReservationById(int reservationId);
     
     //사용자 예약 생성
-    public ResReservation.Detail createReservation(int memberId, int roomId, Timestamp checkIn , Timestamp checkOut, int totalAmount);
+    public void createReservation(int memberId, int roomId, Timestamp checkIn , Timestamp checkOut, int totalAmount);
     
     //사용자 예약 날짜 변경
     public void changeReservationDateForUser(int reservationId, int memberId, Timestamp checkIn, Timestamp checkOut);

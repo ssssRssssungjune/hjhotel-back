@@ -29,8 +29,21 @@
     </select>
 
     <!-- 사용자 예약 생성 -->
-    <insert id="createReservation">
-        INSERT INTO reservation (member_id, room_id, check_in, check_out, status, total_amount) VALUES (#{memberId}, #{roomId}, #{checkIn}, #{checkOut}, 'PENDING', #{totalAmount});
+    <insert id="createReservation" parameterType="com.hjhotelback.dto.reservation.ReqReservation$Create">
+        INSERT INTO reservation (member_id, room_id, check_in, check_out, total_amount) 
+        VALUES (#{memberId}, #{roomId}, #{checkIn}, #{checkOut}, #{totalAmount})
+
+        INSERT INTO reservations (user_id, room_id, checkin, checkout)
+        SELECT #{userId}, #{roomId}, #{checkin}, #{checkout}, #{totalAmount})
+        FROM dual
+        WHERE 
+            EXISTS (SELECT 1 FROM users WHERE id = #{userId})
+            AND EXISTS (SELECT 1 FROM rooms WHERE id = #{roomId})
+            AND NOT EXISTS (
+                SELECT 1 FROM reservations 
+                WHERE room_id = #{roomId} 
+                AND NOT (#{checkout} <= checkin OR #{checkin} >= checkout)
+            );
     </insert>
 
     <!-- 사용자 예약 날짜 변경 -->

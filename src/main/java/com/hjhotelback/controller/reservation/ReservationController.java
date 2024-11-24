@@ -2,6 +2,7 @@ package com.hjhotelback.controller.reservation;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class ReservationController {
     private final ReservationService _service;
 
     @PostMapping("/")
+    @Transactional
     public void POSTCreateReservation(@RequestBody ReqReservation.Create req){
         _service.createReservation(req);
     }
@@ -50,7 +52,7 @@ public class ReservationController {
     }
 
     @GetMapping("admin")
-    public List<ResReservation.List> GETReservationList(){
+    public List<ResReservation.Detail> GETReservationList(){
         return _service.getReservationList();
     }
 
