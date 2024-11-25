@@ -1,9 +1,0 @@
-package com.hjhotelback.dto.room;
-
-public class RoomTypeDto  {
-	private Integer roomTypeID
-	private
-	private
-	private
-
-}
