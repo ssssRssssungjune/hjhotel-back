@@ -28,7 +28,7 @@ public class MemberController {
         response.put("message", "회원가입이 완료되었습니다.");
         response.put("status", "success"); // 성공 여부
         response.put("redirectUrl", "/signupcom"); // 클라이언트가 이동해야 할 경로
-
+        response.put("userId", request.getUserId());
 
         return ResponseEntity.ok(response);
     }
