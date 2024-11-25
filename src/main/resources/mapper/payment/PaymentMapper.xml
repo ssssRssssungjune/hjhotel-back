@@ -19,7 +19,7 @@
 		FROM payment p
 		JOIN reservation rs ON p.reservation_id = rs.reservation_id
 		JOIN member m ON m.member_id = rs.member_id
-		ORDER BY p.created_at DESC;
+		ORDER BY p.payment_id DESC;
 	</select>
 	
 	<!-- 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회 -->
