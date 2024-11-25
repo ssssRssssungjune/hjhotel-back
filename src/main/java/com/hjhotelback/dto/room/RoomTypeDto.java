@@ -12,6 +12,6 @@ public class RoomTypeDto  {
 	private Integer baseOccupancy;
 	private Integer maxOccupancy;
 	private BigDecimal basePrice;
-	private Boolean inActive;
+	private Boolean isActive;
 
 }

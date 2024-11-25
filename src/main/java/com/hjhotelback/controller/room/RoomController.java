@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hjhotelback.dto.room.DetailRoomType;
 import com.hjhotelback.dto.room.RoomDto;
 
 import com.hjhotelback.dto.room.RoomStatus;
+import com.hjhotelback.dto.room.RoomTypeDto;
 import com.hjhotelback.service.room.RoomService;
 
 
@@ -29,32 +31,32 @@ public class RoomController {
 	@Autowired
 	private RoomService roomService;
 
-	// 24.11.21 진주 : 관리자페이지 리스트 불러오기
+	// 24.11.21 진주 : 관리자- 리스트 불러오기
 	
 	@GetMapping("")
 	public List<RoomDto> getAdminRooms(){
 		return roomService.getAdminRooms();	
 		}
 	
-	//24.11.22 진주: 관리자 페이지 층 객실 조회
+	//24.11.22 진주: 관리자- 층별 객실 조회
 		@GetMapping("/floor/{floor}")
 		public List<RoomDto> getFloor(@PathVariable("floor") Integer floor){
 			return roomService.getRoomFloor(floor);
 		}
 	
-	//24.11.22 진주: 관리자 페이지 상태별 객실 조회
+	//24.11.22 진주: 관리자- 상태조회
 	@GetMapping("/status/{status}")
 	public List<RoomDto> getStatus(@PathVariable("status") RoomStatus roomStatus){
 		return roomService.getStatus(roomStatus);
 	}
 	
-	// 24.11.22 진주 : 관리자페이지 객실 상세 조회 
+	// 24.11.22 진주 : 관리자- 객실 상세 조회 
 	@GetMapping("/details/{roomNumber}")
 	public List<RoomDto> getAdminDetail(@PathVariable("roomNumber") String roomNumber){
 		return roomService.getAdminDetail(roomNumber);	}
 	
 	
-	//24.11.22 진주 : 관리자 페이지 객실 상태 변경
+	//24.11.22 진주 : 관리자- 객실 상세 상태 변경
 	@PutMapping("/details/{roomNumber}/{status}")
 	public ResponseEntity<String> updateStatus(@PathVariable("roomNumber") String roomNumber,@PathVariable("status") String status){
 		RoomDto roomDto = new RoomDto();
@@ -71,7 +73,7 @@ public class RoomController {
 		return ResponseEntity.badRequest().body("Invalid room status:"+ status);
 	}
 	}
-	
+	// 24.11.23 진주 :관리자- 객실 삭제
 	@DeleteMapping("/{roomNumber}")
 	public ResponseEntity<Void> deleteRoom(@PathVariable("roomNumber") String roomNumber){
 		boolean isDeleted = roomService.deleteRoom(roomNumber);
@@ -82,7 +84,21 @@ public class RoomController {
 			// 24.11.23 진주 : 객실삭제 성공시 404 Not Found 반환
 			return ResponseEntity.notFound().build();
 		}
+		
 	}
+	// 24.11.23 진주 : 관리자- 타입조회
+	@GetMapping("/types")
+	public List<RoomTypeDto> getTypes(){
+		return roomService.getTypes();
+	}
+	
+	// 24.11.23 진주 : 관리자- 타입별 객실 조회 
+		@GetMapping("/types/{roomType}")
+		public List<DetailRoomType> getTypesRoom(@PathVariable("roomType")String roomType){
+			return roomService.getTypesRoom(roomType);
+		}
+	
+
 	
 	
 	

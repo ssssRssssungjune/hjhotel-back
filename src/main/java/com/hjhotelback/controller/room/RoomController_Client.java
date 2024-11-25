@@ -19,12 +19,9 @@ public class RoomController_Client {
 	@Autowired RoomService roomService;
 	
 	@GetMapping("")
-	public List<RoomDto> getRooms(){
+	public List<RoomDto_Client> getRooms(){
 		
-		return roomService.getRooms()
-				.stream()
-				.map(room -> new RoomDto(room.getRoomTypeId(),room.getRoomNumber(),room.getFloor(),room.getView()))
-				.collect(Collectors.toList());
+		return roomService.getRooms();
 				
 	}
 	

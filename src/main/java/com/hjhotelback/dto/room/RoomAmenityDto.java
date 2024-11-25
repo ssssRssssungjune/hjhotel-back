@@ -1,2 +1,14 @@
-// Placeholder content for RoomAmenityDto.java
-// This file is located in backend/src/main/java/com/hotel/dto/room/RoomAmenityDto.java
+package com.hjhotelback.dto.room;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class RoomAmenityDto {
+	private Integer amenityId;
+	private Integer roomTypeId;
+	private String name;
+	private String description;
+	private boolean isActive;
+}

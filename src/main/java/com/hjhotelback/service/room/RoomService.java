@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.hjhotelback.dto.room.DetailRoomType;
+import com.hjhotelback.dto.room.RoomAmenityDto;
 import com.hjhotelback.dto.room.RoomDto;
 import com.hjhotelback.dto.room.RoomDto_Client;
 import com.hjhotelback.dto.room.RoomStatus;
+import com.hjhotelback.dto.room.RoomTypeDto;
 import com.hjhotelback.mapper.room.RoomRepository;
 
 @Service
@@ -18,7 +21,7 @@ public class RoomService {
 	private RoomRepository roomRepository;
 //	======== 사용자 
 
-	public List<RoomDto> getRooms(){
+	public List<RoomDto_Client> getRooms(){
 		return roomRepository.AllRooms();
 	}
 	
@@ -47,5 +50,17 @@ public class RoomService {
 		int result = roomRepository.deleteRoom(roomNumber);
 		return result > 0 ; // 24.11.22 진주 : 객실삭제 성공 여부반환
 		
+	}
+// ======= 타입
+	public List<RoomTypeDto> getTypes(){
+		return roomRepository.allTypes();
+	}
+	
+	public List<DetailRoomType> getTypesRoom(String roomType){
+		return roomRepository.detailTypes(roomType);
+	}
+// ======= 어메니티 allAmenities
+	public List<RoomAmenityDto> getAmenities(){
+		return roomRepository.allAmenities();
 	}
 }

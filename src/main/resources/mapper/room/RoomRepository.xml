@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjhotelback.mapper.room.RoomRepository">
+	<!-- 사용자 -->    
+   	<select id="AllRooms" resultType="com.hjhotelback.dto.room.RoomDto_Client">
+           SELECT * FROM room ORDER BY room_number ASC, room_type_id ASC
+    </select>
+    
+    
+    <!-- 관리자 -->
+    
+    <!-- 24.11.21 진주 : 객실 리스트 조회 -->
+     <select id="adminAllRooms" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT * FROM room ORDER BY room_number ASC, room_type_id ASC
+    </select>
+    
+     <!-- 24.11.23 진주 : 객실 층 조회 -->
+     <select id="adminFloorRoom" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT * FROM room  WHERE floor = #{floor};
+    </select>
+    
+     <!-- 24.11.22 진주 : 객실 상세 조회  -->
+     <select id="adminDetailRoom" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT * FROM room  WHERE room_number = #{room_number}
+    </select>
+    
+    <!-- 24.11.21 진주 : 전체 객실 상태 조회 -->
+     <select id="allStatus" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT * FROM room WHERE status = #{roomStatus}
+    </select>
+    
+     <!-- 24.11.21 진주 : 객실 상태 변 -->
+     <update id="updateStatusRoom" parameterType="com.hjhotelback.dto.room.RoomDto">
+           UPDATE room SET status = #{status} WHERE room_number  = #{roomNumber}
+    </update> 
+    
+    <!-- 24.11.23 진주 : 객실 상태 삭제 -->
+    <delete id= "deleteRoom" parameterType="String">
+    DELETE FROM room WHERE room_number = #{roomNumber};
+    </delete>
+    
+    <!-- 24.11.25 진주 : 객실 타입 조회 -->
+    <select id="allTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto">
+           SELECT * FROM room_type
+    </select>
+    
+     
+    <!-- 24.11.25 진주 : 객실 타입별 객실 조회 -->
+    <select id="detailTypes" resultType="com.hjhotelback.dto.room.DetailRoomType">
+           SELECT r.room_number AS room_number,
+			r.floor AS floor,
+			r.status AS status,
+			r.view AS view,
+			rt.name AS room_type_name
+			FROM room r
+			JOIN room_type rt
+			ON r.room_type_id = rt.room_type_id 
+			WHERE rt.name =#{roomType}
+    </select>
+    
+  	 <!-- 24.11.25 진주 : 객실 어메니티 조회 -->
+    <select id="allAmenities" resultType="com.hjhotelback.dto.room.RoomAmenityDto">
+           SELECT * FROM room_amenity
+    </select>
+    
+    
+    
+</mapper>
