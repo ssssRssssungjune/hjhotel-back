@@ -30,10 +30,7 @@
 
     <!-- 사용자 예약 생성 -->
     <insert id="createReservation" parameterType="com.hjhotelback.dto.reservation.ReqReservation$Create">
-        INSERT INTO reservation (member_id, room_id, check_in, check_out, total_amount) 
-        VALUES (#{memberId}, #{roomId}, #{checkIn}, #{checkOut}, #{totalAmount})
-
-        INSERT INTO reservations (user_id, room_id, checkin, checkout)
+        INSERT INTO reservations (user_id, room_id, checkin, checkout, total_amount)
         SELECT #{userId}, #{roomId}, #{checkin}, #{checkout}, #{totalAmount})
         FROM dual
         WHERE 
