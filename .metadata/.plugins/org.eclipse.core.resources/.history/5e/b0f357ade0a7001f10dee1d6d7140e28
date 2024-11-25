@@ -1,0 +1,21 @@
+package com.hjhotelback.dto.room;
+import java.security.Timestamp;
+import java.sql.Date;
+
+import lombok.Data;
+
+@Data
+public class RoomDto{
+	private Integer roomId;
+	private Integer roomTypeId;
+	private String roomNumber;
+	private Integer floor;
+	private Date createdAt;
+	private Enum status{
+		   AVAILABLE,  // 방이 사용 가능
+		    OCCUPIED,   // 방이 예약됨
+		    MAINTENANCE // 방이 점검 중
+	} ;
+	private String view;	
+	
+}

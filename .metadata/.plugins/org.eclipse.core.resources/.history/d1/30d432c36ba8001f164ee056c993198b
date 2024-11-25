@@ -1,0 +1,18 @@
+package com.hjhotelback.mapper.room;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.hjhotelback.dto.room.RoomDto;
+import com.hjhotelback.dto.room.RoomDto_Client;
+import com.hjhotelback.dto.room.RoomStatus;
+
+@Mapper
+public interface RoomRepository {
+	 List<RoomDto_Client>AllRooms();
+	 List<RoomDto>AllAdminRooms();
+	 List<RoomDto>AllStatus(RoomStatus roomStatus);
+	 List<RoomDto>DetailRoom(String roomNumber);
+	 List<RoomDto>StatusRoom(String roomNumber, RoomStatus roomStatus);
+}

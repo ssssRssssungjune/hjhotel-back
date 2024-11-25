@@ -1,0 +1,21 @@
+package com.hjhotelback.dto.room;
+import java.sql.Date;
+
+import lombok.Data;
+
+@Data
+public class RoomDto{
+	private Integer roomId;
+	private Integer roomTypeId;
+	private String roomNumber;
+	private Integer floor;
+	private Date createdAt;
+	private enum status;
+	private String view;	
+	
+}
+public enum RoomStatus{
+    AVAILABLE, 
+    OCCUPIED,   
+    MAINTENANCE
+}

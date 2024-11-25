@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Room List</title>
+</head>
+<body>
+    <h1>Admin Room List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Floor</th>
+                <th>Status</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Thymeleaf로 데이터 출력 -->
+            <tr th:each="room : ${rooms}">
+                <td th:text="${room.roomNumber}"></td>
+                <td th:text="${room.floor}"></td>
+                <td th:text="${room.status}"></td>
+                <td th:text="${room.view}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,5 @@
+package com.hjhotelback.dto.room;
+
+public class RoomDto_client {
+
+}
