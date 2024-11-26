@@ -103,4 +103,20 @@
 	<select id="getPaymentByIdStatus" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		SELECT * FROM payment;
 	</select>
+	
+	<!-- 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전) -->
+	<select id="getReservationPaymentList" parameterType="com.hjhotelback.dto.payment.PaymentReservationListDTO">
+		SELECT
+			r.reservation_id,
+			rt.name AS room_name, 
+			r.check_in,
+			r.check_out,
+			rt.base_occupancy,
+			rt.max_occupancy,
+			r.total_amount
+		FROM reservation r
+		JOIN room rm ON rm.room_id = r.room_id
+		JOIN room_type rt ON rt.room_type_id = rm.room_type_id
+		WHERE r.reservation_id = 1;
+	</select>
 </mapper>

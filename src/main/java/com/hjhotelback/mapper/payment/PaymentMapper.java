@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
+import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 
 @Mapper
 public interface PaymentMapper {
@@ -32,4 +33,7 @@ public interface PaymentMapper {
 	
 	// 24.11.23 지은 [완료] : 결제 내역 - payment DB 속성 전체 가져오기
 	PaymentDTO getPaymentByIdStatus(@Param("paymentId") Integer paymentId);
+	
+	// 예약내역결제조회 (결제 전)
+	PaymentReservationListDTO getReservationPaymentList();
 }

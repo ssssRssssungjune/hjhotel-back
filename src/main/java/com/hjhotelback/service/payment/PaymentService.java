@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
+import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 
 @Service
@@ -50,4 +51,9 @@ public class PaymentService {
         return false;
 	}
 
+	
+	// 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)
+	public PaymentReservationListDTO getReservationPaymentList() {
+		return paymentMapper.getReservationPaymentList();
+	};
 }
