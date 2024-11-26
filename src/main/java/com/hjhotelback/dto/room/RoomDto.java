@@ -14,11 +14,6 @@ public class RoomDto{
 	private Date createdAt;
 	private RoomStatus status;
 	private String view;	
+	private String imagePath;
 	
-	public RoomDto(Integer roomTypeId, String roomNumber, Integer floor, String view) {
-	    this.roomTypeId = roomTypeId;
-	    this.roomNumber = roomNumber;
-	    this.floor = floor;
-	    this.view = view;
-	}
 }

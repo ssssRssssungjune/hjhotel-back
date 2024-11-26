@@ -8,6 +8,7 @@ public class RoomDto_Client {
 	
 	private String roomNumber;
 	private Integer floor;
-	private String view;	
+	private String view;
+	private String imagePath;
 	
 }

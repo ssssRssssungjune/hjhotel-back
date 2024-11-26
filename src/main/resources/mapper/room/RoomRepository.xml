@@ -29,7 +29,7 @@
            SELECT * FROM room WHERE status = #{roomStatus}
     </select>
     
-     <!-- 24.11.21 진주 : 객실 상태 변 -->
+     <!-- 24.11.21 진주 : 객실 상태 변경 -->
      <update id="updateStatusRoom" parameterType="com.hjhotelback.dto.room.RoomDto">
            UPDATE room SET status = #{status} WHERE room_number  = #{roomNumber}
     </update> 
@@ -58,11 +58,36 @@
 			WHERE rt.name =#{roomType}
     </select>
     
-  	 <!-- 24.11.25 진주 : 객실 어메니티 조회 -->
-    <select id="allAmenities" resultType="com.hjhotelback.dto.room.RoomAmenityDto">
-           SELECT * FROM room_amenity
+  	 <!-- 24.11.26 진주 : 타입 어메니티 조회 -->
+    <select id= "typeAmenities" resultType="com.hjhotelback.dto.room.RoomAmenityDto">
+           SELECT 
+           rt.name AS room_type_name,
+           ra.name AS amenity_name,
+           ra.description AS amenity_description,
+           ra.is_active AS amenity_active
+           FROM
+           room_type rt
+           JOIN
+           room_amenity ra
+           ON rt.room_type_id = ra.room_type_id
+           WHERE
+           rt.name = #{TypeName};
     </select>
     
+      <!-- 24.11.26 진주 : amenity 삭제 -->
+    <delete id= "deleteAmenity" parameterType="String">
+    DELETE FROM room_amenity WHERE name = #{name};
+    </delete>
+    
+     <!-- 24.11.26 진주 : 객실 amenity 활성화(isActive) 변경 
+     <update id="updateStatusRoom" >
+           	UPDATE room_amenity  ra
+			JOIN room_type rt
+			ON ra.room_type_id = rt.room_type_id 
+			SET ra.is_active = #{isActive}
+			WHERE rt.name = #{roomTypeName} AND ra.name = #{amenity};
+    </update> 
+    -->
     
     
 </mapper>

@@ -86,13 +86,13 @@ public class RoomController {
 		}
 		
 	}
-	// 24.11.23 진주 : 관리자- 타입조회
+	// 24.11.25 진주 : 관리자- 타입조회
 	@GetMapping("/types")
 	public List<RoomTypeDto> getTypes(){
 		return roomService.getTypes();
 	}
 	
-	// 24.11.23 진주 : 관리자- 타입별 객실 조회 
+	// 24.11.25 진주 : 관리자- 타입별 객실 조회 
 		@GetMapping("/types/{roomType}")
 		public List<DetailRoomType> getTypesRoom(@PathVariable("roomType")String roomType){
 			return roomService.getTypesRoom(roomType);

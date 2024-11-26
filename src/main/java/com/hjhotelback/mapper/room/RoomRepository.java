@@ -26,6 +26,7 @@ public interface RoomRepository {
 	 int deleteRoom(String roomNumber);
 	 List<RoomTypeDto> allTypes();
 	 List<DetailRoomType> detailTypes(String roomType);
-	 List<RoomAmenityDto> allAmenities();
-
+	 List<RoomAmenityDto> typeAmenities(String TypeName);
+	 int deleteAmenity(String name);
+	// ResponseEntity<String>updateAmenityByType(String roomTypeName,String amenity,boolean isActive);
 }

@@ -60,7 +60,19 @@ public class RoomService {
 		return roomRepository.detailTypes(roomType);
 	}
 // ======= 어메니티 allAmenities
-	public List<RoomAmenityDto> getAmenities(){
-		return roomRepository.allAmenities();
+	public List<RoomAmenityDto> getAmenity(String TypeName){
+		return roomRepository.typeAmenities(TypeName);
 	}
+	
+	public boolean deleteAmenity(String name) {
+		int result = roomRepository.deleteAmenity(name);
+		return result > 0 ;
+	}
+//	public boolean updateAmenity(String roomTypeName,String amenity,boolean isActive) {
+//		int rowUpdated = roomRepository.updateAmenityByType(roomTypeName,amenity,isActive);
+//	return rowUpdated > 0;
+	//업데이트 - 1로ㅅ 생성
+//	}
+	
+	
 }

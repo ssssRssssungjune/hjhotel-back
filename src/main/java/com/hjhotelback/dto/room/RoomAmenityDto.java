@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RoomAmenityDto {
-	private Integer amenityId;
-	private Integer roomTypeId;
-	private String name;
-	private String description;
-	private boolean isActive;
+	private String roomTypeName;
+	private String amenityName;
+	private String amenitydescription;
+	private boolean amenityActive;
 }
