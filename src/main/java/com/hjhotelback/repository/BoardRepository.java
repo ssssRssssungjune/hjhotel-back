@@ -50,7 +50,6 @@ public class BoardRepository {
         String sql = "SELECT * FROM board WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new BoardRowMapper(), id);
     }
-
     /**
      * 게시글 수정
      * @param board 수정할 게시글 데이터

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>사용자 게시판 목록</title>
+<link rel ="stylesheet" href = "/css/styles.css">
+</head>
+<body>
+ <h1>사용자 게시판</h1>
+ <table>
+ 	<thead>
+ 		<tr>
+ 			<th> 번호 </th>
+	 		<th> 제목 </th>
+	 		<th> 작성자 </th>
+ 			<th> 작성 날자</th>
+ 		</tr>	
+ 	</thead>
+ 	<tbody>
+ 		<tr th:each="board : ${boards}>
+ 			<td th:text= "${board.id}></td>
+ 			<td>
+ 				<a th:href = "@{/user/boards/{id}(id=${board.id})}" th:text ="${board.title}"></a></tbody>
+ 			</td>
+ 				<td th:text="${board.author}"></td>
+ 				<td th:text="$[board.createdAt]"></td>	
+ 		</tr>
+ 	</tbody>
+ 	<!-- 글작성 버튼 -->
+ 	<button onclick = "location.href='/user/boards/creste'">글 작성 </button>
+ 	<!-- 페이징 -->
+ 	<div class ="pagination">
+ 		<a href = "#' th:if = "${page > 1} th:href = "@{/user/boards?page = ${page -1}}>이전</a>
+ 		<span>페이지 <span th:text="${page}"></span></span>
+ 		<a href ="#" th:if ="${boards.size()==size}" th:href="@{/user/boards?page=${page +1}}">다음</a>
+ 		</div>
+ </table>
+</body>
+</html>

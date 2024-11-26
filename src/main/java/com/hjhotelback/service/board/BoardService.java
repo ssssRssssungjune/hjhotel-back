@@ -72,6 +72,5 @@ import com.hjhotelback.repository.BoardRepository;
 
     public List<BoardDTO> searchBoards(String keyword, int page,int size){
     	int offset = (page -1) *size;
-        return boardRepository.search(keyword,offset, size);키워드로 게시글 검색
-}
+        return boardRepository.search(keyword,offset, size);
 }

@@ -9,7 +9,7 @@ import com.hjhotelback.dto.board.BoardDTO;
  * BoardRowMapper는 SQL결과 (Resultset)를 BoardDTO객체로 매핑합니다
  * 데이터베이스의 각 행(ROW)DMF BoardDTO로 변환 합니다
  */
-public class BoardMapper implements RoWMapper<BoardDTO> {
+public class BoardRowMapper implements RoWMapper<BoardDTO> {
 	
 	@Override
 
