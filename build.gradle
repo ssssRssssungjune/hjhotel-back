@@ -37,6 +37,9 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    
+    // PayPal SDK 의존성
+    implementation group: 'com.paypal.sdk', name: 'paypal-server-sdk', version: '0.5.1'
 }
 
 tasks.named('test') {
