@@ -2,12 +2,15 @@ package com.hjhotelback.dto.reservation;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 public class ReqReservation {
     
     //24.11.21 한택 [변수이름]
     //sql colName / member_id, room_id, check_in, check_out, total_amount
     //java varName / memberId, roomId, checkIn, checkOut, totalAmount
-    public class Create{
+    public static class Create{
         public int memberId;
         public int roomId;
         public Timestamp checkIn;
@@ -15,8 +18,33 @@ public class ReqReservation {
         public int totalAmount;
     }
 
-    //0 : PENDING , 1 : CONFIRMED , 2 : CANCELLED , 3 : COMPLETED
-    public class Modify{
-        public int itype;
+    public static class Delete{
+        public int reservationId;
+        public ReservationStatus status;
     }
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+    @JsonSubTypes({
+        @JsonSubTypes.Type(value = UpdateDate.class, name = "UpdateDate"),
+        @JsonSubTypes.Type(value = UpdateState.class, name = "UpdateState"),
+        @JsonSubTypes.Type(value = UpdateRoom.class, name = "UpdateRoom")
+    })
+    public interface Update{ }
+
+    public static class UpdateDate implements Update{
+        public int reservationId;
+        public Timestamp checkIn;
+        public Timestamp checkOut;
+    }
+
+    public static class UpdateState implements Update{
+        public int reservationId;
+        public ReservationStatus status;
+    }
+
+    public static class UpdateRoom implements Update{
+        public int reservationId;
+        public int roomId;
+    }
+
 }

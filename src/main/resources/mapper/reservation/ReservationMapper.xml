@@ -8,7 +8,7 @@
    
      <!-- 관리자 예약목록 조회 -->
     <select id="getReservationList" resultType="com.hjhotelback.dto.reservation.ResReservation$Detail">
-        select RS.reservation_id AS reservation_id, M.name AS user_name, RT.name AS room_type, RT.base_occupancy AS base_occupancy, 
+        select RS.reservation_id AS reservation_id, M.name AS member_name, RT.name AS room_type, RT.base_occupancy AS base_occupancy, 
             RT.max_occupancy AS max_occupancy, R.room_number AS room_number, RS.check_in AS check_in, RS.check_out AS check_out, 
             RS.status AS status, RS.total_amount AS total_amount 
         FROM reservation as RS 
@@ -18,11 +18,11 @@
     </select>
 
     <!-- 사용자/관리자 예약상세 조회 -->
-    <select id="getReservationById" resultType="com.hjhotelback.dto.reservation.ResReservation$Detail">
-        select RS.reservation_id AS reservation_id, M.name AS user_name, RT.name AS room_type, RT.base_occupancy AS base_occupancy, 
+    <select id="getReservationById" resultType="com.hjhotelback.dto.reservation.ResReservation$Detail" parameterType="int">
+        select RS.reservation_id AS reservation_id, M.name AS member_name, RT.name AS room_type, RT.base_occupancy AS base_occupancy, 
             RT.max_occupancy AS max_occupancy, R.room_number AS room_number, RS.check_in AS check_in, RS.check_out AS check_out, 
             RS.status AS status, RS.total_amount AS total_amount 
-        FROM (SELECT * from reservation where reservation_id=#{reservaionId}) as RS 
+        FROM (SELECT * from reservation where reservation_id=#{reservationId}) as RS 
         JOIN member AS M ON RS.member_id=M.member_id
         JOIN room AS R ON RS.room_id=R.room_id
         JOIN room_type AS RT ON R.room_type_id = RT.room_type_id;
@@ -30,43 +30,34 @@
 
     <!-- 사용자 예약 생성 -->
     <insert id="createReservation" parameterType="com.hjhotelback.dto.reservation.ReqReservation$Create">
-        INSERT INTO reservations (user_id, room_id, checkin, checkout, total_amount)
-        SELECT #{userId}, #{roomId}, #{checkin}, #{checkout}, #{totalAmount})
-        FROM dual
-        WHERE 
-            EXISTS (SELECT 1 FROM users WHERE id = #{userId})
-            AND EXISTS (SELECT 1 FROM rooms WHERE id = #{roomId})
-            AND NOT EXISTS (
-                SELECT 1 FROM reservations 
-                WHERE room_id = #{roomId} 
-                AND NOT (#{checkout} <= checkin OR #{checkin} >= checkout)
-            );
+        INSERT INTO reservation (member_id, room_id, check_in, check_out, total_amount)
+        SELECT #{memberId}, #{roomId}, #{checkIn}, #{checkOut}, #{totalAmount}
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM reservation 
+            WHERE room_id = #{roomId} 
+            AND NOT (#{checkOut} &lt;= check_in OR #{checkIn} &gt;= check_out)
+        );
     </insert>
 
-    <!-- 사용자 예약 날짜 변경 -->
-    <update id="changeReservationDateForUser">
-        UPDATE reservation SET check_in = #{checkIn}, check_out = #{checkOut} 
-        WHERE reservation_id = #{reservationId} AND member_id = #{memberId};
-    </update>
-
-    <!-- 관리자 예약 날짜 변경 -->
-    <update id="changeReservationDateForAdmin">
+    <!-- 사용자/관리자 예약 날짜 변경 -->
+    <update id="updateReservationDate" parameterType="com.hjhotelback.dto.reservation.ReqReservation$UpdateDate">
         UPDATE reservation SET check_in = #{checkIn}, check_out = #{checkOut} WHERE reservation_id = #{reservationId}; 
     </update>
 
     <!-- 관리자 예약 객실 변경 -->
-    <update id="changeReservationRoomById">
+    <update id="updateReservationRoom" parameterType="com.hjhotelback.dto.reservation.ReqReservation$UpdateRoom">
         UPDATE reservation SET room_id = #{roomId} WHERE reservation_id = #{reservationId};
     </update>
 
     <!-- 관리자 예약 상태 변경 24.11.21 한택 [보류]-{CANCELLED도 포함}-->
-    <update id="changeReservationStatusById">
-        UPDATE reservation SET status = #{status} WHERE reservation_id = #{reservationId} AND status != 'COMPLETED';
+    <update id="updateReservationState" parameterType="com.hjhotelback.dto.reservation.ReqReservation$UpdateState">
+        UPDATE reservation SET status = #{status} WHERE reservation_id = #{reservationId};
     </update>
 
     <!-- 사용자 예약 취소 status==PENDING 일때 -->
-   <delete id="deleteReservationById"> 
-        DELETE FROM reservation WHERE reservation_id = #{reservationId} AND status = 'PENDING' 
+   <delete id="deleteReservation" parameterType="com.hjhotelback.dto.reservation.ReqReservation$Delete">
+        DELETE FROM reservation WHERE reservation_id = #{reservationId} AND status = 'PENDING'
    </delete> 
 
 </mapper>

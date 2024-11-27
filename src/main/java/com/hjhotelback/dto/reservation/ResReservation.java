@@ -10,7 +10,7 @@ public class ResReservation {
     //java varName / reservationId, userName, roomType, baseOccupancy, maxOccupancy, roomNumber, checkIn, checkOut, status, totalAmount
     public static class Detail{
         public int reservationId;
-        public String userName;
+        public String memberName;
         public String roomType;
         public int baseOccupancy;
         public int maxOccupancy;
