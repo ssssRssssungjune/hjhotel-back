@@ -20,7 +20,6 @@ public class ReqReservation {
 
     public static class Delete{
         public int reservationId;
-        public ReservationStatus status;
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
