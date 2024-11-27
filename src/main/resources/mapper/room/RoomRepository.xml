@@ -1,61 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.room.RoomRepository">
+	
 	<!-- 사용자 -->    
-   	<select id="AllRooms" resultType="com.hjhotelback.dto.room.RoomDto_Client">
-           SELECT * FROM room ORDER BY room_number ASC, room_type_id ASC
+   	<select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
+           SELECT * FROM room_type ORDER BY room_type_id ASC
     </select>
     
+    	<select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
+        	 SELECT 
+				    rt.name AS room_type_name,
+				    rt.description AS room_type_description,
+				    rt.base_occupancy,
+				    rt.max_occupancy,
+				    rt.base_price,
+				    rt.image_path,
+				    ra.name AS amenity_name
+				FROM 
+				    room_type rt
+				LEFT JOIN 
+				    room_amenity ra
+				ON 
+				    rt.room_type_id = ra.room_type_id
+				WHERE 
+				    rt.name = #{roomTypeName}
+				ORDER BY 
+				    rt.room_type_id, ra.amenity_id;
+
+      </select>
+  
     
     <!-- 관리자 -->
     
-    <!-- 24.11.21 진주 : 객실 리스트 조회 -->
-     <select id="adminAllRooms" resultType="com.hjhotelback.dto.room.RoomDto">
-           SELECT * FROM room ORDER BY room_number ASC, room_type_id ASC
+    <!-- 24.11.21 진주 : 객실 예약날짜,예약상태로 조회 -->
+     <select id="adminresRooms" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT 
+			    r.room_id AS 객실id, 
+    			rt.name AS 객실타입이름,
+			    r.room_number AS 객실호수, 
+			    r.floor AS 층수, 
+			    r.status AS 객실상태,
+			    r.view AS 뷰
+			FROM room r
+			JOIN reservation res ON r.room_id = res.room_id
+			JOIN room_type rt ON rt.room_type_id = r.room_type_id
+			WHERE res.status = #{resStatus}
+			  AND DATE(res.check_in) = DATE(#{date});
     </select>
     
-     <!-- 24.11.23 진주 : 객실 층 조회 -->
-     <select id="adminFloorRoom" resultType="com.hjhotelback.dto.room.RoomDto">
-           SELECT * FROM room  WHERE floor = #{floor};
+    <!-- 24.11.21 진주 : 객실 예약날짜로 전체 조회 -->
+     <select id="AllRoomsDate" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT 
+			    r.room_id AS 객실id, 
+    			rt.name AS 객실타입이름,
+			    r.room_number AS 객실호수, 
+			    r.floor AS 층수, 
+			    r.status AS 객실상태,
+			    r.view AS 뷰
+			FROM room r
+			JOIN reservation res ON r.room_id = res.room_id
+			JOIN room_type rt ON rt.room_type_id = r.room_type_id
+			 WHERE DATE(res.check_in) = #{date};
     </select>
     
-     <!-- 24.11.22 진주 : 객실 상세 조회  -->
-     <select id="adminDetailRoom" resultType="com.hjhotelback.dto.room.RoomDto">
-           SELECT * FROM room  WHERE room_number = #{room_number}
-    </select>
-    
-    <!-- 24.11.21 진주 : 전체 객실 상태 조회 -->
-     <select id="allStatus" resultType="com.hjhotelback.dto.room.RoomDto">
-           SELECT * FROM room WHERE status = #{roomStatus}
-    </select>
     
      <!-- 24.11.21 진주 : 객실 상태 변경 -->
-     <update id="updateStatusRoom" parameterType="com.hjhotelback.dto.room.RoomDto">
+     <update id="updateStatusRoom">
            UPDATE room SET status = #{status} WHERE room_number  = #{roomNumber}
     </update> 
     
-    <!-- 24.11.23 진주 : 객실 상태 삭제 -->
-    <delete id= "deleteRoom" parameterType="String">
-    DELETE FROM room WHERE room_number = #{roomNumber};
-    </delete>
-    
-    <!-- 24.11.25 진주 : 객실 타입 조회 -->
-    <select id="allTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto">
-           SELECT * FROM room_type
-    </select>
     
      
-    <!-- 24.11.25 진주 : 객실 타입별 객실 조회 -->
-    <select id="detailTypes" resultType="com.hjhotelback.dto.room.DetailRoomType">
-           SELECT r.room_number AS room_number,
-			r.floor AS floor,
-			r.status AS status,
-			r.view AS view,
-			rt.name AS room_type_name
-			FROM room r
-			JOIN room_type rt
-			ON r.room_type_id = rt.room_type_id 
-			WHERE rt.name =#{roomType}
+    <!-- 24.11.25 진주 : 객실 전체 타입 조회 -->
+   <select id="allTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto">
+         SELECT  * from room_type ORDER BY room_type_id ASC
     </select>
     
   	 <!-- 24.11.26 진주 : 타입 어메니티 조회 -->
@@ -74,20 +92,25 @@
            rt.name = #{TypeName};
     </select>
     
-      <!-- 24.11.26 진주 : amenity 삭제 -->
-    <delete id= "deleteAmenity" parameterType="String">
-    DELETE FROM room_amenity WHERE name = #{name};
-    </delete>
     
-     <!-- 24.11.26 진주 : 객실 amenity 활성화(isActive) 변경 
-     <update id="updateStatusRoom" >
-           	UPDATE room_amenity  ra
-			JOIN room_type rt
-			ON ra.room_type_id = rt.room_type_id 
-			SET ra.is_active = #{isActive}
-			WHERE rt.name = #{roomTypeName} AND ra.name = #{amenity};
+     <!-- 24.11.26 진주 : 객실 amenity 활성화(isActive) 변경 -->
+     <update id="updateAmenity" >
+		UPDATE 
+		    room_amenity ra
+		JOIN 
+		    room_type rt
+		ON 
+		    ra.room_type_id = rt.room_type_id
+		SET 
+		    ra.is_active = CASE 
+		        WHEN ra.is_active = 1 THEN 0
+		        ELSE 1
+		    END
+		WHERE 
+		    rt.name = #{TypeName}
+		    AND ra.name = #{Amenity};
     </update> 
-    -->
+    
     
     
 </mapper>

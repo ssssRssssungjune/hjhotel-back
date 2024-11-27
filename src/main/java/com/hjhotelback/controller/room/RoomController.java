@@ -1,8 +1,11 @@
 package com.hjhotelback.controller.room;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hjhotelback.dto.room.DetailRoomType;
+import com.hjhotelback.dto.room.RoomAmenityDto;
+import com.hjhotelback.dto.room.TypeDetailDto_Client;
 import com.hjhotelback.dto.room.RoomDto;
 
 import com.hjhotelback.dto.room.RoomStatus;
@@ -31,32 +35,27 @@ public class RoomController {
 	@Autowired
 	private RoomService roomService;
 
-	// 24.11.21 진주 : 관리자- 리스트 불러오기
+	// 24.11.27 진주 : 관리자- 날짜,상태로 객실 리스트 불러오기
 	
 	@GetMapping("")
-	public List<RoomDto> getAdminRooms(){
-		return roomService.getAdminRooms();	
+	public List<RoomDto> getAdminRooms(@RequestParam("date") @DateTimeFormat(iso =DateTimeFormat.ISO.DATE_TIME) LocalDate date,@RequestParam("resStatus")String resStatus){
+		return roomService.getAdminRooms(date,resStatus);	
+		}
+//	@GetMapping
+//	public String test(
+//			@RequestParam("date")String date,@RequestParam("resStatus")String resStatus) {
+//		return "test"+ date + resStatus;
+//	}
+	
+	// 24.11.27 진주 : 관리자- 날짜로 객실 리스트 불러오기
+	
+	@GetMapping("/{date}")
+	public List<RoomDto> getAllDateRooms(@PathVariable("date")LocalDateTime date){
+		return roomService.getAllDateRooms(date);	
 		}
 	
-	//24.11.22 진주: 관리자- 층별 객실 조회
-		@GetMapping("/floor/{floor}")
-		public List<RoomDto> getFloor(@PathVariable("floor") Integer floor){
-			return roomService.getRoomFloor(floor);
-		}
 	
-	//24.11.22 진주: 관리자- 상태조회
-	@GetMapping("/status/{status}")
-	public List<RoomDto> getStatus(@PathVariable("status") RoomStatus roomStatus){
-		return roomService.getStatus(roomStatus);
-	}
-	
-	// 24.11.22 진주 : 관리자- 객실 상세 조회 
-	@GetMapping("/details/{roomNumber}")
-	public List<RoomDto> getAdminDetail(@PathVariable("roomNumber") String roomNumber){
-		return roomService.getAdminDetail(roomNumber);	}
-	
-	
-	//24.11.22 진주 : 관리자- 객실 상세 상태 변경
+	//24.11.22 진주 : 관리자- 객실 상태 변경
 	@PutMapping("/details/{roomNumber}/{status}")
 	public ResponseEntity<String> updateStatus(@PathVariable("roomNumber") String roomNumber,@PathVariable("status") String status){
 		RoomDto roomDto = new RoomDto();
@@ -73,30 +72,30 @@ public class RoomController {
 		return ResponseEntity.badRequest().body("Invalid room status:"+ status);
 	}
 	}
-	// 24.11.23 진주 :관리자- 객실 삭제
-	@DeleteMapping("/{roomNumber}")
-	public ResponseEntity<Void> deleteRoom(@PathVariable("roomNumber") String roomNumber){
-		boolean isDeleted = roomService.deleteRoom(roomNumber);
-		if(isDeleted) {
-			// 24.11.23 진주 : 객실삭제 성공시 204 No contetnt 반환
-			return ResponseEntity.noContent().build();
-		}else {
-			// 24.11.23 진주 : 객실삭제 성공시 404 Not Found 반환
-			return ResponseEntity.notFound().build();
-		}
-		
-	}
 	// 24.11.25 진주 : 관리자- 타입조회
 	@GetMapping("/types")
 	public List<RoomTypeDto> getTypes(){
 		return roomService.getTypes();
 	}
 	
-	// 24.11.25 진주 : 관리자- 타입별 객실 조회 
-		@GetMapping("/types/{roomType}")
-		public List<DetailRoomType> getTypesRoom(@PathVariable("roomType")String roomType){
-			return roomService.getTypesRoom(roomType);
+	// 24.11.25 진주 : 관리자- 타입별 상세(+해당 타입 어메니티) 조회 - 
+		@GetMapping("/types/{TypeName}")
+		public List<RoomAmenityDto> getTypesRoom(@PathVariable("TypeName")String TypeName){
+			return roomService.getAmenity(TypeName);
 		}
+	// 24.11.27 진주 : 관리자 - amenity 항목 사용여부(isActive)변경
+//		@PutMapping("/{roomTypeName}/{amenity}")
+//		public RequestEntity<String> updateAmenities(@PathVariable("roomTypeName") String roomTypeName,@PathVariable("amenity") String amenity,@RequestBody boolean isActive){
+//			
+//			boolean isUpdated = roomService.updateAmenity(roomTypeName,amenity,isActive);
+//			
+//			if(isUpdated) {
+//				return ResponseEntity.ok("Amenity status updated successfully.");
+//			}else {
+//				return ResponseEntity.notFound().body("Room type or amenity not found");
+//			}
+//		}
+//	
 	
 
 	

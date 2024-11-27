@@ -8,12 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoomDto{
 	private Integer roomId;
-	private Integer roomTypeId;
+	private String name;
 	private String roomNumber;
 	private Integer floor;
-	private Date createdAt;
 	private RoomStatus status;
 	private String view;	
-	private String imagePath;
+	
 	
 }

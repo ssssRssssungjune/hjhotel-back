@@ -3,16 +3,17 @@ package com.hjhotelback.dto.room;
 import java.math.BigDecimal;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class RoomTypeDto  {
-	private Integer roomTypeId;
-	private String name;
-	private String description;
+@NoArgsConstructor
+public class TypeDetailDto_Client {
+	private String roomTypeName;
+	private String roomTypeDescription;
 	private Integer baseOccupancy;
 	private Integer maxOccupancy;
 	private BigDecimal basePrice;
-	private Boolean isActive;
+	private boolean isActive;
 	private String imagePath;
-
+	private String amenityName;
 }
