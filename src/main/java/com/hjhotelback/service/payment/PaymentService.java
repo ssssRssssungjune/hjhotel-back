@@ -11,12 +11,14 @@ import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
 import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.mapper.payment.PaymentMapper;
+import com.paypal.api.payments.Payment;
 
 @Service
 public class PaymentService {
 
 	@Autowired
 	private PaymentMapper paymentMapper;
+	
 	
 	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
 	public List<PaymentListDTO> getPaymentsList() {

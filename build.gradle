@@ -39,7 +39,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
     
     // PayPal SDK 의존성
-    implementation group: 'com.paypal.sdk', name: 'paypal-server-sdk', version: '0.5.1'
+    // PayPal SDK
+    implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
+    //implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
+    //implementation 'com.paypal:paypal-java-sdk:1.15.0'  // 최신 버전으로 업데이트하세요
+    //implementation 'com.paypal:paypal-checkout-sdk:1.0.0'  // 최신 버전으로 업데이트하세요
 }
 
 tasks.named('test') {

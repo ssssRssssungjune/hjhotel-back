@@ -15,6 +15,11 @@ import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 @Mapper
 public interface PaymentMapper {
 	
+    // 결제 정보 저장
+    void insertPayment(@Param("transactionId") String transactionId,
+                       @Param("amount") double amount,
+                       @Param("status") String status);
+	
 	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
 	List<PaymentListDTO> getPaymentsList();
 	

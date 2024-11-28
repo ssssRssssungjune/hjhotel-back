@@ -25,7 +25,10 @@ import com.hjhotelback.dto.payment.PaymentListDTO;
 import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
+import com.hjhotelback.service.payment.PayPalService;
 import com.hjhotelback.service.payment.PaymentService;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,12 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/payments")
 public class PaymentController {
 	
+	
 	@Autowired
 	private PaymentService paymentService;
 	
 	@Autowired
 	private PaymentMapper paymentMapper;
-
+	
 	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
 	@GetMapping
 	public List<PaymentListDTO> getPayments() {
