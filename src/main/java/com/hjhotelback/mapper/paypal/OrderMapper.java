@@ -15,8 +15,8 @@ import com.hjhotelback.dto.payment.Order;
 
 @Mapper
 public interface OrderMapper {
-    @Insert("INSERT INTO orders (paypal_order_id, status, product_id, amount, created_at ) " +
-            "VALUES (#{paypalOrderId}, #{status}, #{productId}, #{amount}, #{createdAt})")
+    @Insert("INSERT INTO orders (paypal_order_id, status, reservation_id, amount, created_at ) " +
+            "VALUES (#{paypalOrderId}, #{status}, #{reservationId}, #{amount}, #{createdAt})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Order order);
     
@@ -29,7 +29,7 @@ public interface OrderMapper {
     Order findByPaypalOrderId(String paypalOrderId);
     
     @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paypalOrderId}")
-    void updateStatus(@Param("paypalOrderId") String paypalOrderId,
+    void updateOrderStatus(@Param("paypalOrderId") String paypalOrderId,
                       @Param("status") String status);
 }
 

@@ -31,8 +31,8 @@ public class PaymentService {
 	}
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회
-	public PaymentDetailDTO getPaymentById(Integer paymentId) {
-		return paymentMapper.getPaymentById(paymentId);
+	public PaymentDetailDTO getPaymentCustomById(Integer paymentId) {
+		return paymentMapper.getPaymentCustomById(paymentId);
 	}
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
@@ -42,10 +42,10 @@ public class PaymentService {
 	}
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
-	public boolean updatePaymentStatus(PaymentDTO newPaymentDTO) {
+	public boolean updatePaymentStatusBasic(PaymentDTO newPaymentDTO) {
 
         if (newPaymentDTO != null) {
-            paymentMapper.updatePaymentStatus(newPaymentDTO);
+            paymentMapper.updatePaymentStatusBasic(newPaymentDTO);
             return true;
         }
 

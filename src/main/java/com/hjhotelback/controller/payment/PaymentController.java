@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/payments")
 public class PaymentController {
 	
-	
 	@Autowired
 	private PaymentService paymentService;
 	
@@ -53,7 +52,7 @@ public class PaymentController {
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회
 	@GetMapping("{paymentId}/details")
 	public PaymentDetailDTO getPaymentById(@PathVariable("paymentId") Integer paymentId) {
-		return paymentService.getPaymentById(paymentId);
+		return paymentService.getPaymentCustomById(paymentId);
 	}
 	
     // 24.11.21 지은 [완료] : 결제 내역 - 결제 내역 등록
@@ -103,7 +102,7 @@ public class PaymentController {
 	        newPaymentDTO.setPaymentStatus(newStatus);
 	        newPaymentDTO.setUpdatedAt(LocalDateTime.now());
 	        
-	        boolean isUpdated = paymentService.updatePaymentStatus(newPaymentDTO);
+	        boolean isUpdated = paymentService.updatePaymentStatusBasic(newPaymentDTO);
 	        
 	        log.info("test", isUpdated);
 	        

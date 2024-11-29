@@ -3,6 +3,7 @@ package com.hjhotelback.controller.payment;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,13 +33,16 @@ public class PayPalController {
     private final PaymentMapper paymentMapper;
 
     // 24.11.29 지은 [작업중] : 현재 Order DTO는 orders 테이블과 연결이 된 상태. payment 테이블로 다시 매핑 해야한다.
+    @Transactional
     @GetMapping("/checkout/{reservationId}")
     public String checkout(@PathVariable("reservationId") Integer reservationId) {
     	 try {
          	ReservationItem reservationItem = productMapper.findById(reservationId);
              if (reservationItem == null) {
-                 throw new RuntimeException("Product not found");
+                 throw new RuntimeException("Reservation not found");
              }
+             
+             // 주문서 생성
              Order order = new Order();
              order.setReservationId(reservationId);
              order.setAmount(reservationItem.getTotalAmount());
@@ -54,19 +58,22 @@ public class PayPalController {
              order.setPaypalOrderId(payment.getId());
              orderMapper.insert(order);
              
-             // 결제 내역에도 추가하기
+             // 결제 내역 생성
              PaymentDTO paymentDTO = new PaymentDTO();
              paymentDTO.setReservationId(reservationId);
              paymentDTO.setPaymentMethod("PAYPAL");
              paymentDTO.setPaymentStatus(PaymentStatus.PENDING);
              paymentDTO.setAmount(order.getAmount());
-             
+             paymentDTO.setTransactionId(null);
+             paymentMapper.createPayment(paymentDTO);
+
              return "redirect:" + payment.getLinks()
                      .stream()
                      .filter(link -> link.getRel().equals("approval_url"))
                      .findFirst()
                      .orElseThrow()
                      .getHref();
+             
          } catch (PayPalRESTException e) {
         	 // PayPal에서 반환된 오류 메시지를 로그로 출력
         	 System.err.println("Error during PayPal payment creation: " + e.getMessage());
@@ -74,7 +81,6 @@ public class PayPalController {
              return "error" + e.getMessage(); //사용자에게 오류 메시지를 반환
          }
     	
-
     }
     
     // 24.11.29 지은 [완료] : PayerId를 payerId로 변경
@@ -92,20 +98,47 @@ public class PayPalController {
             System.out.println("Transaction ID: " + transactionId);
             
             // 결제 완료된 후 주문 상태 업데이트
-            orderMapper.updateStatus(paymentId, "COMPLETED");
+            orderMapper.updateOrderStatus(paymentId, "COMPLETED");
+           
+            // PaypalOrderId로 reservationId 가져오기
+            String PaypalOrderId = payment.getId();
+            Order order = orderMapper.findByPaypalOrderId(PaypalOrderId);
+            Integer reservationId = order.getReservationId();
             
-            // transactionId를 사용하여 결제 내역 저장 등 추가 작업 가능
-            // 예를 들어, transactionId를 payment 테이블에 저장
-            paymentMapper.savePayment(transactionId, paymentId, "COMPLETED");
+            // 예약ID로 DB에 저장된 특정 결제내역 가져와서 transactionId, status, updatedAt 저장
+            PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(reservationId);
+            newPaymentDTO.setTransactionId(transactionId);
+            newPaymentDTO.setPaymentStatus(PaymentStatus.COMPLETED);
+            newPaymentDTO.setUpdatedAt(LocalDateTime.now());
+           
+            // 수정된 내용 업데이트
+            paymentMapper.updatePaymentStatus(newPaymentDTO);
+            
             return "success";
+            
         } catch (PayPalRESTException e) {
             // 에러 처리
             return "error";
         }
     }
+    
     @GetMapping("/cancel")
     public String cancel(@RequestParam(name="paymentId") String paymentId) {
-        orderMapper.updateStatus(paymentId, "CANCELLED");
+        orderMapper.updateOrderStatus(paymentId, "CANCELLED");
+        
+        // PaypalOrderId로 reservationId 가져오기
+        String PaypalOrderId = paymentId;
+        Order order = orderMapper.findByPaypalOrderId(PaypalOrderId);
+        Integer reservationId = order.getReservationId();
+        
+        // 예약ID로 DB에 저장된 특정 결제내역 가져와서 transactionId, status, updatedAt 저장
+        PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(reservationId);
+        newPaymentDTO.setPaymentStatus(PaymentStatus.CANCELLED);
+        newPaymentDTO.setUpdatedAt(LocalDateTime.now());
+       
+        // 수정된 내용 업데이트
+        paymentMapper.updatePaymentStatus(newPaymentDTO);
+        
         return "cancel";
     }
 }
