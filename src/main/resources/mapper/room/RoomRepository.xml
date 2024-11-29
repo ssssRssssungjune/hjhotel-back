@@ -7,8 +7,8 @@
            SELECT * FROM room_type ORDER BY room_type_id ASC
     </select>
     
-    	<select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
-        	 SELECT 
+    <select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
+			   SELECT 
 				    rt.name AS room_type_name,
 				    rt.description AS room_type_description,
 				    rt.base_occupancy,
@@ -26,8 +26,8 @@
 				    rt.name = #{roomTypeName}
 				ORDER BY 
 				    rt.room_type_id, ra.amenity_id;
+</select>
 
-      </select>
   
     
     <!-- 관리자 -->
@@ -35,12 +35,12 @@
     <!-- 24.11.21 진주 : 객실 예약날짜,예약상태로 조회 -->
      <select id="adminresRooms" resultType="com.hjhotelback.dto.room.RoomDto">
            SELECT 
-			    r.room_id AS 객실id, 
-    			rt.name AS 객실타입이름,
-			    r.room_number AS 객실호수, 
-			    r.floor AS 층수, 
-			    r.status AS 객실상태,
-			    r.view AS 뷰
+			    r.room_id, 
+    			rt.name,
+			    r.room_number, 
+			    r.floor, 
+			    r.status,
+			    r.view
 			FROM room r
 			JOIN reservation res ON r.room_id = res.room_id
 			JOIN room_type rt ON rt.room_type_id = r.room_type_id
@@ -50,22 +50,22 @@
     
     <!-- 24.11.21 진주 : 객실 예약날짜로 전체 조회 -->
      <select id="AllRoomsDate" resultType="com.hjhotelback.dto.room.RoomDto">
-           SELECT 
-			    r.room_id AS 객실id, 
-    			rt.name AS 객실타입이름,
-			    r.room_number AS 객실호수, 
-			    r.floor AS 층수, 
-			    r.status AS 객실상태,
-			    r.view AS 뷰
+            SELECT 
+			    r.room_id, 
+    			rt.name,
+			    r.room_number, 
+			    r.floor, 
+			    r.status,
+			    r.view
 			FROM room r
 			JOIN reservation res ON r.room_id = res.room_id
 			JOIN room_type rt ON rt.room_type_id = r.room_type_id
-			 WHERE DATE(res.check_in) = #{date};
+			  WHERE DATE(res.check_in) = DATE(#{date});
     </select>
     
     
      <!-- 24.11.21 진주 : 객실 상태 변경 -->
-     <update id="updateStatusRoom">
+     <update id="updateStatusRoom" >
            UPDATE room SET status = #{status} WHERE room_number  = #{roomNumber}
     </update> 
     
@@ -81,7 +81,7 @@
            SELECT 
            rt.name AS room_type_name,
            ra.name AS amenity_name,
-           ra.description AS amenity_description,
+           ra.description ,
            ra.is_active AS amenity_active
            FROM
            room_type rt
@@ -108,7 +108,7 @@
 		    END
 		WHERE 
 		    rt.name = #{TypeName}
-		    AND ra.name = #{Amenity};
+		    AND ra.name = #{amenity};
     </update> 
     
     

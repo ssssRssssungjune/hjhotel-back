@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,20 +38,14 @@ public class RoomController {
 
 	// 24.11.27 진주 : 관리자- 날짜,상태로 객실 리스트 불러오기
 	
-	@GetMapping("")
+	@GetMapping()
 	public List<RoomDto> getAdminRooms(@RequestParam("date") @DateTimeFormat(iso =DateTimeFormat.ISO.DATE_TIME) LocalDate date,@RequestParam("resStatus")String resStatus){
 		return roomService.getAdminRooms(date,resStatus);	
 		}
-//	@GetMapping
-//	public String test(
-//			@RequestParam("date")String date,@RequestParam("resStatus")String resStatus) {
-//		return "test"+ date + resStatus;
-//	}
 	
 	// 24.11.27 진주 : 관리자- 날짜로 객실 리스트 불러오기
-	
-	@GetMapping("/{date}")
-	public List<RoomDto> getAllDateRooms(@PathVariable("date")LocalDateTime date){
+	@GetMapping("/typeDetail")
+	public List<RoomDto> getAllDateRooms(@RequestParam("date") @DateTimeFormat(iso =DateTimeFormat.ISO.DATE_TIME) LocalDate date){
 		return roomService.getAllDateRooms(date);	
 		}
 	
@@ -78,24 +73,24 @@ public class RoomController {
 		return roomService.getTypes();
 	}
 	
-	// 24.11.25 진주 : 관리자- 타입별 상세(+해당 타입 어메니티) 조회 - 
+	// 24.11.25 진주 : 관리자- 타입별 상세(+해당 타입 어메니티 수정) 조회 -  스탠다드 
 		@GetMapping("/types/{TypeName}")
 		public List<RoomAmenityDto> getTypesRoom(@PathVariable("TypeName")String TypeName){
 			return roomService.getAmenity(TypeName);
 		}
-	// 24.11.27 진주 : 관리자 - amenity 항목 사용여부(isActive)변경
-//		@PutMapping("/{roomTypeName}/{amenity}")
-//		public RequestEntity<String> updateAmenities(@PathVariable("roomTypeName") String roomTypeName,@PathVariable("amenity") String amenity,@RequestBody boolean isActive){
-//			
-//			boolean isUpdated = roomService.updateAmenity(roomTypeName,amenity,isActive);
-//			
-//			if(isUpdated) {
-//				return ResponseEntity.ok("Amenity status updated successfully.");
-//			}else {
-//				return ResponseEntity.notFound().body("Room type or amenity not found");
-//			}
-//		}
-//	
+	//
+		
+//	24.11.28 진주 : 관리자 - amenity isActive 활성화
+		@PutMapping("/toggle")
+		public ResponseEntity<String> toggleAmenity(@RequestParam("TypeName") String TypeName,@RequestParam("amenity") String amenity){
+			
+			boolean isUpdated = roomService.toggleAmenity(TypeName,amenity); // 
+			if(isUpdated) {
+				return ResponseEntity.ok("Amenity 상태 변경");
+			}else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상태 변경 실패");
+			}
+		}
 	
 
 	

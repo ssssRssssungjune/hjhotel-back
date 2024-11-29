@@ -8,10 +8,8 @@ import lombok.Data;
 public class RoomTypeDto_Client {
 	private Integer roomTypeId;
 	private String name;
-	private String description;
 	private Integer baseOccupancy;
 	private Integer maxOccupancy;
-	private BigDecimal basePrice;
 	private String imagePath;
 	
 }
