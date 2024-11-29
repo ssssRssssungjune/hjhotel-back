@@ -9,6 +9,7 @@ import com.hjhotelback.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -54,6 +55,11 @@ public class MemberService {
         // Mapper 호출 결과가 null인 경우 빈 Map 반환
         Map<String, String> userInfo = memberMapper.findMemberByUserId(userId);
         return userInfo != null ? userInfo : Map.of(); // 빈 Map 반환
+    }
+
+    // 모든 멤버 가져오기
+    public List<Map<String, Object>> getAllMembers() {
+        return memberMapper.findAllMembers();
     }
 }
 

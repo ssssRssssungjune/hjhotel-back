@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/**").permitAll() // /api/users/** 엔드포인트는 인증 없이 허용
                         .requestMatchers("/api/auth/**").permitAll() // /api/auth/** 엔드포인트 인증 없이 허용
-                        .requestMatchers("/api/users/info/**").permitAll() //로그인완료때 정보가져오기
+
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 );
 
