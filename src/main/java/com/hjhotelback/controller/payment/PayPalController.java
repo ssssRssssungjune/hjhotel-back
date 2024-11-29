@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.payment.Order;
+import com.hjhotelback.dto.payment.PaymentDTO;
+import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.dto.payment.ReservationItem;
+import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.hjhotelback.mapper.paypal.OrderMapper;
 import com.hjhotelback.mapper.paypal.ProductMapper;
 import com.hjhotelback.service.payment.PayPalService;
@@ -26,6 +29,7 @@ public class PayPalController {
     private final PayPalService payPalService;
     private final ProductMapper productMapper;
     private final OrderMapper orderMapper;
+    private final PaymentMapper paymentMapper;
 
     // 24.11.29 지은 [작업중] : 현재 Order DTO는 orders 테이블과 연결이 된 상태. payment 테이블로 다시 매핑 해야한다.
     @GetMapping("/checkout/{reservationId}")
@@ -36,7 +40,7 @@ public class PayPalController {
                  throw new RuntimeException("Product not found");
              }
              Order order = new Order();
-             order.setProductId(reservationId);
+             order.setReservationId(reservationId);
              order.setAmount(reservationItem.getTotalAmount());
              order.setStatus("PENDING");
              order.setCreatedAt(LocalDateTime.now());
@@ -49,6 +53,14 @@ public class PayPalController {
              );
              order.setPaypalOrderId(payment.getId());
              orderMapper.insert(order);
+             
+             // 결제 내역에도 추가하기
+             PaymentDTO paymentDTO = new PaymentDTO();
+             paymentDTO.setReservationId(reservationId);
+             paymentDTO.setPaymentMethod("PAYPAL");
+             paymentDTO.setPaymentStatus(PaymentStatus.PENDING);
+             paymentDTO.setAmount(order.getAmount());
+             
              return "redirect:" + payment.getLinks()
                      .stream()
                      .filter(link -> link.getRel().equals("approval_url"))
@@ -71,8 +83,20 @@ public class PayPalController {
     	System.out.println("Payment ID: " + paymentId);
     	System.out.println("Payer ID: " + payerID);
         try {
+        	// 결제 실행
             Payment payment = payPalService.executePayment(paymentId, payerID);
+            
+            // transactionId 추출
+            String transactionId = payment.getTransactions().get(0).getRelatedResources().get(0)
+                .getSale().getId();
+            System.out.println("Transaction ID: " + transactionId);
+            
+            // 결제 완료된 후 주문 상태 업데이트
             orderMapper.updateStatus(paymentId, "COMPLETED");
+            
+            // transactionId를 사용하여 결제 내역 저장 등 추가 작업 가능
+            // 예를 들어, transactionId를 payment 테이블에 저장
+            paymentMapper.savePayment(transactionId, paymentId, "COMPLETED");
             return "success";
         } catch (PayPalRESTException e) {
             // 에러 처리

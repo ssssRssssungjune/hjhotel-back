@@ -19,6 +19,7 @@ public interface OrderMapper {
             "VALUES (#{paypalOrderId}, #{status}, #{productId}, #{amount}, #{createdAt})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Order order);
+    
     @Select("SELECT * FROM orders WHERE paypal_order_id = #{paypalOrderId}")
     @Results({
             @Result(property = "id", column = "id"),
@@ -26,6 +27,7 @@ public interface OrderMapper {
                     one = @One(select = "com.hjhotelback.mapper.payment.ProductMapper.findById"))
     })
     Order findByPaypalOrderId(String paypalOrderId);
+    
     @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paypalOrderId}")
     void updateStatus(@Param("paypalOrderId") String paypalOrderId,
                       @Param("status") String status);
