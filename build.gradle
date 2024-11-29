@@ -22,6 +22,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter' // Spring Boot 기본 의존성
     implementation 'org.springframework.boot:spring-boot-starter-web' // Spring MVC 및 REST API용 Starter
     implementation 'org.springframework.boot:spring-boot-starter-validation' // 데이터 유효성 검증 (Validation)
+    
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    
 
     // MyBatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis 통합
@@ -33,7 +36,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot 테스트 의존성
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
     testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트
-    
+
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -42,8 +45,3 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform() // JUnit 플랫폼 사용
 }
-0 commit comments
-Comments
-0
- (0)
-Comment
