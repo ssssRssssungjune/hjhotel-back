@@ -30,7 +30,7 @@ public class BoardController {
     
       //특정 게시글 조회
        @GetMapping("/{id}")
-        public ResponseEntity<BoardDTO> getBoardById(@PathVariable Long id){
+        public ResponseEntity<BoardDTO> getBoardById(@PathVariable("id") Long id){
     	BoardDTO board = boardService.getboardById(id);
     	if(board != null) {
     		return ResponseEntity.ok(board); //호회 성공시 데이터 반환	
@@ -41,7 +41,7 @@ public class BoardController {
     	
     	//공지사항 수정
     	@PutMapping("/{id}")
-    	public ResponseEntity<String> updateBoard(@PathVariable Long id, @RequestBody BoardDTO boardDTO){
+    	public ResponseEntity<String> updateBoard(@PathVariable("id") Long id, @RequestBody BoardDTO boardDTO){
     		try {
     			boardDTO.setNoticeId(id);//ID 설정
     			boardService.updateNotice(boardDTO); // 수정요청
@@ -51,7 +51,7 @@ public class BoardController {
     		}
     	}
     	//공지사항 생성
-    	@PostMapping
+    	@PostMapping 
     	public ResponseEntity<String> createBoard(@RequestBody BoardDTO boardDTO){
     		try {
     			boardService.createNotice(boardDTO);// 생성요청
