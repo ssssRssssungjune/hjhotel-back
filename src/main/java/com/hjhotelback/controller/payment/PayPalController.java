@@ -32,7 +32,7 @@ public class PayPalController {
     private final OrderMapper orderMapper;
     private final PaymentMapper paymentMapper;
 
-    // 24.11.29 지은 [작업중] : 현재 Order DTO는 orders 테이블과 연결이 된 상태. payment 테이블로 다시 매핑 해야한다.
+    // 24.11.29 지은 [완료] : order(주문서), payment(결제내역) 생성 완료.
     @Transactional
     @GetMapping("/checkout/{reservationId}")
     public String checkout(@PathVariable("reservationId") Integer reservationId) {
@@ -122,6 +122,7 @@ public class PayPalController {
         }
     }
     
+    // 24.11.29 지은 [완료] : 결제 취소 처리 및 상태 업데이트
     @GetMapping("/cancel")
     public String cancel(@RequestParam(name="paymentId") String paymentId) {
         orderMapper.updateOrderStatus(paymentId, "CANCELLED");

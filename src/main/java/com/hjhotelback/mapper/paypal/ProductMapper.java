@@ -9,8 +9,12 @@ import com.hjhotelback.dto.payment.ReservationItem;
 
 @Mapper
 public interface ProductMapper {
-    @Select("SELECT * FROM reservation")
+    
+	// 24.11.29 지은 [완료] : 예약테이블 전체 조회 수정
+	@Select("SELECT * FROM reservation")
     List<ReservationItem> findAll();
+    
+	// 24.11.29 지은 [완료] : 예약ID로 예약내역 조회.
     @Select("SELECT " +
             "r.reservation_id, " +
             "m.name, " +
