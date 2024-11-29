@@ -17,5 +17,18 @@
     </select>
     
     <!-- 공지사항 수정 -->
-    <update id=" id"></update>
+    <update id=" updateNotice" parameterType = "com.hjhotelback.dto.board.BoardDTO">
+     	 UPDATE notice
+     	 SET title = #{title},
+     	      content = # {content},
+     	      is_important = #{isImportant},
+     	      updated_at = NOW()
+     	      WHERE notice_id = #{noticeID};
+     </update>
+     
+     <!-- 공지사항 생성 -->
+    <insert id="createNotice" parameterType="com.hjhotelback.dto.board.BoardDTO" useGeneratedKeys="true" keyProperty="noticeId">
+        INSERT INTO notice (title, content, category, is_important, views, created_at, updated_at)
+        VALUES (#{title}, #{content}, #{category}, #{isImportant}, #{views}, NOW(), NOW());
+    </insert>
 </mapper>
