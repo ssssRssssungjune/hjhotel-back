@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-import com.hjhotelback.dto.payment.Product;
 import com.hjhotelback.dto.payment.ReservationItem;
 
 @Mapper

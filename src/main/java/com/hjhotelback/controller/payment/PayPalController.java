@@ -20,13 +20,14 @@ import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/pay")
+@RequestMapping("/api/paypal")
 @RequiredArgsConstructor
 public class PayPalController {
     private final PayPalService payPalService;
     private final ProductMapper productMapper;
     private final OrderMapper orderMapper;
 
+    // 24.11.29 지은 [작업중] : 현재 Order DTO는 orders 테이블과 연결이 된 상태. payment 테이블로 다시 매핑 해야한다.
     @GetMapping("/checkout/{reservationId}")
     public String checkout(@PathVariable("reservationId") Integer reservationId) {
     	 try {
@@ -43,8 +44,8 @@ public class PayPalController {
              		reservationItem.getTotalAmount(),
                      "USD",
                      "Payment for " + reservationItem.getName(),
-                     "http://localhost:8080/pay/cancel",
-                     "http://localhost:8080/pay/success"
+                     "http://localhost:8080/api/paypal/cancel",
+                     "http://localhost:8080/api/paypal/success"
              );
              order.setPaypalOrderId(payment.getId());
              orderMapper.insert(order);
@@ -55,18 +56,22 @@ public class PayPalController {
                      .orElseThrow()
                      .getHref();
          } catch (PayPalRESTException e) {
+        	 // PayPal에서 반환된 오류 메시지를 로그로 출력
+        	 System.err.println("Error during PayPal payment creation: " + e.getMessage());
              // 에러 처리
-             return "error";
+             return "error" + e.getMessage(); //사용자에게 오류 메시지를 반환
          }
     	
 
     }
+    
+    // 24.11.29 지은 [완료] : PayerId를 payerId로 변경
     @GetMapping("/success")
-    public String success(@RequestParam String paymentId, @RequestParam String PayerID) {
+    public String success(@RequestParam(name="paymentId") String paymentId, @RequestParam(name="PayerID") String payerID) {
     	System.out.println("Payment ID: " + paymentId);
-    	System.out.println("Payer ID: " + PayerID);
+    	System.out.println("Payer ID: " + payerID);
         try {
-            Payment payment = payPalService.executePayment(paymentId, PayerID);
+            Payment payment = payPalService.executePayment(paymentId, payerID);
             orderMapper.updateStatus(paymentId, "COMPLETED");
             return "success";
         } catch (PayPalRESTException e) {
@@ -75,7 +80,7 @@ public class PayPalController {
         }
     }
     @GetMapping("/cancel")
-    public String cancel(@RequestParam String paymentId) {
+    public String cancel(@RequestParam(name="paymentId") String paymentId) {
         orderMapper.updateStatus(paymentId, "CANCELLED");
         return "cancel";
     }

@@ -26,24 +26,30 @@ public class PayPalService {
             String description,
             String cancelUrl,
             String successUrl) throws PayPalRESTException {
-        Amount amount = new Amount();
-        amount.setCurrency(currency);
-        amount.setTotal(total.toString());
-        Transaction transaction = new Transaction();
-        transaction.setDescription(description);
-        transaction.setAmount(amount);
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transaction);
-        Payment payment = new Payment();
-        payment.setIntent("sale");
-        payment.setPayer(new Payer());
-        payment.getPayer().setPaymentMethod("paypal");
-        payment.setTransactions(transactions);
-        RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl(cancelUrl);
-        redirectUrls.setReturnUrl(successUrl);
-        payment.setRedirectUrls(redirectUrls);
-        return payment.create(apiContext);
+    	
+    	try {
+    		Amount amount = new Amount();
+    		amount.setCurrency(currency);
+    		amount.setTotal(total.toString());
+    		Transaction transaction = new Transaction();
+    		transaction.setDescription(description);
+    		transaction.setAmount(amount);
+    		List<Transaction> transactions = new ArrayList<>();
+    		transactions.add(transaction);
+    		Payment payment = new Payment();
+    		payment.setIntent("sale");
+    		payment.setPayer(new Payer());
+    		payment.getPayer().setPaymentMethod("paypal");
+    		payment.setTransactions(transactions);
+    		RedirectUrls redirectUrls = new RedirectUrls();
+    		redirectUrls.setCancelUrl(cancelUrl);
+    		redirectUrls.setReturnUrl(successUrl);
+    		payment.setRedirectUrls(redirectUrls);
+    		return payment.create(apiContext);	
+    	} catch(PayPalRESTException e) { // 더 상세한 에러를 얻기 위해 추가.
+    		System.err.println("PayPal error: " + e.getDetails());
+    		throw e;
+    	}
     }
     public Payment executePayment(String paymentId, String payerId)
             throws PayPalRESTException {
