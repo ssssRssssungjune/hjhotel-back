@@ -146,7 +146,8 @@ public class PaymentController {
     // 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)
     @GetMapping("/reservation-list")
     public PaymentReservationListDTO reservationPaymentList() {
-    	
     	return paymentService.getReservationPaymentList();
     }
+    
+    // 결제 완료(COMPLETED) 또는 결제 취소(CANCLE)인 경우 해당 예약의 상태 변경
 }
