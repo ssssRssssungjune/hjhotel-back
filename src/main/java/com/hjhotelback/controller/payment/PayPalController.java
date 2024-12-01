@@ -14,10 +14,14 @@ import com.hjhotelback.dto.payment.Order;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.dto.payment.ReservationItem;
+import com.hjhotelback.dto.reservation.ReqReservation;
+import com.hjhotelback.dto.reservation.ResReservation;
+import com.hjhotelback.dto.reservation.ReservationStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.hjhotelback.mapper.paypal.OrderMapper;
 import com.hjhotelback.mapper.paypal.ProductMapper;
 import com.hjhotelback.service.payment.PayPalService;
+import com.hjhotelback.service.reservation.ReservationService;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
@@ -31,6 +35,7 @@ public class PayPalController {
     private final ProductMapper productMapper;
     private final OrderMapper orderMapper;
     private final PaymentMapper paymentMapper;
+    private final ReservationService reservationService;
 
     // 24.11.29 지은 [완료] : order(주문서), payment(결제내역) 생성 완료.
     @Transactional
@@ -83,7 +88,8 @@ public class PayPalController {
     	
     }
     
-    // 24.11.29 지은 [완료] : PayerId를 payerId로 변경
+    // 24.12.01 지은 [완료] : 결제 성공 처리 및 상태 업데이트 작업 완료
+    // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
     @GetMapping("/success")
     public String success(@RequestParam(name="paymentId") String paymentId, @RequestParam(name="PayerID") String payerID) {
     	System.out.println("Payment ID: " + paymentId);
@@ -114,6 +120,13 @@ public class PayPalController {
             // 수정된 내용 업데이트
             paymentMapper.updatePaymentStatus(newPaymentDTO);
             
+            // 예약 상태 CONFIRMED으로 업데이트
+            ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
+            updateStatus.reservationId = reservationId;
+            updateStatus.status = ReservationStatus.CONFIRMED;
+            
+            reservationService.updateReservationForAdmin(updateStatus);
+            
             return "success";
             
         } catch (PayPalRESTException e) {
@@ -122,23 +135,31 @@ public class PayPalController {
         }
     }
     
-    // 24.11.29 지은 [완료] : 결제 취소 처리 및 상태 업데이트
+    // 24.12.01 지은 [완료] : 결제 취소 처리 및 상태 업데이트 작업 완료
+    // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
     @GetMapping("/cancel")
-    public String cancel(@RequestParam(name="paymentId") String paymentId) {
-        orderMapper.updateOrderStatus(paymentId, "CANCELLED");
-        
-        // PaypalOrderId로 reservationId 가져오기
-        String PaypalOrderId = paymentId;
-        Order order = orderMapper.findByPaypalOrderId(PaypalOrderId);
-        Integer reservationId = order.getReservationId();
-        
-        // 예약ID로 DB에 저장된 특정 결제내역 가져와서 transactionId, status, updatedAt 저장
-        PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(reservationId);
-        newPaymentDTO.setPaymentStatus(PaymentStatus.CANCELLED);
+    public String cancel(@RequestParam(name="paymentId") Integer paymentId) {
+    	
+    	// payment 목록 가져와서 reservation id 가져오기
+    	PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(paymentId);
+    	Integer reservationId = newPaymentDTO.getReservationId();
+    	newPaymentDTO.setPaymentStatus(PaymentStatus.CANCELLED);
         newPaymentDTO.setUpdatedAt(LocalDateTime.now());
-       
-        // 수정된 내용 업데이트
+    	
+        // 수정된 내용 결제 내역에(payment) 상태 업데이트
         paymentMapper.updatePaymentStatus(newPaymentDTO);
+        
+        // paypalOrderId 가져와서 주문서(orders) 상태 업데이트
+        Order order = orderMapper.findByPaypalReservationId(reservationId);
+        String paypalOrderId = order.getPaypalOrderId();
+        orderMapper.updateOrderStatus(paypalOrderId, "CANCELLED");
+        
+        // 예약 상태 CONFIRMED으로 업데이트
+        ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
+        updateStatus.reservationId = reservationId;
+        updateStatus.status = ReservationStatus.CANCELLED;
+        
+        reservationService.updateReservationForAdmin(updateStatus);
         
         return "cancel";
     }
