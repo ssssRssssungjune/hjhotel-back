@@ -1,6 +1,5 @@
 package com.hjhotelback.auth;
 
-import com.hjhotelback.dto.member.auth.JwtResponseDto;
 import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
 import com.hjhotelback.dto.member.auth.SignupRequestDto;
 import com.hjhotelback.service.member.auth.AuthService;
@@ -41,7 +40,7 @@ public class MemberServiceTest {
 
         int memberId = authService.registerUser(signupRequestDto);
 
-        log.info("member_id: " + memberId);
+        log.info("member_id: {}", memberId);
     }
 
     @Test
@@ -51,8 +50,9 @@ public class MemberServiceTest {
                 .password("1234")
                 .build();
 
-        JwtResponseDto jwtResponseDto = memberService.login(memberLoginRequestDto);
+        String token = memberService.login(memberLoginRequestDto);
 
-        log.info("jwtResponseDto: " + jwtResponseDto);
+        log.info("JWT: {}", token);
     }
+
 }

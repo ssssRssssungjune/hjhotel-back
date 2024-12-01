@@ -1,14 +1,9 @@
 package com.hjhotelback.controller.member;
 
-import com.hjhotelback.dto.member.auth.SignupRequestDto;
 import com.hjhotelback.service.member.auth.AuthService;
 import com.hjhotelback.service.member.auth.MemberService;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,21 +17,21 @@ public class MemberController {
         this.authService = authService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> registerMember(@RequestBody SignupRequestDto request) {
-//        memberService.registerMember(request);
-        authService.registerUser(request);
-
-
-        // JSON 형식으로 응답
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "회원가입이 완료되었습니다.");
-        response.put("status", "success"); // 성공 여부
-        response.put("redirectUrl", "/signupcom"); // 클라이언트가 이동해야 할 경로
-        response.put("userId", request.getUserId());
-
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<Map<String, String>> registerMember(@RequestBody SignupRequestDto request) {
+////        memberService.registerMember(request);
+//        authService.registerUser(request);
+//
+//
+//        // JSON 형식으로 응답
+//        Map<String, String> response = new HashMap<>();
+//        response.put("message", "회원가입이 완료되었습니다.");
+//        response.put("status", "success"); // 성공 여부
+//        response.put("redirectUrl", "/signupcom"); // 클라이언트가 이동해야 할 경로
+//        response.put("userId", request.getUserId());
+//
+//        return ResponseEntity.ok(response);
+//    }
 //    @GetMapping("/info/{userId}")
 //    public ResponseEntity<Map<String, String>> getUserInfo(@PathVariable String userId) {
 //        Map<String, String> userInfo = memberService.getUserInfo(userId);

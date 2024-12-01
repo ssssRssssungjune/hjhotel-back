@@ -1,7 +1,6 @@
 package com.hjhotelback.service.member.auth;
 
 
-import com.hjhotelback.dto.member.auth.JwtResponseDto;
 import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
 import com.hjhotelback.entity.MemberEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
@@ -42,7 +41,7 @@ public class MemberService {
 //        );
 //    }
 
-    public JwtResponseDto login(MemberLoginRequestDto loginRequest) {
+    public String login(MemberLoginRequestDto loginRequest) {
         // 사용자 ID로 데이터베이스에서 사용자 조회
         Optional<MemberEntity> member = memberMapper.findPasswordByUserId(loginRequest.getUserId());
         MemberEntity memberEntity = member.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -55,8 +54,7 @@ public class MemberService {
         }
 
         // JWT 생성 및 반환
-        String token = jwtTokenProvider.generateToken(memberEntity);
-        return new JwtResponseDto(token, loginRequest.getUserId());
+        return jwtTokenProvider.generateToken(memberEntity);
     }
 
     public Map<String, String> getUserInfo(String userId) {
