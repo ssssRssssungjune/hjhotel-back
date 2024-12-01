@@ -44,7 +44,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j' // MySQL 드라이버 최신 안정 버전
 
     // Jakarta Servlet API
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+//    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok' // Lombok 컴파일 타임 의존성

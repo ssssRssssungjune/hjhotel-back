@@ -16,15 +16,15 @@ public class StaffController {
         this.staffService = staffService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginRequest) {
-        String email = loginRequest.get("email");
-        String password = loginRequest.get("password");
-
-        // 로그인 처리
-        String token = staffService.login(email, password);
-
-        // 토큰 반환
-        return ResponseEntity.ok(Map.of("token", token));
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginRequest) {
+//        String email = loginRequest.get("email");
+//        String password = loginRequest.get("password");
+//
+//        // 로그인 처리
+//        String token = staffService.login(email, password);
+//
+//        // 토큰 반환
+//        return ResponseEntity.ok(Map.of("token", token));
+//    }
 }

@@ -1,6 +1,7 @@
 package com.hjhotelback.controller.member;
 
-import com.hjhotelback.dto.member.auth.SignupRequest;
+import com.hjhotelback.dto.member.auth.SignupRequestDto;
+import com.hjhotelback.service.member.auth.AuthService;
 import com.hjhotelback.service.member.auth.MemberService;
 
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,18 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthService authService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, AuthService authService) {
         this.memberService = memberService;
+        this.authService = authService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> registerMember(@RequestBody SignupRequest request) {
-        memberService.registerMember(request);
+    public ResponseEntity<Map<String, String>> registerMember(@RequestBody SignupRequestDto request) {
+//        memberService.registerMember(request);
+        authService.registerUser(request);
+
 
         // JSON 형식으로 응답
         Map<String, String> response = new HashMap<>();
@@ -32,17 +37,17 @@ public class MemberController {
 
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/info/{userId}")
-    public ResponseEntity<Map<String, String>> getUserInfo(@PathVariable String userId) {
-        Map<String, String> userInfo = memberService.getUserInfo(userId);
-
-        // Null 체크 및 빈 값 반환 처리
-        if (userInfo == null || userInfo.isEmpty()) {
-            return ResponseEntity.status(404).body(Map.of("message", "사용자를 찾을 수 없습니다."));
-        }
-
-        return ResponseEntity.ok(userInfo);
-    }
+//    @GetMapping("/info/{userId}")
+//    public ResponseEntity<Map<String, String>> getUserInfo(@PathVariable String userId) {
+//        Map<String, String> userInfo = memberService.getUserInfo(userId);
+//
+//        // Null 체크 및 빈 값 반환 처리
+//        if (userInfo == null || userInfo.isEmpty()) {
+//            return ResponseEntity.status(404).body(Map.of("message", "사용자를 찾을 수 없습니다."));
+//        }
+//
+//        return ResponseEntity.ok(userInfo);
+//    }
 
 }
 

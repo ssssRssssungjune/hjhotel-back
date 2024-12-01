@@ -1,15 +1,22 @@
 package com.hjhotelback.security;
 
+import com.hjhotelback.entity.MemberAuthEntity;
+import com.hjhotelback.entity.MemberEntity;
+import com.hjhotelback.mapper.member.auth.MemberMapper;
+import com.hjhotelback.service.member.auth.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -22,6 +29,12 @@ public class JwtTokenProvider {
 
     private Key secretKey;
 
+    private final MemberMapper memberMapper;
+
+    public JwtTokenProvider(MemberMapper memberMapper) {
+        this.memberMapper = memberMapper;
+    }
+
 
     @PostConstruct
     public void init() {
@@ -29,12 +42,25 @@ public class JwtTokenProvider {
     }
 
     // JWT 생성
-    public String generateToken(String userId) {
+    public String generateToken(MemberEntity memberEntity) {
+        List<MemberAuthEntity> memberAuths = memberMapper.findMemberAuth(memberEntity.getMemberId());
+        String authorities = memberAuths.stream()
+                .map(MemberAuthEntity::getAuth) // MemberAuthEntity에서 auth를 추출
+                .collect(Collectors.joining(","));
+        long now = System.currentTimeMillis();
+        Date validity = new Date(now + tokenValidityInSeconds * 1000);
+
         return Jwts.builder()
-                .setSubject(userId)
-                .setIssuedAt(new Date()) // 토큰 생성 시간
-                .setExpiration(new Date(System.currentTimeMillis() + getTokenValidityInMilliseconds())) // 만료 시간 설정
-                .signWith(secretKey, SignatureAlgorithm.HS512) // 서명 알고리즘과 비밀 키 설정
+                // Header
+                .signWith(secretKey, SignatureAlgorithm.HS512)
+                // PayLoad
+                // -- 등록 클레임
+                .setSubject(memberEntity.getName())
+                .setIssuedAt(new Date(now)) // 토큰 생성 시간
+                .setExpiration(validity) // 만료 시간 설정
+                // -- 사용자 클레임
+                .claim("userName", memberEntity.getName())
+                .claim("auth", authorities)
                 .compact();
     }
 
