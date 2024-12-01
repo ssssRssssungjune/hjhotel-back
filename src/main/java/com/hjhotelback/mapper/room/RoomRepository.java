@@ -19,13 +19,16 @@ import com.hjhotelback.dto.room.RoomTypeDto;
 @Mapper
 public interface RoomRepository {
 	// ===== 사용자
-	 List<RoomTypeDto_Client>AllRoomTypes();
+	 List<RoomTypeDto_Client> AllRoomTypes();
 	// 상세 조회
 	 List<TypeDetailDto_Client> detailType(String roomTypeName);
 	 // ===== 관리자	
-	 List<RoomDto>adminresRooms(@Param("date") LocalDate date,@Param("resStatus")String resStatus);
-	 List<RoomDto>AllRoomsDate(@Param("date") LocalDate date);
-	 ResponseEntity<String>updateStatusRoom(RoomDto roomDto);
+	 //test
+	 List<RoomDto> AllRooms();
+	 //
+	 List<RoomDto> adminresRooms(@Param("date") LocalDate date,@Param("resStatus")String resStatus);
+	 List<RoomDto> AllRoomsDate(@Param("date") LocalDate date);
+	 int updateStatusRoom(RoomDto roomDto);
 	 
 	 // =======관리자 - type
 	 List<RoomTypeDto> allTypes();

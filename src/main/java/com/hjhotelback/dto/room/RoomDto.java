@@ -12,7 +12,5 @@ public class RoomDto{
 	private String roomNumber;
 	private Integer floor;
 	private RoomStatus status;
-	private String view;	
-	
-	
+	private String view;
 }

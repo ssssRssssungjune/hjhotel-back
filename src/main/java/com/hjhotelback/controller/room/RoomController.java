@@ -35,6 +35,12 @@ import com.hjhotelback.service.room.RoomService;
 public class RoomController {
 	@Autowired
 	private RoomService roomService;
+	//test
+//	@GetMapping("test")
+//	public List<RoomDto> getAdminAllRooms(){
+//		return roomService.getAdminAllRooms();	
+//		}
+	
 
 	// 24.11.27 진주 : 관리자- 날짜,상태로 객실 리스트 불러오기
 	
@@ -56,17 +62,18 @@ public class RoomController {
 		RoomDto roomDto = new RoomDto();
 		roomDto.setRoomNumber(roomNumber);
 		// 24.11.22 진주 : 객실상태 enum-> string 
-	try {
-		RoomStatus roomStatus = RoomStatus.valueOf(status.toUpperCase());
-		roomDto.setStatus(roomStatus);       
-		  roomService.UpdateStatus(roomDto);
-		 return ResponseEntity.ok().build();           
-
-	}catch(IllegalArgumentException e) {
-		// 24.11.22 진주 : 객실상태 (enum) 대문자로 받기 예외처리 : valueof에서 예외 발생, status가 유효하지 않
-		return ResponseEntity.badRequest().body("Invalid room status:"+ status);
+		try {
+			RoomStatus roomStatus = RoomStatus.valueOf(status.toUpperCase());
+			roomDto.setStatus(roomStatus);
+			roomService.UpdateStatus(roomDto);
+			return ResponseEntity.ok("객실 정보 바꼈씀다~");           
+	
+		}catch(IllegalArgumentException e) {
+			// 24.11.22 진주 : 객실상태 (enum) 대문자로 받기 예외처리 : valueof에서 예외 발생, status가 유효하지 않
+			return ResponseEntity.badRequest().body("잘못 쓰셨어용~:"+ status);
+		}
 	}
-	}
+	
 	// 24.11.25 진주 : 관리자- 타입조회
 	@GetMapping("/types")
 	public List<RoomTypeDto> getTypes(){
@@ -84,11 +91,12 @@ public class RoomController {
 		@PutMapping("/toggle")
 		public ResponseEntity<String> toggleAmenity(@RequestParam("TypeName") String TypeName,@RequestParam("amenity") String amenity){
 			
-			boolean isUpdated = roomService.toggleAmenity(TypeName,amenity); // 
-			if(isUpdated) {
-				return ResponseEntity.ok("Amenity 상태 변경");
+			int isUpdated = roomService.toggleAmenity(TypeName,amenity);
+			
+			if(isUpdated > 0) {
+				return ResponseEntity.ok(amenity+ "변경 완료!");
 			}else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("상태 변경 실패");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(amenity+"변경 실패");
 			}
 		}
 	

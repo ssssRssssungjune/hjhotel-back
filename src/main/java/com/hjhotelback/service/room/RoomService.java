@@ -19,6 +19,7 @@ import com.hjhotelback.mapper.room.RoomRepository;
 
 @Service
 public class RoomService {
+
 	
 	@Autowired
 	private RoomRepository roomRepository;
@@ -35,6 +36,12 @@ public class RoomService {
 	
 //  ======== 관리	자
 	
+	//test
+	public List<RoomDto> getAdminAllRooms(){
+
+		return roomRepository.AllRooms();
+	}
+	
 	// 24.11.27 진주 : 관리자- 날짜,상태로 객실 리스트 불러오기
 	public List<RoomDto> getAdminRooms(LocalDate date,String resStatus){
 		 
@@ -47,7 +54,8 @@ public class RoomService {
 	}
 	
 	// 24.11.27 진주 : 관리자- 객실 상태 변경
-	public ResponseEntity<String> UpdateStatus(RoomDto roomDto){
+	public int UpdateStatus(RoomDto roomDto){
+		
 		return roomRepository.updateStatusRoom(roomDto);
 	}
 
@@ -56,15 +64,16 @@ public class RoomService {
 		return roomRepository.allTypes();
 	}
 	
-// ======= 타입별 amenity 
+// ======= 타입별 amenity 조회
 	public List<RoomAmenityDto> getAmenity(String TypeName){
-		return roomRepository.typeAmenities(TypeName);
+		List<RoomAmenityDto> amenity = roomRepository.typeAmenities(TypeName);
+		return amenity;
 	}
 
 // ======= 타입 별 amenity 활성화
-	public boolean toggleAmenity(String TypeName,String amenity) {
-		int updateRows = roomRepository.updateAmenity(TypeName,amenity);
-		return updateRows >0;
+	public int toggleAmenity(String TypeName,String amenity) {
+		return roomRepository.updateAmenity(TypeName,amenity);
+		//return updateRows >0;
 	}
 
 	

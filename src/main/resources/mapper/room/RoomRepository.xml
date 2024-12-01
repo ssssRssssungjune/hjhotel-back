@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.room.RoomRepository">
 	
+	<!-- test Allroom -->
+		<select id="AllRooms" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT * FROM room ORDER BY room_number ASC
+    </select>
+    
+	
+	
 	<!-- 사용자 -->    
    	<select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
            SELECT * FROM room_type ORDER BY room_type_id ASC
