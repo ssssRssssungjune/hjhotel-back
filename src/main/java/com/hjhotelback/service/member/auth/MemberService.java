@@ -43,7 +43,7 @@ public class MemberService {
 
     public String login(MemberLoginRequestDto loginRequest) {
         // 사용자 ID로 데이터베이스에서 사용자 조회
-        Optional<MemberEntity> member = memberMapper.findPasswordByUserId(loginRequest.getUserId());
+        Optional<MemberEntity> member = memberMapper.findMemberByUserId(loginRequest.getUserId());
         MemberEntity memberEntity = member.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         String storedPassword = memberEntity.getPassword();
@@ -57,10 +57,15 @@ public class MemberService {
         return jwtTokenProvider.generateToken(memberEntity);
     }
 
-    public Map<String, String> getUserInfo(String userId) {
-        // Mapper 호출 결과가 null인 경우 빈 Map 반환
-        Map<String, String> userInfo = memberMapper.findMemberByUserId(userId);
-        return userInfo != null ? userInfo : Map.of(); // 빈 Map 반환
+//    public Map<String, String> getUserInfo(String userId) {
+//        // Mapper 호출 결과가 null인 경우 빈 Map 반환
+//        Map<String, String> userInfo = memberMapper.findMemberByUserId(userId);
+//        return userInfo != null ? userInfo : Map.of(); // 빈 Map 반환
+//    }
+
+    public MemberEntity getMemberByUserId(String userId) {
+        Optional<MemberEntity> result = memberMapper.findMemberByUserId(userId);
+        return result.orElseThrow();
     }
 
     // 모든 멤버 가져오기
