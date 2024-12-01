@@ -36,9 +36,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security' // Spring Security Starter
 
     // JWT 라이브러리 (JJWT)
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3' // 구현체 추가
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3' // Jackson 사용을 위한 JJWT 확장
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6' // 구현체 추가
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6' // Jackson 사용을 위한 JJWT 확장
 
     // Database
     runtimeOnly 'com.mysql:mysql-connector-j' // MySQL 드라이버 최신 안정 버전
