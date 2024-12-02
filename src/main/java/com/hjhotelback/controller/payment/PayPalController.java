@@ -2,7 +2,6 @@ package com.hjhotelback.controller.payment;
 
 import java.time.LocalDateTime;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +14,6 @@ import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.dto.payment.ReservationItem;
 import com.hjhotelback.dto.reservation.ReqReservation;
-import com.hjhotelback.dto.reservation.ResReservation;
 import com.hjhotelback.dto.reservation.ReservationStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.hjhotelback.mapper.payment.paypal.OrderMapper;
