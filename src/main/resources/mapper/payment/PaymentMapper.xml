@@ -29,7 +29,6 @@
 	</resultMap>
 	<resultMap id="paymentDetailResultMap" type="com.hjhotelback.dto.payment.PaymentDetailDTO">
 		<id property="paymentId" column="payment_id" />
-		<result property="processId" column="process_id"/>
 		<result property="reservationId" column="reservation_id"/>
 		<result property="memberName" column="member_name"/>
 		<result property="paymentMethod" column="payment_method"/>
@@ -38,7 +37,7 @@
 		<result property="transactionId" column="transaction_id"/>
 		<result property="paymentDate" column="payment_date"/>
 		<result property="paymentUpdate" column="payment_update"/>
-		<collection property="paymentProcessLogs" ofType="com.hjhotelback.dto.payment.PaymentProcessLogDTO" resultMap="paymentProcessLogsResultMap"/>
+		<!-- <collection property="paymentProcessLogs" ofType="com.hjhotelback.dto.payment.PaymentProcessLogDTO" resultMap="paymentProcessLogsResultMap"/> -->
 	</resultMap>
 	<select id="getPaymentCustomById" resultMap="paymentDetailResultMap">
 	    SELECT 

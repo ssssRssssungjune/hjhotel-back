@@ -90,6 +90,7 @@ public class PayPalController {
     
     // 24.12.01 지은 [완료] : 결제 성공 처리 및 상태 업데이트 작업 완료
     // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
+    @Transactional
     @GetMapping("/success")
     public String success(@RequestParam(name="paymentId") String paymentId, @RequestParam(name="PayerID") String payerID) {
     	System.out.println("Payment ID: " + paymentId);
@@ -155,11 +156,12 @@ public class PayPalController {
         orderMapper.updateOrderStatus(paypalOrderId, "CANCELLED");
         
         // 예약 상태 CONFIRMED으로 업데이트
-        ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
-        updateStatus.reservationId = reservationId;
-        updateStatus.status = ReservationStatus.CANCELLED;
-        
-        reservationService.updateReservationForAdmin(updateStatus);
+        // 결제에서 취소되었는데 예약까지 취소시킬 필요는 없을 거 같음.
+//        ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
+//        updateStatus.reservationId = reservationId;
+//        updateStatus.status = ReservationStatus.CANCELLED;
+//        
+//        reservationService.updateReservationForAdmin(updateStatus);
         
         return "cancel";
     }
