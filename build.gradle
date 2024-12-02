@@ -37,6 +37,9 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    
+    // PayPal SDK
+    implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
 }
 
 tasks.named('test') {
