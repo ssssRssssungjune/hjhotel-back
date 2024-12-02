@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RoomDto{
+	private Integer reservationId;
 	private Integer roomId;
 	private String name;
 	private String roomNumber;

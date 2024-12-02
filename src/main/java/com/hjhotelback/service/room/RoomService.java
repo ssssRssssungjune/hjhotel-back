@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.room.TypeDetailDto_Client;
+import com.hjhotelback.dto.room.CountTypeDto;
 import com.hjhotelback.dto.room.RoomAmenityDto;
 import com.hjhotelback.dto.room.RoomDto;
 import com.hjhotelback.dto.room.RoomTypeDto_Client;
@@ -36,11 +37,11 @@ public class RoomService {
 	
 //  ======== 관리	자
 	
-	//test
-	public List<RoomDto> getAdminAllRooms(){
-
-		return roomRepository.AllRooms();
-	}
+//	//test
+//	public List<RoomDto> getAdminAllRooms(){
+//
+//		return roomRepository.AllRooms();
+//	}
 	
 	// 24.11.27 진주 : 관리자- 날짜,상태로 객실 리스트 불러오기
 	public List<RoomDto> getAdminRooms(LocalDate date,String resStatus){
@@ -63,6 +64,11 @@ public class RoomService {
 	public List<RoomTypeDto> getTypes(){
 		return roomRepository.allTypes();
 	}
+	
+	// ======= 타입 - count
+		public List<CountTypeDto> getcountTypes(){
+			return roomRepository.countTypes();
+		}
 	
 // ======= 타입별 amenity 조회
 	public List<RoomAmenityDto> getAmenity(String TypeName){

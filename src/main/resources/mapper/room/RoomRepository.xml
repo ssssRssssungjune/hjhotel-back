@@ -42,6 +42,7 @@
     <!-- 24.11.21 진주 : 객실 예약날짜,예약상태로 조회 -->
      <select id="adminresRooms" resultType="com.hjhotelback.dto.room.RoomDto">
            SELECT 
+           		res.reservation_id,
 			    r.room_id, 
     			rt.name,
 			    r.room_number, 
@@ -58,6 +59,7 @@
     <!-- 24.11.21 진주 : 객실 예약날짜로 전체 조회 -->
      <select id="AllRoomsDate" resultType="com.hjhotelback.dto.room.RoomDto">
             SELECT 
+            	res.reservation_id,
 			    r.room_id, 
     			rt.name,
 			    r.room_number, 
@@ -76,11 +78,32 @@
            UPDATE room SET status = #{status} WHERE room_number  = #{roomNumber}
     </update> 
     
-    
      
     <!-- 24.11.25 진주 : 객실 전체 타입 조회 -->
    <select id="allTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto">
          SELECT  * from room_type ORDER BY room_type_id ASC
+    </select>
+    
+     <!-- 24.11.25 진주 : 객실 타입 count 조회 -->
+   <select id="countTypes" resultType="com.hjhotelback.dto.room.CountTypeDto">
+         SELECT 
+		    RT.room_type_id,
+		    RT.name, 
+		    RT.description, 
+		    RT.base_occupancy, 
+		    RT.max_occupancy, 
+		    RT.base_price,
+		   COUNT(R.room_id) AS room_count
+		FROM 
+		   room_type AS RT
+		LEFT JOIN 
+		   room AS R 
+		ON 
+		   RT.room_type_id = R.room_type_id
+		GROUP BY 
+		   RT.room_type_id, RT.name, RT.description, RT.base_occupancy, RT.max_occupancy, RT.base_price
+		ORDER BY 
+		    RT.room_type_id ASC
     </select>
     
   	 <!-- 24.11.26 진주 : 타입 어메니티 조회 -->

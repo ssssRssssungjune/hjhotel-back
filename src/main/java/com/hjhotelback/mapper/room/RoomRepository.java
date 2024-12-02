@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.http.ResponseEntity;
 
 import com.hjhotelback.dto.room.TypeDetailDto_Client;
+import com.hjhotelback.dto.room.CountTypeDto;
 import com.hjhotelback.dto.room.RoomAmenityDto;
 import com.hjhotelback.dto.room.RoomDto;
 import com.hjhotelback.dto.room.RoomTypeDto_Client;
@@ -32,6 +33,8 @@ public interface RoomRepository {
 	 
 	 // =======관리자 - type
 	 List<RoomTypeDto> allTypes();
+	 // ======= 관리자 -type - count
+	 List<CountTypeDto>countTypes();
 	// amenity
 	 List<RoomAmenityDto> typeAmenities(@Param("TypeName")String TypeName);
 	// ResponseEntity<String>updateAmenityByType(String roomTypeName,String amenity,boolean isActive);
