@@ -27,7 +27,7 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입 엔드포인트
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto signupRequestDto) { // TODO 유효성검사 추가
         authService.registerUser(signupRequestDto);
 
