@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="installedFeatures">
+<<<<<<< HEAD
 		<item value="org.eclipse.buildship:3.1.10.v20240802-1211"/>
+=======
+		<item value="org.eclipse.buildship:3.1.10.v20240802-1314"/>
+>>>>>>> feat/payment
 		<item value="org.eclipse.egit.gitflow.feature:7.0.0.202409031743-r"/>
 		<item value="org.eclipse.egit:7.0.0.202409031743-r"/>
 		<item value="org.eclipse.emf.common:2.32.0.v20240731-0952"/>
@@ -29,6 +33,7 @@
 		<item value="org.eclipse.tm.terminal.view.feature:11.6.1.202406241230"/>
 		<item value="org.eclipse.userstorage:1.2.0.v20210517-0327"/>
 		<item value="org.eclipse.wst.common.fproj:3.7.4.v202308161955"/>
+<<<<<<< HEAD
 		<item value="org.jboss.tools.m2e.wro4j.feature:1.2.1.202301111328"/>
 		<item value="org.sonatype.m2e.egit.feature:0.17.0.202209271423"/>
 	</list>
@@ -41,12 +46,21 @@
 			<item key="DIALOG_FONT_NAME" value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont"/>
 		</section>
 	</section>
+=======
+		<item value="org.eclipse.wst.json_ui.feature:1.1.11.v202308160419"/>
+		<item value="org.eclipse.wst.web_ui.feature:3.31.0.v202405130132"/>
+		<item value="org.eclipse.wst.xml_ui.feature:3.34.0.v202404170147"/>
+		<item value="org.jboss.tools.m2e.wro4j.feature:1.2.1.202301111328"/>
+		<item value="org.sonatype.m2e.egit.feature:0.17.0.202209271423"/>
+	</list>
+>>>>>>> feat/payment
 	<section name="SmartImportWizard">
 		<item key="SmartImportRootWizardPage.STORE_HIDE_ALREADY_OPEN" value="false"/>
 		<item key="SmartImportRootWizardPage.STORE_CLOSE_IMPORTED" value="false"/>
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+<<<<<<< HEAD
 			<item value="/Users/pearl/workspace/hjhotel-back"/>
 			<item value="/Users/pearl/git/hjhotel-back"/>
 		</list>
@@ -79,4 +93,16 @@
 		<item key="DIALOG_HEIGHT" value="528"/>
 		<item key="DIALOG_FONT_NAME" value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont"/>
 	</section>
+=======
+			<item value="D:\JELEE_DEV\hellojalbajo\hjhotel-back"/>
+		</list>
+		<section name="SmartImportWizard.dialogBounds">
+			<item key="DIALOG_X_ORIGIN" value="197"/>
+			<item key="DIALOG_Y_ORIGIN" value="-4"/>
+			<item key="DIALOG_WIDTH" value="938"/>
+			<item key="DIALOG_HEIGHT" value="726"/>
+			<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>
+		</section>
+	</section>
+>>>>>>> feat/payment
 </section>
