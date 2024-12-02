@@ -88,7 +88,7 @@ public class AuthController {
 
 
         // 새로운 JWT 토큰 생성
-        String newJwtToken = jwtTokenProvider.generateToken(memberEntity);
+        String newJwtToken = jwtTokenProvider.generateToken(memberEntity,"USER");
 
         // 기존 JWT 쿠키 삭제하기 위해 만료 시간 0으로 설정
         ResponseCookie expiredCookie = deleteJwtToken();

@@ -54,7 +54,7 @@ public class MemberService {
         }
 
         // JWT 생성 및 반환
-        return jwtTokenProvider.generateToken(memberEntity);
+        return jwtTokenProvider.generateToken(memberEntity,"USER");
     }
 
 //    public Map<String, String> getUserInfo(String userId) {
