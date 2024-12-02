@@ -1,4 +1,4 @@
-package com.hjhotelback.mapper.paypal;
+package com.hjhotelback.mapper.payment.paypal;
 
 import java.util.List;
 
