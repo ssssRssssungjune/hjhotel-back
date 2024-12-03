@@ -1,13 +1,10 @@
 package com.hjhotelback.service.member.auth;
 
-import com.hjhotelback.entity.MemberEntity;
 import com.hjhotelback.entity.StaffEntity;
 import com.hjhotelback.mapper.staff.StaffMapper;
-import com.hjhotelback.mapper.member.auth.StaffRoleMapper;
 import com.hjhotelback.security.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Map;
 
 @Service
 public class StaffService {
@@ -25,18 +22,25 @@ public class StaffService {
     public String login(String staffUserId, String password) {
         // 직원 정보 조회
         StaffEntity staff = staffMapper.findStaffByUserId(staffUserId);
-
-        // 유효성 검증
-        if (staff == null || !staff.getIsActive() || !passwordEncoder.matches(password, staff.getPassword())) {
-            throw new RuntimeException("아이디 또는 비밀번호가 잘못되었습니다.");
+        if (staff == null) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다."); // 구체적 예외 처리
         }
 
-        // ADMIN 권한 확인
-        if (!"ADMIN".equals(staff.getRoleName())) {
-            throw new RuntimeException("관리자 권한이 없습니다.");
+        // 비밀번호 검증
+        if (!passwordEncoder.matches(password, staff.getPassword())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
         }
+
+        // 관리자 권한 확인
+        checkAdminRole(staff);
 
         // JWT 생성 후 반환
-        return jwtTokenProvider.generateToken(staff);
+        return jwtTokenProvider.generateAdminToken(staff, "ADMIN");
+    }
+
+    private void checkAdminRole(StaffEntity staff) {
+        if (!"ADMIN".equals(staff.getRoleName())) {
+            throw new SecurityException("관리자 권한이 없습니다.");
+        }
     }
 }

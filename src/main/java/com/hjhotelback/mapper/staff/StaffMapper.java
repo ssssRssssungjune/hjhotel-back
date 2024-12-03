@@ -10,10 +10,10 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface StaffMapper {
     @Select("""
-        SELECT s.staff_id AS staffId, 
-               s.staff_user_id AS staffUserId, 
-               s.password, 
-               s.is_active AS isActive, 
+        SELECT s.staff_id AS staffId,
+               s.staff_user_id AS staffUserId,
+               s.password,
+               s.is_active AS isActive,
                sr.role_name AS roleName
         FROM staff s
         JOIN staff_role sr ON s.role_id = sr.role_id
