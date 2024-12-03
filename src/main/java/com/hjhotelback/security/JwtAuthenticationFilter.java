@@ -11,7 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+
 import java.io.IOException;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,16 +35,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwtToken = extractJwtFromRequest(request);
 
         if (jwtToken != null && jwtTokenProvider.validateToken(jwtToken)) {
-            // 회원가입 및 로그인 엔드포인트로의 요청을 검사
-            if (isSignupOrLoginRequest(request.getRequestURI()) && jwtTokenProvider.validateToken(jwtToken)) {
+            // JWT가 유효한 경우 역할(Role)을 확인
+            String role = jwtTokenProvider.getClaims(jwtToken).get("role", String.class);
+
+            if (isUnauthorizedAccess(role, request.getRequestURI())) {
+                // 역할과 엔드포인트가 맞지 않는 경우 접근 금지
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
 
-                String jsonMessage = "{\"message\": \"이미 로그인된 사용자입니다.\"}";
+                String jsonMessage = "{\"message\": \"접근 권한이 없습니다.\"}";
                 response.getWriter().write(jsonMessage);
                 response.getWriter().flush();
-                return; // 이미 토큰이 있는 사용자는 로그인 또는 회원가입을 할 수 없음
+                return;
             }
 
             // JWT가 유효하다면 사용자 인증 정보를 SecurityContext에 설정
@@ -71,8 +76,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return requestUri.contains("/signup") || requestUri.contains("/login");
     }
 
-    // 로그아웃 요청인지 확인하는 메서드
     private boolean isLogoutRequest(String requestUri) {
         return requestUri.contains("/logout");
+    }
+
+    private boolean isUnauthorizedAccess(String role, String requestUri) {
+        if ("ADMIN".equals(role) && requestUri.startsWith("/api/member")) {
+            // 스태프(ADMIN)는 멤버 전용 엔드포인트에 접근 불가
+            return true;
+        }
+        if ("USER".equals(role) && requestUri.startsWith("/api/admin")) {
+            // 멤버(USER)는 스태프 전용 엔드포인트에 접근 불가
+            return true;
+        }
+        return false;
     }
 }

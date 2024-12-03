@@ -1,6 +1,6 @@
 package com.hjhotelback.security;
 
-import com.hjhotelback.entity.AdminEntity;
+import com.hjhotelback.entity.StaffEntity;
 import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
@@ -72,7 +72,7 @@ public class JwtTokenProvider {
     }
 
     // 어드민 JWT 생성 (AdminEntity용)
-    public String generateAdminToken(AdminEntity adminEntity, String role) {
+    public String generateAdminToken(StaffEntity staffEntity, String role) {
         // 어드민의 권한을 설정
         List<String> authorities = List.of(role); // 예시로 ADMIN 역할만 포함
 
@@ -85,10 +85,10 @@ public class JwtTokenProvider {
         // JWT 생성
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS512)
-                .setSubject(adminEntity.getStaffUserId()) // 어드민 사용자 ID
+                .setSubject(staffEntity.getStaffUserId()) // 어드민 사용자 ID
                 .setIssuedAt(new Date(now)) // 토큰 생성 시간
                 .setExpiration(validity) // 토큰 만료 시간 설정
-                .claim("userName", adminEntity.getName()) // 어드민 이름
+                .claim("userName", staffEntity.getName()) // 어드민 이름
                 .claim("role", role)  // 역할 (ADMIN)을 claim으로 저장
                 .claim("auths", authorities) // 권한
                 .compact();

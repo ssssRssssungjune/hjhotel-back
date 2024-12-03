@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AdminInfoResponseDto {
+public class StaffInfoResponseDto {
     private String staffUserId; // 관리자 ID
     private String name;        // 관리자 이름
     private String role;        // 관리자 역할

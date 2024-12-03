@@ -1,6 +1,7 @@
 package com.hjhotelback.config;
 
-import com.hjhotelback.security.AdminJwtAuthenticationFilter;
+//import com.hjhotelback.security.StaffJwtAuthenticationFilter;
+import com.hjhotelback.security.JwtAuthenticationFilter;
 import com.hjhotelback.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +41,7 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
-                .addFilterBefore(new AdminJwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);  // 필터 체인에 JwtAuthenticationFilter 추가
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);  // 필터 체인에 JwtAuthenticationFilter 추가
 
         return http.build();
     }
