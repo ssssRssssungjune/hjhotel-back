@@ -21,13 +21,17 @@ public class StaffAuthController {
             // StaffService에서 토큰 생성 및 검증
             String token = staffService.login(request.getStaffUserId(), request.getPassword());
 
-            // Response 객체 반환
+            // JWT 토큰 응답 반환
             StaffJwtResponseDto response = new StaffJwtResponseDto(token);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // 잘못된 자격 증명 처리
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 일반 예외 처리
+            // 잘못된 자격 증명 처리
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new StaffJwtResponseDto("아이디 또는 비밀번호가 잘못되었습니다."));
+        } catch (SecurityException e) {
+            // 권한 없음 처리
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new StaffJwtResponseDto("권한이 없습니다."));
         }
     }
 }
