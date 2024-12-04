@@ -65,6 +65,7 @@
 	<insert id="createPayment" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (
 	        reservation_id,
+	        order_id,
 	        amount,
 	        payment_method,
 	        payment_status,
@@ -74,6 +75,7 @@
 	    )
 	    VALUES (
 	        #{reservationId},
+	        #{orderId},
 	        #{amount},
 	        #{paymentMethod},
 	        #{paymentStatus},
@@ -105,12 +107,17 @@
             payment_status = #{paymentStatus},
             transaction_id = #{transactionId},
             updated_at = #{updatedAt}
-        WHERE reservation_id = #{reservationId}
+        WHERE payment_id = #{paymentId}
 	</update>
 	
-	<!-- 24.11.23 지은 [완료] : 결제 내역 - payment DB 속성 전체 가져오기 -->
+	<!-- 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기 -->
 	<select id="getPaymentById" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		SELECT * FROM payment;
+	</select>
+	
+	<!-- 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 특정 orderId 데이터 가져오기 -->
+	<select id="getPaymentByOrderId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
+		SELECT * FROM payment WHERE order_id = #{orderId};
 	</select>
 	
 	<!-- 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전) -->
@@ -128,4 +135,6 @@
 		JOIN room_type rt ON rt.room_type_id = rm.room_type_id
 		WHERE r.reservation_id = 1;
 	</select>
+	
+	
 </mapper>
