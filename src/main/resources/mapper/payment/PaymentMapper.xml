@@ -112,11 +112,16 @@
 	
 	<!-- 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기 -->
 	<select id="getPaymentById" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
-		SELECT * FROM payment;
+		SELECT * FROM payment WHERE payment_id = #{paymentId};
 	</select>
 	
 	<!-- 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 특정 orderId 데이터 가져오기 -->
 	<select id="getPaymentByOrderId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
+		SELECT * FROM payment WHERE order_id = #{orderId};
+	</select>
+	
+	<!-- 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 특정 orderId 데이터 가져오기 -->
+	<select id="findByPaypalOrderId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		SELECT * FROM payment WHERE order_id = #{orderId};
 	</select>
 	

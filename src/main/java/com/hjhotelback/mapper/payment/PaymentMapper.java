@@ -38,6 +38,7 @@ public interface PaymentMapper {
     void updatePaymentStatus(PaymentDTO newPaymentDTO);
 	
 	// 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기
+//	PaymentDTO getPaymentById(@Param("paymentId") Integer paymentId);
 	PaymentDTO getPaymentById(@Param("paymentId") Integer paymentId);
 	
 	// 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 속성 전체 가져오기

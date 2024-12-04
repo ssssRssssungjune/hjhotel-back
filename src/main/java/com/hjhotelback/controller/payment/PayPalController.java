@@ -88,8 +88,8 @@ public class PayPalController {
     	
     }
     
-    // 24.12.01 지은 [완료] : 결제 성공 처리 및 상태 업데이트 작업 완료
-    // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
+    // 24.12.04 지은 [완료] : 결제 오류 발생 부분 수정.
+    // 쿼리문과 payment와 order 테이블을 연결하는 외부키 생성해서 공유.
     @Transactional
     @GetMapping("/success")
     public String success(@RequestParam(name="paymentId") String paymentId, @RequestParam(name="PayerID") String payerID) {
@@ -105,14 +105,6 @@ public class PayPalController {
             System.out.println("Transaction ID: " + transactionId);
             System.out.println("PaypalOrderId: " + payment.getId());
             
-//            // 결제 완료된 후 주문 상태 업데이트
-//            orderMapper.updateOrderStatus(paymentId, "COMPLETED");
-           
-            // PaypalOrderId로 reservationId 가져오기
-//            String PaypalOrderId = payment.getId();
-//            Order order = orderMapper.findByPaypalOrderId(PaypalOrderId);
-//            Integer reservationId = order.getReservationId();
-            
             // paypalOrderId 가져오기
             String paypalOrderId = payment.getId();
             Order order = orderMapper.findByPaypalOrderId(paypalOrderId);
@@ -126,15 +118,10 @@ public class PayPalController {
             
             // orderId로 특정 결제내역 가져와서6 paymentId 가져오기.
             PaymentDTO newPaymentDTO = paymentMapper.getPaymentByOrderId(orderId);
+            // transactionId, status, updatedAt 저장
             newPaymentDTO.setTransactionId(transactionId);
             newPaymentDTO.setPaymentStatus(PaymentStatus.COMPLETED);
             newPaymentDTO.setUpdatedAt(LocalDateTime.now());
-            
-            // 예약ID로 DB에 저장된 특정 결제내역 가져와서 paymentId, transactionId, status, updatedAt 저장
-//            PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(reservationId);
-//            newPaymentDTO.setTransactionId(transactionId);
-//            newPaymentDTO.setPaymentStatus(PaymentStatus.COMPLETED);
-//            newPaymentDTO.setUpdatedAt(LocalDateTime.now());
            
             // 수정된 내용 업데이트
             paymentMapper.updatePaymentStatus(newPaymentDTO);
@@ -159,18 +146,17 @@ public class PayPalController {
     @GetMapping("/cancel")
     public String cancel(@RequestParam(name="paymentId") Integer paymentId) {
     	
-    	// payment 목록 가져와서 reservation id 가져오기
+    	// 상태 변경 업데이트를 위해 payment 목록 가져오기.
     	PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(paymentId);
-    	Integer reservationId = newPaymentDTO.getReservationId();
     	newPaymentDTO.setPaymentStatus(PaymentStatus.CANCELLED);
         newPaymentDTO.setUpdatedAt(LocalDateTime.now());
     	
         // 수정된 내용 결제 내역에(payment) 상태 업데이트
         paymentMapper.updatePaymentStatus(newPaymentDTO);
         
-        // paypalOrderId 가져와서 주문서(orders) 상태 업데이트
-        Order order = orderMapper.findByPaypalReservationId(reservationId);
-        String paypalOrderId = order.getPaypalOrderId();
+        // payment에서 orderId 가져와서 주문서(orders) 상태 업데이트
+        Order order = orderMapper.findByPaypalPkOrderId(newPaymentDTO.getOrderId());
+//        String paypalOrderId = order.getPaypalOrderId();
         orderMapper.updateOrderStatus(paypalOrderId, "CANCELLED");
         
         // 예약 상태 CONFIRMED으로 업데이트

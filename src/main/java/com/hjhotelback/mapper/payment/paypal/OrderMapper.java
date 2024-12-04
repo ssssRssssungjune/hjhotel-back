@@ -37,13 +37,14 @@ public interface OrderMapper {
     Order findByPaypalOrderId(String paypalOrderId);
 
     
-    @Select("SELECT * FROM orders WHERE reservation_id = #{reservationId}")
-    Order findByPaypalReservationId(Integer reservationId);
+    @Select("SELECT * FROM orders WHERE order_id = #{orderId}")
+    Order findByPaypalPkOrderId(Integer orderId);
     
 //    @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paymentId}")
 //    void updateOrderStatus(@Param("paymentId") String paymentId,
 //                      @Param("status") String status);
     
+    // 쿼리문 수정해야함.
     @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paypalOrderId}")
     void updateOrderStatus(@Param("paypalOrderId") String paypalOrderId,
                       @Param("status") String status);
