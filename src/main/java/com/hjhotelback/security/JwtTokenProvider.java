@@ -68,7 +68,7 @@ public class JwtTokenProvider {
                 memberEntity.getUserId(), // subject
                 role, // 역할
                 authorities, // 권한 리스트
-                tokenValidityInSeconds * 1000 // 만료 시간
+                tokenValidityInSeconds * 10000 // 만료 시간
         );
     }
 
