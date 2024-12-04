@@ -1,4 +1,4 @@
-// package: com.hjhotelback.mapper.staff
+
 package com.hjhotelback.mapper.staff;
 
 import com.hjhotelback.entity.staff.StaffEntity;
@@ -16,9 +16,4 @@ public interface StaffMapper {
     StaffEntity findByStaffUserId(String staffUserId);
 
 
-
-//    @Insert("INSERT INTO staff (staff_user_id, password, role_id, name, position, is_active) " +
-//            "VALUES (#{staffUserId}, #{password}, #{roleId}, #{name}, #{position}, #{isActive})")
-//    void insertAdmin(StaffEntity staff);
-//
 }

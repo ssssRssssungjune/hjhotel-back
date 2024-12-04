@@ -1,10 +1,9 @@
 package com.hjhotelback.security;
 
-import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
+import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
-import com.hjhotelback.service.staff.StaffService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,24 +40,39 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
+        // 비밀 키 초기화
         this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
     }
 
+    // 관리자용 JWT 생성
     public String generateAdminToken(StaffEntity staffEntity, String roleName) {
         if (!"ADMIN".equals(roleName)) {
             throw new IllegalArgumentException("Only ADMIN role can generate admin tokens");
         }
-
-        return Jwts.builder()
-                .setSubject(staffEntity.getStaffUserId())
-                .claim("role", roleName)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 2 * 3600 * 1000)) // 2시간 만료
-                .signWith(secretKey, SignatureAlgorithm.HS512)
-                .compact();
+        return createToken(
+                staffEntity.getStaffUserId(), // subject
+                roleName, // 역할
+                List.of(roleName), // 권한
+                2 * 3600 * 1000 // 만료 시간: 2시간
+        );
     }
 
-    // JWT 생성 메서드
+    // 일반 사용자용 JWT 생성
+    public String generateToken(MemberEntity memberEntity, String role) {
+        List<String> authorities = memberMapper.findMemberAuth(memberEntity.getMemberId())
+                .stream()
+                .map(MemberAuthEntity::getAuth)
+                .collect(Collectors.toList());
+
+        return createToken(
+                memberEntity.getUserId(), // subject
+                role, // 역할
+                authorities, // 권한 리스트
+                tokenValidityInSeconds * 1000 // 만료 시간
+        );
+    }
+
+    // JWT 생성 공통 메서드
     private String createToken(String subject, String role, List<String> authorities, long expirationTime) {
         long now = System.currentTimeMillis();
         Date validity = new Date(now + expirationTime);
@@ -73,24 +87,37 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 일반 사용자 JWT 생성
-    public String generateToken(MemberEntity memberEntity, String role) {
-        List<String> authorities = memberMapper.findMemberAuth(memberEntity.getMemberId())
-                .stream()
-                .map(MemberAuthEntity::getAuth)
-                .collect(Collectors.toList());
-
-        return createToken(memberEntity.getUserId(), role, authorities, tokenValidityInSeconds * 1000);
+    // JWT 유효성 검사
+    public boolean validateToken(String token) {
+        try {
+            parseClaims(token); // Claims를 파싱하여 유효성 검사
+            return true;
+        } catch (Exception e) {
+            log.error("JWT 유효성 검사 실패: {}", e.getMessage());
+            return false;
+        }
     }
 
-
+    // JWT에서 Claims 파싱
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
     // JWT에서 사용자 ID 추출
     public String getUserIdFromToken(String token) {
         return parseClaims(token).getSubject();
     }
 
-    // JWT에서 권한 추출
+    // JWT에서 역할(Role) 추출
+    public String getRoleFromToken(String token) {
+        return parseClaims(token).get("role", String.class);
+    }
+
+    // JWT에서 권한(Auth) 리스트 추출
     public List<String> getRolesFromToken(String token) {
         return parseClaims(token).get("auths", List.class);
     }
@@ -104,25 +131,6 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         UserDetails userDetails = new User(username, "", authorities);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
-    }
-
-    // JWT 유효성 검사
-    public boolean validateToken(String token) {
-        try {
-            parseClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // JWT에서 Claims 추출
-    public Claims parseClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        return new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
     }
 }

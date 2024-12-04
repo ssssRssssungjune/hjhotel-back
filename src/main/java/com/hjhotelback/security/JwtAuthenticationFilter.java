@@ -17,7 +17,6 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -27,30 +26,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
         String requestUri = request.getRequestURI();
-        String jwtToken = extractJwtFromRequest(request);
 
-        // 로그아웃 요청 또는 유효하지 않은 JWT는 필터링 제외
-        if (isLogoutRequest(requestUri) || jwtToken == null || !jwtTokenProvider.validateToken(jwtToken)) {
+        // 로그인 경로는 필터링 제외
+        if ("/api/admin/login".equals(requestUri)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 역할(Role) 확인 및 접근 제한
-        String role = jwtTokenProvider.parseClaims(jwtToken).get("role", String.class);
+        String jwtToken = extractJwtFromRequest(request);
 
-        if (isUnauthorizedAccess(role, requestUri)) {
-            sendForbiddenResponse(response, "접근 권한이 없습니다.");
+        if (jwtToken == null || !jwtTokenProvider.validateToken(jwtToken)) {
+            filterChain.doFilter(request, response);
             return;
         }
 
-        // 인증 정보 설정
         Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
+
 
     private String extractJwtFromRequest(HttpServletRequest request) {
         if (request.getCookies() != null) {
@@ -60,11 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
+        log.warn("JWT 쿠키가 요청에 포함되지 않았습니다.");
         return null;
-    }
-
-    private boolean isLogoutRequest(String requestUri) {
-        return requestUri.contains("/logout");
     }
 
     private boolean isUnauthorizedAccess(String role, String requestUri) {
@@ -73,6 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void sendForbiddenResponse(HttpServletResponse response, String message) throws IOException {
+        log.error("403 Forbidden 응답: {}", message);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -80,3 +74,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().flush();
     }
 }
+

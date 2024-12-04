@@ -1,4 +1,4 @@
-// package: com.hjhotelback.entity.staff
+
 package com.hjhotelback.entity.staff;
 
 import lombok.Data;
