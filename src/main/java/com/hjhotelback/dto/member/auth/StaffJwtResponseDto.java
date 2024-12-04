@@ -1,10 +1,12 @@
 package com.hjhotelback.dto.member.auth;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class StaffJwtResponseDto {
-    private String token; // 발급된 JWT 토큰
+    private String staffUserId;
+    private String token;
+    private String role;
 }

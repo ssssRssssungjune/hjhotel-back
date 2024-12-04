@@ -1,9 +1,10 @@
 package com.hjhotelback.security;
 
-import com.hjhotelback.entity.StaffEntity;
+import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
+import com.hjhotelback.service.staff.StaffService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,138 +30,99 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtTokenProvider {
 
+    private final MemberMapper memberMapper;
+
     @Value("${jwt.token-validity-in-seconds}")
-    private long tokenValidityInSeconds; // 토큰의 만료 시간 (초 단위)
+    private long tokenValidityInSeconds; // 토큰 만료 시간 (초 단위)
 
     @Value("${jwt.secret}")
     private String secretKeyString; // JWT 서명에 사용할 비밀 키
-
     private Key secretKey;
-
-    private final MemberMapper memberMapper; // 사용자 정보 조회를 위한 Mapper
 
     @PostConstruct
     public void init() {
-        // 비밀 키를 초기화
         this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
+    }
+
+    public String generateAdminToken(StaffEntity staffEntity, String roleName) {
+        if (!"ADMIN".equals(roleName)) {
+            throw new IllegalArgumentException("Only ADMIN role can generate admin tokens");
+        }
+
+        return Jwts.builder()
+                .setSubject(staffEntity.getStaffUserId())
+                .claim("role", roleName)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 2 * 3600 * 1000)) // 2시간 만료
+                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    // JWT 생성 메서드
+    private String createToken(String subject, String role, List<String> authorities, long expirationTime) {
+        long now = System.currentTimeMillis();
+        Date validity = new Date(now + expirationTime);
+
+        return Jwts.builder()
+                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .setSubject(subject)
+                .setIssuedAt(new Date(now))
+                .setExpiration(validity)
+                .claim("role", role)
+                .claim("auths", authorities)
+                .compact();
     }
 
     // 일반 사용자 JWT 생성
     public String generateToken(MemberEntity memberEntity, String role) {
-        // 사용자의 권한을 DB에서 조회
-        List<MemberAuthEntity> memberAuths = memberMapper.findMemberAuth(memberEntity.getMemberId());
-        List<String> authorities = memberAuths.stream()
-                .map(MemberAuthEntity::getAuth) // 권한 정보를 추출
+        List<String> authorities = memberMapper.findMemberAuth(memberEntity.getMemberId())
+                .stream()
+                .map(MemberAuthEntity::getAuth)
                 .collect(Collectors.toList());
 
-        long now = System.currentTimeMillis();
-
-        // 토큰 만료 시간 설정
-        long expirationTime = tokenValidityInSeconds * 1000;
-        Date validity = new Date(now + expirationTime);
-
-        // JWT 생성
-        return Jwts.builder()
-                .signWith(secretKey, SignatureAlgorithm.HS512) // 서명 방식
-                .setSubject(memberEntity.getUserId()) // 사용자 ID
-                .setIssuedAt(new Date(now)) // 토큰 생성 시간
-                .setExpiration(validity) // 토큰 만료 시간 설정
-                .claim("userName", memberEntity.getName()) // 사용자 이름을 claim으로 저장
-                .claim("role", role)  // 역할 (USER, ADMIN 등)을 claim으로 저장
-                .claim("auths", authorities) // 사용자의 권한을 claim으로 저장
-                .compact();
+        return createToken(memberEntity.getUserId(), role, authorities, tokenValidityInSeconds * 1000);
     }
 
-    // 어드민 JWT 생성 (AdminEntity용)
-    public String generateAdminToken(StaffEntity staffEntity, String role) {
-        // 어드민의 권한을 설정
-        List<String> authorities = List.of(role); // 예시로 ADMIN 역할만 포함
 
-        long now = System.currentTimeMillis();
-
-        // 토큰 만료 시간 설정 (어드민은 만료 시간을 다르게 설정)
-        long expirationTime = tokenValidityInSeconds * 2 * 1000; // 어드민은 2배 긴 만료 시간
-        Date validity = new Date(now + expirationTime);
-
-        // JWT 생성
-        return Jwts.builder()
-                .signWith(secretKey, SignatureAlgorithm.HS512)
-                .setSubject(staffEntity.getStaffUserId()) // 어드민 사용자 ID
-                .setIssuedAt(new Date(now)) // 토큰 생성 시간
-                .setExpiration(validity) // 토큰 만료 시간 설정
-                .claim("userName", staffEntity.getName()) // 어드민 이름
-                .claim("role", role)  // 역할 (ADMIN)을 claim으로 저장
-                .claim("auths", authorities) // 권한
-                .compact();
-    }
 
     // JWT에서 사용자 ID 추출
     public String getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey) // 서명 키 설정
-                .build()
-                .parseClaimsJws(token) // JWT 파싱
-                .getBody();
-
-        // 사용자 ID (subject)를 반환
-        return claims.getSubject();
+        return parseClaims(token).getSubject();
     }
 
-    // JWT에서 사용자 권한을 추출하는 예시 메서드 (optional)
+    // JWT에서 권한 추출
     public List<String> getRolesFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        // 사용자 권한을 리스트로 반환
-        return claims.get("auths", List.class);
+        return parseClaims(token).get("auths", List.class);
     }
 
-    // JWT에서 Authentication 객체를 생성
+    // JWT에서 Authentication 객체 생성
     public Authentication getAuthentication(String token) {
-        // 사용자 ID 가져오기
         String username = getUserIdFromToken(token);
-
-        // 권한 정보 가져오기
-        List<String> roles = getRolesFromToken(token);
-
-        // SimpleGrantedAuthority 객체 생성
-        List<SimpleGrantedAuthority> authorities = roles.stream()
+        List<SimpleGrantedAuthority> authorities = getRolesFromToken(token)
+                .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체 생성
         UserDetails userDetails = new User(username, "", authorities);
-
-        // UsernamePasswordAuthenticationToken 생성하여 반환
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
-    // JWT 유효성 검사 (boolean 반환)
+    // JWT 유효성 검사
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token); // JWT 파싱
-            return true; // 유효한 토큰
+            parseClaims(token);
+            return true;
         } catch (Exception e) {
-            return false; // 유효하지 않은 토큰
+            return false;
         }
     }
 
     // JWT에서 Claims 추출
-    public Claims getClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody(); // Claims 반환
-        } catch (Exception e) {
-            return null; // 유효하지 않거나 파싱 실패 시 null 반환
-        }
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

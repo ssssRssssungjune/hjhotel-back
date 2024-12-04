@@ -1,6 +1,6 @@
-package com.hjhotelback.service.member.auth;
+package com.hjhotelback.service.staff;
 
-import com.hjhotelback.mapper.member.auth.StaffRoleMapper;
+import com.hjhotelback.mapper.staff.StaffRoleMapper;
 import org.springframework.stereotype.Service;
 
 @Service

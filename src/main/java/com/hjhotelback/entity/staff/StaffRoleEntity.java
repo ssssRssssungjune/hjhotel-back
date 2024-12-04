@@ -1,4 +1,4 @@
-package com.hjhotelback.entity;
+package com.hjhotelback.entity.staff;
 
 import lombok.Getter;
 import lombok.Setter;

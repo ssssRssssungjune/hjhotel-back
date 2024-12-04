@@ -1,8 +1,7 @@
-package com.hjhotelback.controller.member.auth;
+package com.hjhotelback.controller.staff;
 
-import com.hjhotelback.service.member.auth.StaffService;
+import com.hjhotelback.service.staff.StaffService;
 import org.springframework.web.bind.annotation.*;
-import com.hjhotelback.service.member.auth.StaffService;
 
 @RestController
 @RequestMapping("/api/admin")

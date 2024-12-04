@@ -1,11 +1,10 @@
+// package: com.hjhotelback.dto.member.auth
 package com.hjhotelback.dto.member.auth;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class StaffLoginRequestDto {
-    private String staffUserId; // 관리자 ID
-    private String password;    // 관리자 비밀번호
+    private String staffUserId;
+    private String password;
 }

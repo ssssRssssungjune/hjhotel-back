@@ -1,6 +1,6 @@
-package com.hjhotelback.mapper.member.auth;
+package com.hjhotelback.mapper.staff;
 
-import com.hjhotelback.entity.StaffRoleEntity;
+import com.hjhotelback.entity.staff.StaffRoleEntity;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
