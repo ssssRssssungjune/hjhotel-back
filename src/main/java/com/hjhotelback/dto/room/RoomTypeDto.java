@@ -1,2 +1,17 @@
-// Placeholder content for RoomTypeDto.java
-// This file is located in backend/src/main/java/com/hotel/dto/room/RoomTypeDto.java
+package com.hjhotelback.dto.room;
+
+import java.math.BigDecimal;
+
+import lombok.Data;
+
+@Data
+public class RoomTypeDto  {
+	private Integer roomTypeId;
+	private String name;
+	private String description;
+	private Integer baseOccupancy;
+	private Integer maxOccupancy;
+	private BigDecimal basePrice;
+	private Boolean isActive;
+	private String imagePath;
+}
