@@ -60,4 +60,59 @@
         DELETE FROM reservation WHERE reservation_id = #{reservationId} AND status = 'PENDING'
    </delete> 
 
+
+
+    <select id="getRoomReservationSummary" resultType="com.hjhotelback.dto.reservation.ResReservation$Summary">
+        SELECT 
+            RT.room_type_id AS room_type_id,
+            D.date AS reservation_date,
+            COUNT(R.room_id) AS booked_rooms
+        FROM 
+            room_type AS RT
+        LEFT JOIN 
+            room AS R ON RT.room_type_id = R.room_type_id
+        LEFT JOIN 
+            reservation AS RS ON R.room_id = RS.room_id
+        JOIN 
+            (
+                SELECT CURRENT_DATE + INTERVAL n DAY AS date
+                FROM (
+                    SELECT @rownum := @rownum + 1 AS n
+                    FROM information_schema.columns, 
+                    (SELECT @rownum := 0) r
+                    LIMIT 31
+                ) AS days
+                WHERE MONTH(CURRENT_DATE + INTERVAL n DAY) = MONTH(CURRENT_DATE)
+                    AND CURRENT_DATE + INTERVAL n DAY &gt;= CURRENT_DATE
+            ) AS D
+            ON RS.check_in &lt;= D.date AND RS.check_out &gt; D.date
+        WHERE 
+            RS.STATUS != 'CANCELLED'
+        GROUP BY 
+            RT.room_type_id, RT.name, RT.base_occupancy, RT.max_occupancy, RT.base_price, D.date
+        ORDER BY 
+            D.date ASC, RT.room_type_id ASC;
+    </select>
+
+    <select id="getRoomSample" resultType="com.hjhotelback.dto.reservation.ResReservation$RoomSample">
+        SELECT 
+            RT.room_type_id AS room_type_id,
+            RT.name AS room_type, 
+            RT.description AS description, 
+            RT.base_occupancy AS base_occupancy, 
+            RT.max_occupancy AS max_occupancy, 
+            RT.base_price AS base_price,
+            COUNT(R.room_id) AS room_count
+        FROM 
+            room_type AS RT
+        LEFT JOIN 
+            room AS R 
+        ON 
+            RT.room_type_id = R.room_type_id
+        GROUP BY 
+            RT.room_type_id, RT.name, RT.description, RT.base_occupancy, RT.max_occupancy, RT.base_price
+        ORDER BY 
+            RT.room_type_id ASC;
+    </select>
+
 </mapper>

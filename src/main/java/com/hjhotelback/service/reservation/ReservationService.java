@@ -87,25 +87,39 @@ public class ReservationService {
             return "Invalid request type";
     }
 
+    //24.12.01 한택 [내용] :
+    public boolean UpdateReservationState(ReqReservation.UpdateState data){
+
+        return updateReservationState(data);
+    }
+
     // 예약 날짜 변경 로직
-    private boolean updateReservationDate(ReqReservation.UpdateDate req){
-        if (req.checkIn.compareTo(req.checkOut) > 0)
+    private boolean updateReservationDate(ReqReservation.UpdateDate data){
+        if (data.checkIn.compareTo(data.checkOut) > 0)
             return false;
 
-        return _mapper.updateReservationDate(req) > 0;
+        return _mapper.updateReservationDate(data) > 0;
     }
 
     // 예약 상태 변경 로직
-    private boolean updateReservationState(ReqReservation.UpdateState req){
+    private boolean updateReservationState(ReqReservation.UpdateState data){
         
-        return _mapper.updateReservationState(req) > 0;
+        return _mapper.updateReservationState(data) > 0;
 
     }
 
     // 예약 객실 변경 로직
-    private boolean updateReservationRoom(ReqReservation.UpdateRoom req){
+    private boolean updateReservationRoom(ReqReservation.UpdateRoom data){
 
-        return _mapper.updateReservationRoom(req) > 0;
+        return _mapper.updateReservationRoom(data) > 0;
+    }
+
+    public List<ResReservation.Summary> getReservationSummaryTest(){
+        return _mapper.getRoomReservationSummary();
+    }
+
+    public List<ResReservation.RoomSample> getRoomSample(){
+        return _mapper.getRoomSample();
     }
 }
 

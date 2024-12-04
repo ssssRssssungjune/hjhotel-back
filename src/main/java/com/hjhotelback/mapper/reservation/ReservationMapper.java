@@ -32,4 +32,9 @@ public interface ReservationMapper {
     
     //사용자 예약 취소
     public int deleteReservation(ReqReservation.Delete req);
+
+    // Test
+    public List<ResReservation.Summary> getRoomReservationSummary();
+
+    public List<ResReservation.RoomSample> getRoomSample();
 }

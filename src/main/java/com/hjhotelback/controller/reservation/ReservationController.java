@@ -88,4 +88,15 @@ public class ReservationController {
         return _service.updateReservationForAdmin(req);
     }
     // -------------------------------------- Admin -------------------------------------------
+
+    @GetMapping("test")
+    public List<ResReservation.Summary> GETReservationSummaryTest(){
+        return _service.getReservationSummaryTest();
+    }
+
+    @GetMapping("test/room")
+    public List<ResReservation.RoomSample> GETRoomSample(){
+        System.out.println("GETRoomSample method called");
+        return _service.getRoomSample();
+    }
 }
