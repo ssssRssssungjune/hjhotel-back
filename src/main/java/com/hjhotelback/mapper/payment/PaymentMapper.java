@@ -37,8 +37,11 @@ public interface PaymentMapper {
     // 24.11.29 지은 [완료] 결제 업데이트 내용 저장
     void updatePaymentStatus(PaymentDTO newPaymentDTO);
 	
-	// 24.11.23 지은 [완료] : 결제 내역 - payment DB 속성 전체 가져오기
+	// 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기
 	PaymentDTO getPaymentById(@Param("paymentId") Integer paymentId);
+	
+	// 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 속성 전체 가져오기
+	PaymentDTO getPaymentByOrderId(@Param("orderId") Integer orderId);
 	
 	// 24.11.29 지은 [완료] : 예약내역결제조회 (결제 전)
 	PaymentReservationListDTO getReservationPaymentList();

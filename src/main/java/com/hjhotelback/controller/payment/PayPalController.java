@@ -38,7 +38,6 @@ public class PayPalController {
     private final ReservationService reservationService;
 
     // 24.11.29 지은 [완료] : order(주문서), payment(결제내역) 생성 완료.
-    @Transactional
     @GetMapping("/checkout/{reservationId}")
     public String checkout(@PathVariable("reservationId") Integer reservationId) {
     	 try {
@@ -65,6 +64,7 @@ public class PayPalController {
              
              // 결제 내역 생성
              PaymentDTO paymentDTO = new PaymentDTO();
+             paymentDTO.setOrderId(order.getId());
              paymentDTO.setReservationId(reservationId);
              paymentDTO.setPaymentMethod("PAYPAL");
              paymentDTO.setPaymentStatus(PaymentStatus.PENDING);
@@ -103,27 +103,45 @@ public class PayPalController {
             String transactionId = payment.getTransactions().get(0).getRelatedResources().get(0)
                 .getSale().getId();
             System.out.println("Transaction ID: " + transactionId);
+            System.out.println("PaypalOrderId: " + payment.getId());
             
-            // 결제 완료된 후 주문 상태 업데이트
-            orderMapper.updateOrderStatus(paymentId, "COMPLETED");
+//            // 결제 완료된 후 주문 상태 업데이트
+//            orderMapper.updateOrderStatus(paymentId, "COMPLETED");
            
             // PaypalOrderId로 reservationId 가져오기
-            String PaypalOrderId = payment.getId();
-            Order order = orderMapper.findByPaypalOrderId(PaypalOrderId);
-            Integer reservationId = order.getReservationId();
+//            String PaypalOrderId = payment.getId();
+//            Order order = orderMapper.findByPaypalOrderId(PaypalOrderId);
+//            Integer reservationId = order.getReservationId();
             
-            // 예약ID로 DB에 저장된 특정 결제내역 가져와서 transactionId, status, updatedAt 저장
-            PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(reservationId);
+            // paypalOrderId 가져오기
+            String paypalOrderId = payment.getId();
+            Order order = orderMapper.findByPaypalOrderId(paypalOrderId);
+            // orderId 가져오기
+            Integer orderId = order.getId();
+            
+            // 결제 완료된 후 주문 상태 업데이트
+            orderMapper.updateOrderStatus(paypalOrderId, "COMPLETED");            
+            
+            System.out.println("여기까지 테스트"); //테스트 콘솔
+            
+            // orderId로 특정 결제내역 가져와서6 paymentId 가져오기.
+            PaymentDTO newPaymentDTO = paymentMapper.getPaymentByOrderId(orderId);
             newPaymentDTO.setTransactionId(transactionId);
             newPaymentDTO.setPaymentStatus(PaymentStatus.COMPLETED);
             newPaymentDTO.setUpdatedAt(LocalDateTime.now());
+            
+            // 예약ID로 DB에 저장된 특정 결제내역 가져와서 paymentId, transactionId, status, updatedAt 저장
+//            PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(reservationId);
+//            newPaymentDTO.setTransactionId(transactionId);
+//            newPaymentDTO.setPaymentStatus(PaymentStatus.COMPLETED);
+//            newPaymentDTO.setUpdatedAt(LocalDateTime.now());
            
             // 수정된 내용 업데이트
             paymentMapper.updatePaymentStatus(newPaymentDTO);
             
             // 예약 상태 CONFIRMED으로 업데이트
             ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
-            updateStatus.reservationId = reservationId;
+            updateStatus.reservationId = newPaymentDTO.getReservationId();
             updateStatus.status = ReservationStatus.CONFIRMED;
             
             reservationService.updateReservationForAdmin(updateStatus);

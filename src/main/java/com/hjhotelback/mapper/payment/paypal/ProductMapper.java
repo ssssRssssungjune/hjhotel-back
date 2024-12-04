@@ -30,6 +30,6 @@ public interface ProductMapper {
             "JOIN member m ON m.member_id = r.member_id " +
             "JOIN room rm ON rm.room_id = r.room_id " +
             "JOIN room_type rmt ON rmt.room_type_id = rm.room_type_id " +
-            "WHERE r.reservation_id = #{id}")
-    ReservationItem findById(Integer id);
+            "WHERE r.reservation_id = #{reservationId}")
+    ReservationItem findById(Integer reservationId);
 }
