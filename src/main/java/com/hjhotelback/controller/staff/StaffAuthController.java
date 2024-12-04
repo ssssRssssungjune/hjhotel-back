@@ -24,24 +24,32 @@ public class StaffAuthController {
      * @return ResponseEntity<Void>
      */
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody StaffLoginRequestDto loginRequest, HttpServletResponse response) {
-        // 로그인 처리 후 JWT 생성
-        StaffJwtResponseDto jwtResponse = staffService.loginWithStaffId(loginRequest);
+    public ResponseEntity<?> login(@RequestBody StaffLoginRequestDto loginRequest, HttpServletResponse response) {
+        try {
+            // StaffService를 통해 로그인 처리 및 JWT 생성
+            StaffJwtResponseDto jwtResponse = staffService.loginWithStaffId(loginRequest);
 
-        // HTTP-Only 쿠키 설정
-        ResponseCookie jwtCookie = createJwtToken(jwtResponse.getToken());
+            // JWT를 응답 쿠키에 설정
+            ResponseCookie cookie = ResponseCookie.from("jwt", jwtResponse.getToken())
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .sameSite("None") // CORS 요청을 허용하려면 None
+                    .maxAge(3600)
+                    .build();
+            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        // 응답 헤더에 쿠키 추가
-        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok(jwtResponse); // JWT 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
+        }
     }
 
-    /**
-     * 관리자 로그아웃
-     * @param response HTTP 응답 객체
-     * @return ResponseEntity<Void>
-     */
+//    /**
+//     * 관리자 로그아웃
+//     * @param response HTTP 응답 객체
+//     * @return ResponseEntity<Void>
+//     */
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         // JWT 쿠키 삭제

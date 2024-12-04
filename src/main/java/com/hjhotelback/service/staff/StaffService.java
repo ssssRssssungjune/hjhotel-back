@@ -22,8 +22,8 @@ public class StaffService {
 
     /**
      * 관리자 로그인을 처리하는 메서드
-     * @param loginRequest 로그인 요청 DTO
-     * @return StaffJwtResponseDto
+//     * @param loginRequest 로그인 요청 DTO
+//     * @return StaffJwtResponseDto
      */
     public StaffJwtResponseDto loginWithStaffId(StaffLoginRequestDto staffLoginRequestDto) {
         // 사용자 조회
