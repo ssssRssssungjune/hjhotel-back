@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Update;
 
+import com.hjhotelback.dto.payment.Order;
+import com.hjhotelback.dto.payment.OrderListDTO;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
@@ -46,4 +48,7 @@ public interface PaymentMapper {
 	
 	// 24.11.29 지은 [완료] : 예약내역결제조회 (결제 전)
 	PaymentReservationListDTO getReservationPaymentList();
+	
+	// 24.12.05 지은 [작업중] : paypal order 전체 목록 조회
+	List<OrderListDTO> getPaypalAllList();
 }

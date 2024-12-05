@@ -141,7 +141,8 @@ public class PayPalController {
         }
     }
     
-    // 24.12.01 지은 [완료] : 결제 취소 처리 및 상태 업데이트 작업 완료
+    // 24.12.05 지은 [완료] : 결제 취소 처리 및 상태 업데이트 작업 완료
+    // 파라미터 부분 수정 작업 필요해서 수정함.
     // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
     @GetMapping("/cancel")
     public String cancel(@RequestParam(name="paymentId") Integer paymentId) {
@@ -156,8 +157,7 @@ public class PayPalController {
         
         // payment에서 orderId 가져와서 주문서(orders) 상태 업데이트
         Order order = orderMapper.findByPaypalPkOrderId(newPaymentDTO.getOrderId());
-//        String paypalOrderId = order.getPaypalOrderId();
-        orderMapper.updateOrderStatus(paypalOrderId, "CANCELLED");
+        orderMapper.updateOrderStatus(order.getPaypalOrderId(), "CANCELLED");
         
         // 예약 상태 CONFIRMED으로 업데이트
         // 결제에서 취소되었는데 예약까지 취소시킬 필요는 없을 거 같음.

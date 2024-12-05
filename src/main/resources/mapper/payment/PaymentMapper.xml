@@ -141,5 +141,17 @@
 		WHERE r.reservation_id = 1;
 	</select>
 	
+	<select id="getPaypalAllList" parameterType="com.hjhotelback.dto.payment.OrderListDTO">
+		SELECT 
+			id,
+			paypal_order_id,
+			status,
+			reservation_id,
+			amount,
+			created_at
+		FROM orders
+		ORDER BY id DESC;
+	</select>
+	
 	
 </mapper>

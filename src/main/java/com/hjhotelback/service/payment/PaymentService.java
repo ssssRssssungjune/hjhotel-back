@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hjhotelback.dto.payment.Order;
+import com.hjhotelback.dto.payment.OrderListDTO;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
@@ -13,11 +15,13 @@ import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.paypal.api.payments.Payment;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
-	@Autowired
-	private PaymentMapper paymentMapper;
+	private final PaymentMapper paymentMapper;
 	
 	
 	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
@@ -53,9 +57,13 @@ public class PaymentService {
         return false;
 	}
 
-	
 	// 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)
 	public PaymentReservationListDTO getReservationPaymentList() {
 		return paymentMapper.getReservationPaymentList();
 	};
+	
+	// 24.12.05 지은 [작업중] : payapl order 전체 목록 조회
+	public List<OrderListDTO> getPaypalAllList() {
+		return paymentMapper.getPaypalAllList();
+	}
 }

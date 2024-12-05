@@ -19,30 +19,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hjhotelback.dto.payment.Order;
+import com.hjhotelback.dto.payment.OrderListDTO;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
 import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
+import com.hjhotelback.mapper.payment.paypal.OrderMapper;
+import com.hjhotelback.mapper.payment.paypal.ProductMapper;
+import com.hjhotelback.service.payment.PayPalService;
 import com.hjhotelback.service.payment.PaymentService;
+import com.hjhotelback.service.reservation.ReservationService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/payments")
+@RequiredArgsConstructor
 public class PaymentController {
 	
-	@Autowired
-	private PaymentService paymentService;
-	
-	@Autowired
-	private PaymentMapper paymentMapper;
+	private final PaymentService paymentService;
+	private final PaymentMapper paymentMapper;
 	
 	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
+	// pagination으로 수정 작업
+	// RequestParam("page")와 RequestParam("limit")
 	@GetMapping
-	public List<PaymentListDTO> getPayments() {
+	public List<PaymentListDTO> getPayments(){
 		return paymentService.getPaymentsList();
 	}
 	
@@ -86,7 +93,8 @@ public class PaymentController {
 	    }
     }
     
-    // 24.11.23 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
+    // 24.11.23 지은 [수정필요] : 결제 내역 - 특정 결제 내역 상태 변경 (+)order의 특정 내역도 동시에 상태변경이 가능해야함.
+	// Todo - order의 특정 내역도 동시에 상태변경이 되도록 수정.
     @PutMapping("/{paymentId}/status")
     public ResponseEntity<Map<String, Object>> updatePaymentStatus(
     		@PathVariable("paymentId") Integer paymentId,
@@ -129,7 +137,8 @@ public class PaymentController {
         
     }
     
-    // 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
+    // 24.11.22 지은 [수정필요] : 결제 내역 - 특정 결제 내역 삭제 (+)특정 결제 내역 삭제하면 fk로 연결된 order의 특정 내역도 삭제가능하게 만들어야함.
+    // Todo - 특정 결제 내역 삭제하면 fk로 연결된 order의 특정 내역도 삭제가능하게 만들어야함.
     @DeleteMapping("/{paymentId}")
     public ResponseEntity<Void> deletePayment(@PathVariable("paymentId") Integer paymentId) {
     	boolean isDeleted = paymentService.deletePayment(paymentId);
@@ -146,5 +155,10 @@ public class PaymentController {
     	return paymentService.getReservationPaymentList();
     }
     
-    // 결제 완료(COMPLETED) 또는 결제 취소(CANCLE)인 경우 해당 예약의 상태 변경
+    // TO DO: paypal order 전체내역 조회
+    @GetMapping("/paypal")
+    public List<OrderListDTO> getPaypalAllList() {
+    	return paymentService.getPaypalAllList();
+    }
+    
 }
