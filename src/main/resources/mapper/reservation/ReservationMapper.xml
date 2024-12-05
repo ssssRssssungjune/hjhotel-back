@@ -79,7 +79,7 @@
                 FROM (
                     SELECT @rownum := @rownum + 1 AS n
                     FROM information_schema.columns, 
-                    (SELECT @rownum := 0) r
+                    (SELECT @rownum := -1) r
                     LIMIT 31
                 ) AS days
                 WHERE MONTH(CURRENT_DATE + INTERVAL n DAY) = MONTH(CURRENT_DATE)
