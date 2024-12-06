@@ -11,6 +11,7 @@ import com.hjhotelback.dto.payment.OrderListDTO;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
+import com.hjhotelback.dto.payment.PaymentPageDTO;
 import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.paypal.api.payments.Payment;
@@ -24,9 +25,17 @@ public class PaymentService {
 	private final PaymentMapper paymentMapper;
 	
 	
-	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
-	public List<PaymentListDTO> getPaymentsList() {
-		return paymentMapper.getPaymentsList();
+	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회(page, size)
+	public PaymentPageDTO getPaymentsList(int page, int size) {
+		int offset = (page - 1) * size;
+		int totalElements = paymentMapper.countTotal();
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+		
+		List<PaymentListDTO> content = paymentMapper.getPaymentsList(offset, size);
+		
+		PaymentPageDTO paymentPageDTO = new PaymentPageDTO(page, size, totalPages, totalElements, content);
+		
+		return paymentPageDTO;
 	};
 	
 	// 24.11.21 지은 [완료] : 결제 내역 - 결제 내역 등록

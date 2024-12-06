@@ -24,6 +24,7 @@ import com.hjhotelback.dto.payment.OrderListDTO;
 import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentDetailDTO;
 import com.hjhotelback.dto.payment.PaymentListDTO;
+import com.hjhotelback.dto.payment.PaymentPageDTO;
 import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
@@ -49,8 +50,12 @@ public class PaymentController {
 	// pagination으로 수정 작업
 	// RequestParam("page")와 RequestParam("limit")
 	@GetMapping
-	public List<PaymentListDTO> getPayments(){
-		return paymentService.getPaymentsList();
+	public String getPayments(
+			@RequestParam(name="page", defaultValue="1") int page,
+			@RequestParam(name="size", defaultValue="10") int size){
+		
+		PaymentPageDTO paymentPageDTO = paymentService.getPaymentsList(page, size);
+		return null;
 	}
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회

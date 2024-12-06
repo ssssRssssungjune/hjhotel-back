@@ -20,8 +20,11 @@ public interface PaymentMapper {
 	
 
 	
-	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
-	List<PaymentListDTO> getPaymentsList();
+	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회
+	List<PaymentListDTO> getPaymentsList(@Param("offset") int offset, @Param("size") int size);
+	
+	// 24.12.06 지은 [완료] : 전체 결제 내역 목록 갯수
+	Integer countTotal();
 	
 	// 24.11.21 지은 [완료] : 결제 내역 - 결제 내역 등록
 	void createPayment(PaymentDTO paymentDTO);
