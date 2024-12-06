@@ -19,7 +19,7 @@
 		FROM payment p
 		JOIN reservation rs ON p.reservation_id = rs.reservation_id
 		JOIN member m ON m.member_id = rs.member_id
-		ORDER BY p.payment_id DESC;
+		ORDER BY p.payment_id DESC LIMIT #{size} OFFSET #{offset};
 	</select>
 	
 	<!-- 24.12.06 지은 [완료] : 결제 내역 전체 갯수 조회 -->

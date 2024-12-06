@@ -46,16 +46,14 @@ public class PaymentController {
 	private final PaymentService paymentService;
 	private final PaymentMapper paymentMapper;
 	
-	// 24.11.22 지은 [완료] : 전체 결제 내역 목록 조회
-	// pagination으로 수정 작업
-	// RequestParam("page")와 RequestParam("limit")
+	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회 + pagination 작업
 	@GetMapping
-	public String getPayments(
+	public ResponseEntity<?> getPayments(
 			@RequestParam(name="page", defaultValue="1") int page,
 			@RequestParam(name="size", defaultValue="10") int size){
 		
 		PaymentPageDTO paymentPageDTO = paymentService.getPaymentsList(page, size);
-		return null;
+		return ResponseEntity.ok(paymentPageDTO);
 	}
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회

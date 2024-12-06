@@ -18,10 +18,8 @@ import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 @Mapper
 public interface PaymentMapper {
 	
-
-	
 	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회
-	List<PaymentListDTO> getPaymentsList(@Param("offset") int offset, @Param("size") int size);
+	List<PaymentListDTO> getPaymentsList(@Param("size") Integer size, @Param("offset") Integer offset);
 	
 	// 24.12.06 지은 [완료] : 전체 결제 내역 목록 갯수
 	Integer countTotal();

@@ -28,11 +28,10 @@ public class PaymentService {
 	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회(page, size)
 	public PaymentPageDTO getPaymentsList(int page, int size) {
 		int offset = (page - 1) * size;
+		List<PaymentListDTO> content = paymentMapper.getPaymentsList(size, offset);
 		int totalElements = paymentMapper.countTotal();
 		int totalPages = (int) Math.ceil((double) totalElements / size);
-		
-		List<PaymentListDTO> content = paymentMapper.getPaymentsList(offset, size);
-		
+
 		PaymentPageDTO paymentPageDTO = new PaymentPageDTO(page, size, totalPages, totalElements, content);
 		
 		return paymentPageDTO;
