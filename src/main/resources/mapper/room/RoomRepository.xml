@@ -93,6 +93,7 @@
 		    RT.base_occupancy, 
 		    RT.max_occupancy, 
 		    RT.base_price,
+		    RT.image_path,
 		   COUNT(R.room_id) AS room_count
 		FROM 
 		   room_type AS RT
