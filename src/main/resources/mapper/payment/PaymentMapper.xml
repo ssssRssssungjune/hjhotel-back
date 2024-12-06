@@ -27,6 +27,11 @@
 		SELECT COUNT(*) FROM payment;
 	</select>
 	
+	<!-- 24.12.06 지은 [완료] : payapl 주문 내역 전체 갯수 조회 -->
+	<select id="countTotalPayapl" resultType="Integer">
+		SELECT COUNT(*) FROM orders;
+	</select>
+	
 	<!-- 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회 -->
 	<resultMap id="paymentProcessLogsResultMap" type="com.hjhotelback.dto.payment.PaymentProcessLogDTO">
 		<result property="createdAt" column="process_created_at" />
@@ -146,7 +151,8 @@
 		WHERE r.reservation_id = 1;
 	</select>
 	
-	<select id="getPaypalAllList" parameterType="com.hjhotelback.dto.payment.OrderListDTO">
+	<!-- 24.12.06 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가. -->
+	<select id="getPaypalAllList" resultType="com.hjhotelback.dto.payment.OrderListDTO">
 		SELECT 
 			id,
 			paypal_order_id,
@@ -155,8 +161,19 @@
 			amount,
 			created_at
 		FROM orders
-		ORDER BY id DESC;
+		ORDER BY id DESC LIMIT #{size} OFFSET #{offset};
 	</select>
 	
-	
+	<!-- 24.12.06 지은 [완료] : paypal 특정 주문서 내역 조회 -->
+	<select id="getPaymentByPaypalId" resultType="com.hjhotelback.dto.payment.Order">
+		SELECT
+			id,
+			paypal_order_id,
+			STATUS,
+			reservation_id,
+			amount,
+			created_at
+		FROM orders
+		WHERE id = #{id};
+	</select>
 </mapper>

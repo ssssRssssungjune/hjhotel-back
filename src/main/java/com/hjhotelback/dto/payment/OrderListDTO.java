@@ -3,9 +3,11 @@ package com.hjhotelback.dto.payment;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class OrderListDTO {
     private Integer id;					// 주문 고유 ID
     private String paypalOrderId;		// PayPal에서 받은 주문 ID

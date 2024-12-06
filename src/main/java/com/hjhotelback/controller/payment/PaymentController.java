@@ -46,7 +46,7 @@ public class PaymentController {
 	private final PaymentService paymentService;
 	private final PaymentMapper paymentMapper;
 	
-	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회 + pagination 작업
+	// 24.12.06 지은 [완료] : 전체 결제 내역 목록 조회 + pagination 작업
 	@GetMapping
 	public ResponseEntity<?> getPayments(
 			@RequestParam(name="page", defaultValue="1") int page,
@@ -158,10 +158,21 @@ public class PaymentController {
     	return paymentService.getReservationPaymentList();
     }
     
-    // TO DO: paypal order 전체내역 조회
+    // 24.12.06 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가.
     @GetMapping("/paypal")
-    public List<OrderListDTO> getPaypalAllList() {
-    	return paymentService.getPaypalAllList();
+    public ResponseEntity<?> getPaypalAllList(
+    		@RequestParam(name="page", defaultValue="1") int page,
+    		@RequestParam(name="size", defaultValue="10") int size) {
+    	
+    	PaymentPageDTO paymentPageDTO = paymentService.getPaypalAllList(page, size);
+    	return ResponseEntity.ok(paymentPageDTO);
+    }
+    
+    // 24.12.06 지은 [완료] : paypal 특정 주문서 내역 조회
+    @GetMapping("/paypal/{id}/details")
+    public ResponseEntity<?> getPaypalDetails(@PathVariable("id") Integer id) {
+    	Order order = paymentService.getPaymentByPaypalId(id);
+    	return ResponseEntity.ok(order);
     }
     
 }

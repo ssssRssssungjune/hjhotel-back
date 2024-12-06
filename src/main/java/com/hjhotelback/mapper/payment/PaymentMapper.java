@@ -18,11 +18,14 @@ import com.hjhotelback.dto.payment.PaymentReservationListDTO;
 @Mapper
 public interface PaymentMapper {
 	
-	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회
+	// 24.12.06 지은 [완료] : 전체 결제 내역 목록 조회
 	List<PaymentListDTO> getPaymentsList(@Param("size") Integer size, @Param("offset") Integer offset);
 	
 	// 24.12.06 지은 [완료] : 전체 결제 내역 목록 갯수
 	Integer countTotal();
+	
+	// 24.12.06 지은 [완료] : payapl 주문서 내역 목록 갯수
+	Integer countTotalPayapl();
 	
 	// 24.11.21 지은 [완료] : 결제 내역 - 결제 내역 등록
 	void createPayment(PaymentDTO paymentDTO);
@@ -41,7 +44,6 @@ public interface PaymentMapper {
     void updatePaymentStatus(PaymentDTO newPaymentDTO);
 	
 	// 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기
-//	PaymentDTO getPaymentById(@Param("paymentId") Integer paymentId);
 	PaymentDTO getPaymentById(@Param("paymentId") Integer paymentId);
 	
 	// 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 속성 전체 가져오기
@@ -50,6 +52,9 @@ public interface PaymentMapper {
 	// 24.11.29 지은 [완료] : 예약내역결제조회 (결제 전)
 	PaymentReservationListDTO getReservationPaymentList();
 	
-	// 24.12.05 지은 [작업중] : paypal order 전체 목록 조회
-	List<OrderListDTO> getPaypalAllList();
+	// 24.12.05 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가.
+	List<OrderListDTO> getPaypalAllList(@Param("size") Integer size, @Param("offset") Integer offset);
+	
+	// 24.12.06 지은 [완료] : paypal 특정 주문서 내역 조회
+	Order getPaymentByPaypalId(@Param("id") Integer id);
 }

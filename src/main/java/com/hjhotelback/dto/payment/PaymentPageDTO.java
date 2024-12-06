@@ -12,5 +12,5 @@ public class PaymentPageDTO {
 	private int size;
 	private int totalPages;
 	private long totalElements;
-	private List<PaymentListDTO> content;
+	private List<?> content; // payment, order 둘다 사용해야해서 <?>으로 작성했음.
 }

@@ -24,8 +24,7 @@ public class PaymentService {
 
 	private final PaymentMapper paymentMapper;
 	
-	
-	// 24.12.06 지은 [수정완료] : 전체 결제 내역 목록 조회(page, size)
+	// 24.12.06 지은 [완료] : 전체 결제 내역 목록 조회(page, size)
 	public PaymentPageDTO getPaymentsList(int page, int size) {
 		int offset = (page - 1) * size;
 		List<PaymentListDTO> content = paymentMapper.getPaymentsList(size, offset);
@@ -70,8 +69,19 @@ public class PaymentService {
 		return paymentMapper.getReservationPaymentList();
 	};
 	
-	// 24.12.05 지은 [작업중] : payapl order 전체 목록 조회
-	public List<OrderListDTO> getPaypalAllList() {
-		return paymentMapper.getPaypalAllList();
+	// 24.12.05 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가.
+	public PaymentPageDTO getPaypalAllList(int page, int size) {
+		int offset = (page - 1) * size;
+		List<OrderListDTO> content = paymentMapper.getPaypalAllList(size, offset);
+		int totalElements = paymentMapper.countTotalPayapl();
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+		
+		PaymentPageDTO paymentPageDTO = new PaymentPageDTO(page, size, totalPages, totalElements, content);
+		return paymentPageDTO;
+	}
+	
+	// 24.12.06 지은 [완료] : paypal 특정 주문서 내역 조회
+	public Order getPaymentByPaypalId(Integer id) {
+		return paymentMapper.getPaymentByPaypalId(id);
 	}
 }
