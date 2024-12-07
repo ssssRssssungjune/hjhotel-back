@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -142,14 +143,26 @@ public class PaymentController {
     
     // 24.11.22 지은 [수정필요] : 결제 내역 - 특정 결제 내역 삭제 (+)특정 결제 내역 삭제하면 fk로 연결된 order의 특정 내역도 삭제가능하게 만들어야함.
     // Todo - 특정 결제 내역 삭제하면 fk로 연결된 order의 특정 내역도 삭제가능하게 만들어야함.
+    @Transactional
     @DeleteMapping("/{paymentId}")
     public ResponseEntity<Void> deletePayment(@PathVariable("paymentId") Integer paymentId) {
-    	boolean isDeleted = paymentService.deletePayment(paymentId);
-    	if (isDeleted) {
-    		return ResponseEntity.noContent().build();
-    	} else {
+    	try {
+    		boolean isDeleted = paymentService.deletePayment(paymentId);
+    		if (isDeleted) {
+    			return ResponseEntity.noContent().build();
+    		} else {
+    			return ResponseEntity.notFound().build();
+    		}
+    	} catch (RuntimeException e) {
     		return ResponseEntity.notFound().build();
     	}
+    	
+    	//    	boolean isDeleted = paymentService.deletePayment(paymentId);
+//    	if (isDeleted) {
+//    		return ResponseEntity.noContent().build();
+//    	} else {
+//    		return ResponseEntity.notFound().build();
+//    	}
     }
     
     // 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)

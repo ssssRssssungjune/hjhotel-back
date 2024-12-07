@@ -46,10 +46,25 @@ public class PaymentService {
 		return paymentMapper.getPaymentCustomById(paymentId);
 	}
 	
-	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
+	// 24.12.08 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
+	// order 내역도 같이 삭제되도록 수정.
 	public boolean deletePayment(Integer paymentId) {
-		int deletedCount = paymentMapper.deletePayment(paymentId);
-		return deletedCount > 0;
+		PaymentDTO paymentDTO = paymentMapper.getPaymentById(paymentId);
+	    if (paymentDTO == null) {
+	        return false;  // 결제 정보가 존재하지 않으면 삭제할 수 없음
+	    }
+	    // 결제 삭제
+	    int deletedCount = paymentMapper.deletePayment(paymentId); 
+		// Paypal 주문 삭제
+	    int deletedPaypalCount = paymentMapper.deletePaypalOrder(paymentDTO.getOrderId());
+	    
+	    // 트랜잭션 롤백을 위해, 둘 다 삭제되었는지 체크
+	    if (deletedCount > 0 && deletedPaypalCount > 0) {
+	        return true;
+	    } else {
+	        // 만약 둘 중 하나라도 삭제되지 않았다면 롤백 처리
+	        throw new RuntimeException("Deletion failed for either payment or paypal order");
+	    }
 	}
 	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경

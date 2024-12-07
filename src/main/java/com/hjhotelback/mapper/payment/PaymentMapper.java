@@ -37,6 +37,9 @@ public interface PaymentMapper {
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제
 	int deletePayment(@Param("paymentId") Integer paymentId);
 	
+	// 24.12.07 지은 [완료] : 주문서 내역 - 특저 주문 내역 삭제
+	int deletePaypalOrder(Integer ordeId);
+	
 	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
 	void updatePaymentStatusBasic(PaymentDTO newPaymentDTO);
 	

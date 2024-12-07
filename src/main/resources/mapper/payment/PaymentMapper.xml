@@ -102,6 +102,12 @@
 		WHERE payment_id = #{paymentId};
 	</delete>
 	
+	<!-- 24.12.07 지은 [완료] : payapl 주문 내역 - 특정 주문 내역 삭제 -->
+	<delete id="deletePaypalOrder" parameterType="com.hjhotelback.dto.payment.Order">
+		DELETE FROM orders
+		WHERE id = #{orderId}
+	</delete>
+	
 	<!-- 24.11.23 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경 -->
  	<update id="updatePaymentStatusBasic" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		UPDATE payment
