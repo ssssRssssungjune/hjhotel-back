@@ -141,32 +141,21 @@ public class PayPalController {
         }
     }
     
-    // 24.12.05 지은 [완료] : 결제 취소 처리 및 상태 업데이트 작업 완료
-    // 파라미터 부분 수정 작업 필요해서 수정함.
+    // 24.12.07 지은 [완료] : 결제 취소 처리 및 상태 업데이트 작업 완료
+    // 파라미터 부분 paymentId에서 order의 id로 변경
     // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
     @GetMapping("/cancel")
-    public String cancel(@RequestParam(name="paymentId") Integer paymentId) {
+    public String cancel(@RequestParam(name="id") Integer id) {
+    	// order id로 상태 업데이트.
+    	Order order = orderMapper.findByPaypalId(id);
+    	orderMapper.updateOrderStatus(order.getPaypalOrderId(), "CANCELLED");
     	
-    	// 상태 변경 업데이트를 위해 payment 목록 가져오기.
-    	PaymentDTO newPaymentDTO = paymentMapper.getPaymentById(paymentId);
+    	// 수정된 내용 결제 내역에(payment) 상태 업데이트
+    	PaymentDTO newPaymentDTO = paymentMapper.getPaymentByOrderId(id);
     	newPaymentDTO.setPaymentStatus(PaymentStatus.CANCELLED);
-        newPaymentDTO.setUpdatedAt(LocalDateTime.now());
-    	
-        // 수정된 내용 결제 내역에(payment) 상태 업데이트
-        paymentMapper.updatePaymentStatus(newPaymentDTO);
-        
-        // payment에서 orderId 가져와서 주문서(orders) 상태 업데이트
-        Order order = orderMapper.findByPaypalPkOrderId(newPaymentDTO.getOrderId());
-        orderMapper.updateOrderStatus(order.getPaypalOrderId(), "CANCELLED");
-        
-        // 예약 상태 CONFIRMED으로 업데이트
-        // 결제에서 취소되었는데 예약까지 취소시킬 필요는 없을 거 같음.
-//        ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
-//        updateStatus.reservationId = reservationId;
-//        updateStatus.status = ReservationStatus.CANCELLED;
-//        
-//        reservationService.updateReservationForAdmin(updateStatus);
-        
-        return "cancel";
+    	newPaymentDTO.setUpdatedAt(LocalDateTime.now());
+    	paymentMapper.updatePaymentStatus(newPaymentDTO);
+
+    	return "cancel";
     }
 }

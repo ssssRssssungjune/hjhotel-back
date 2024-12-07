@@ -18,8 +18,9 @@ import lombok.ToString;
 @Builder
 public class PaymentListDTO {
 	private Integer paymentId;
+	private Integer orderId;
 	private Integer reservationId;
-	private Integer memberId;
+	private String userId;
 	private String memberName;
 	private String paymentMethod;
 	private PaymentStatus paymentStatus;

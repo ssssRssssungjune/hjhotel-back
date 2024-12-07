@@ -37,8 +37,8 @@ public interface OrderMapper {
     Order findByPaypalOrderId(String paypalOrderId);
 
     
-    @Select("SELECT * FROM orders WHERE order_id = #{orderId}")
-    Order findByPaypalPkOrderId(Integer orderId);
+    @Select("SELECT * FROM orders WHERE id = #{id}")
+    Order findByPaypalId(Integer id);
     
 //    @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paymentId}")
 //    void updateOrderStatus(@Param("paymentId") String paymentId,

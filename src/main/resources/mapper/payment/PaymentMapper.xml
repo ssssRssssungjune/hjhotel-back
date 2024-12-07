@@ -8,8 +8,9 @@
 	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentListDTO">
 		SELECT 
 			p.payment_id, 
+			p.order_id,
 			p.reservation_id, 
-			rs.member_id,
+			m.user_id,
 			m.name member_name,
 			p.payment_method, 
 			p.payment_status,
@@ -127,11 +128,6 @@
 	
 	<!-- 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 특정 orderId 데이터 가져오기 -->
 	<select id="getPaymentByOrderId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
-		SELECT * FROM payment WHERE order_id = #{orderId};
-	</select>
-	
-	<!-- 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 특정 orderId 데이터 가져오기 -->
-	<select id="findByPaypalOrderId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		SELECT * FROM payment WHERE order_id = #{orderId};
 	</select>
 	
