@@ -97,52 +97,29 @@ public class PaymentController {
 	    }
     }
     
-    // 24.11.23 지은 [수정필요] : 결제 내역 - 특정 결제 내역 상태 변경 (+)order의 특정 내역도 동시에 상태변경이 가능해야함.
-	// Todo - order의 특정 내역도 동시에 상태변경이 되도록 수정.
-    @PutMapping("/{paymentId}/status")
-    public ResponseEntity<Map<String, Object>> updatePaymentStatus(
+    // 24.12.08 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
+	// order의 특정 내역도 동시에 상태 변경
+    @Transactional
+	@PutMapping("/{paymentId}/status")
+    public ResponseEntity<?> updatePaymentStatus(
     		@PathVariable("paymentId") Integer paymentId,
     		@RequestParam(name = "newStatus") PaymentStatus newStatus) {
     	
     	try {
-	    	// 상태 업데이트를 위한 DTO 생성
-	        PaymentDTO newPaymentDTO = new PaymentDTO();
-	        newPaymentDTO.setPaymentId(paymentId);
-	        newPaymentDTO.setPaymentStatus(newStatus);
-	        newPaymentDTO.setUpdatedAt(LocalDateTime.now());
-	        
-	        boolean isUpdated = paymentService.updatePaymentStatusBasic(newPaymentDTO);
-	        
-	        log.info("test", isUpdated);
-	        
-	        // 상태 업데이트가 성공한 경우
-	        if (isUpdated) {
-	            Map<String, Object> response = new HashMap<>();
-	            response.put("statusUpdated", true);
-	            response.put("message", "Payment status updated successfully.");
-	            return ResponseEntity.ok(response); // HTTP 200 OK
-	        } else {
-	            // 상태가 변경되지 않았거나 결제 정보가 없을 경우
-	            Map<String, Object> response = new HashMap<>();
-	            response.put("statusUpdated", false);
-	            response.put("message", "Payment status not changed or payment not found.");
-	            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(response); // HTTP 304 Not Modified
-	        }
-	        
-    	} catch(Exception e) {
-    		// 예외 발생 시
-            log.error("Error updating payment status", e);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("statusUpdated", false);
-            response.put("message", "Error updating payment status.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // HTTP 500 Internal Server Error
+    		boolean isUpdated = paymentService.updatePaymentStatusBasic(paymentId, newStatus);
+    		if (isUpdated) {
+    			return ResponseEntity.ok("상태 변경 성공");
+    		} else {
+    			return ResponseEntity.notFound().build();
+    		}
+    	} catch (RuntimeException e) {
+    		return ResponseEntity.notFound().build();
     	}
-        
+    	
     }
     
-    // 24.11.22 지은 [수정필요] : 결제 내역 - 특정 결제 내역 삭제 (+)특정 결제 내역 삭제하면 fk로 연결된 order의 특정 내역도 삭제가능하게 만들어야함.
-    // Todo - 특정 결제 내역 삭제하면 fk로 연결된 order의 특정 내역도 삭제가능하게 만들어야함.
+    // 24.12.08 지은 [완료] : 결제 내역 - 특정 결제 내역 삭제.
+    // 특정 결제 내역 삭제하면 order도 같이 삭제되게 수정
     @Transactional
     @DeleteMapping("/{paymentId}")
     public ResponseEntity<Void> deletePayment(@PathVariable("paymentId") Integer paymentId) {
@@ -156,13 +133,6 @@ public class PaymentController {
     	} catch (RuntimeException e) {
     		return ResponseEntity.notFound().build();
     	}
-    	
-    	//    	boolean isDeleted = paymentService.deletePayment(paymentId);
-//    	if (isDeleted) {
-//    		return ResponseEntity.noContent().build();
-//    	} else {
-//    		return ResponseEntity.notFound().build();
-//    	}
     }
     
     // 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)

@@ -20,33 +20,20 @@ public interface OrderMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Order order);
     
-//    @Select("SELECT * FROM orders WHERE paypal_order_id = #{paypalOrderId}")
-//    @Results({
-//            @Result(property = "id", column = "id"),
-//            @Result(property = "paypalOrderId", column = "paypal_order_id")
-//            @Result(property = "reservationItem", column = "reservation_id",
-//            		one = @One(select = "com.hjhotelback.mapper.payment.payapl.ProductMapper.findById"))
-//    })
-//    Order findByPaypalOrderId(String paypalOrderId);
-    
     @Select("SELECT * FROM orders WHERE paypal_order_id = #{paypalOrderId}")
     @Results({
         @Result(property = "paypalOrderId", column = "paypal_order_id"),
         @Result(property = "id", column = "id")
     })
     Order findByPaypalOrderId(String paypalOrderId);
-
     
     @Select("SELECT * FROM orders WHERE id = #{id}")
     Order findByPaypalId(Integer id);
-    
-//    @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paymentId}")
-//    void updateOrderStatus(@Param("paymentId") String paymentId,
-//                      @Param("status") String status);
-    
-    // 쿼리문 수정해야함.
+
     @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paypalOrderId}")
     void updateOrderStatus(@Param("paypalOrderId") String paypalOrderId,
                       @Param("status") String status);
+    
+    
 }
 

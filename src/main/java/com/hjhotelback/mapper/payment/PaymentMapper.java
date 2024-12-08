@@ -40,10 +40,10 @@ public interface PaymentMapper {
 	// 24.12.07 지은 [완료] : 주문서 내역 - 특저 주문 내역 삭제
 	int deletePaypalOrder(Integer ordeId);
 	
-	// 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
-	void updatePaymentStatusBasic(PaymentDTO newPaymentDTO);
+	// 24.12.08 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경
+	int updatePaymentStatusBasic(PaymentDTO newPaymentDTO);
 	
-    // 24.11.29 지은 [완료] 결제 업데이트 내용 저장
+    // 24.11.29 지은 [완료] : paypal 결제시 성공인 경우 결제 업데이트 내용 저장
     void updatePaymentStatus(PaymentDTO newPaymentDTO);
 	
 	// 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기
@@ -60,4 +60,7 @@ public interface PaymentMapper {
 	
 	// 24.12.06 지은 [완료] : paypal 특정 주문서 내역 조회
 	Order getPaymentByPaypalId(@Param("id") Integer id);
+	
+	// 24.12.08 지은 [완료] : paypal 특정 주문서 상태 업데이트 내용 저장
+	int updatePaymentPaypalStatus(Order order);
 }

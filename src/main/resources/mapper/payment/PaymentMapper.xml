@@ -116,6 +116,13 @@
             updated_at = #{updatedAt}
         WHERE payment_id = #{paymentId}
 	</update>
+	<!-- 24.12.08 지은 [완료] : paypal 주문 내역 - 특정 주문 내역 상태 변경 -->
+	<update id="updatePaymentPaypalStatus" parameterType="com.hjhotelback.dto.payment.Order">
+		UPDATE orders
+		SET
+			status = #{status}
+		WHERE id = #{id}
+	</update>
 	
 	<!-- 24.11.29 지은 [완료] : 결제 내역 - PayPal결제시 특정 결제 내역 상태 변경 -->
 	<update id="updatePaymentStatus" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
