@@ -8,6 +8,7 @@ public class StaffEntity {
     private int staffId;
     private String staffUserId;
     private String password;
+//    private StaffRoleEntity role;
     private String roleName; // 조인된 role_name
     private String email;
     private String name;

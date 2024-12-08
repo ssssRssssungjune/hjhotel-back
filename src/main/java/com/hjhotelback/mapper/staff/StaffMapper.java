@@ -12,11 +12,13 @@ public interface StaffMapper {
 
     // Staff 정보를 가져올 때 role_name을 포함
     @Select("""
-        SELECT s.*, sr.role_name AS roleName
-        FROM staff s
-        JOIN staff_role sr ON s.role_id = sr.role_id
-        WHERE s.staff_user_id = #{staffUserId}
-    """)
+    SELECT s.*, sr.role_name AS roleName
+    FROM staff s
+    JOIN staff_role sr ON s.role_id = sr.role_id
+    WHERE s.staff_user_id = #{staffUserId}
+      AND sr.role_name IN ('ADMIN', 'FRONT_DESK', 'HOUSEKEEPING')
+""")
     StaffEntity findByStaffUserId(@Param("staffUserId") String staffUserId);
+
 }
 

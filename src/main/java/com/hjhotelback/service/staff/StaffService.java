@@ -22,8 +22,6 @@ public class StaffService {
 
     /**
      * 관리자 로그인을 처리하는 메서드
-//     * @param loginRequest 로그인 요청 DTO
-//     * @return StaffJwtResponseDto
      */
     public StaffJwtResponseDto loginWithStaffId(StaffLoginRequestDto staffLoginRequestDto) {
         // 사용자 조회
@@ -43,6 +41,21 @@ public class StaffService {
         String token = jwtTokenProvider.generateAdminToken(staff, staff.getRoleName());
         return new StaffJwtResponseDto(staff.getStaffUserId(), token, staff.getRoleName());
     }
+
+    /**
+     * staffUserId로 Staff 정보 조회 메서드 추가
+     */
+    public StaffEntity findByStaffUserId(String staffUserId) {
+        StaffEntity staff = staffMapper.findByStaffUserId(staffUserId);
+        if (staff == null) {
+            throw new IllegalArgumentException("해당 staffUserId에 해당하는 Staff를 찾을 수 없습니다: " + staffUserId);
+        }
+        return staff;
+    }
+}
+
+
+
 
 //    /**
 //     * 특정 스태프 정보를 ID로 가져오기
@@ -87,4 +100,4 @@ public class StaffService {
 //    public void deleteStaff(String staffUserId) {
 //        staffMapper.deleteByStaffUserId(staffUserId);
 //    }
-}
+

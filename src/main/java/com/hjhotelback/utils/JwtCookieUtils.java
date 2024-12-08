@@ -9,22 +9,25 @@ public class JwtCookieUtils {
     }
 
     public static ResponseCookie createJwtToken(String jwt) {
-        return ResponseCookie.from("jwt", jwt)
+        return ResponseCookie.from("JWT", jwt)
+
                 .httpOnly(true)
+
                 .secure(false)  // HTTPS 환경에서 true로 설정
                 .path("/")
                 .maxAge(24 * 60 * 60)  // 1일
-                .sameSite("none")
+                .sameSite("Strict")
                 .build();
+
     }
 
     public static ResponseCookie deleteJwtToken() {
-        return ResponseCookie.from("jwt", "")
+        return ResponseCookie.from("JWT", "")
                 .httpOnly(true)
                 .secure(false)  // HTTPS 환경에서 true로 설정
                 .path("/")
                 .maxAge(0)  // 즉시 삭제
-                .sameSite("none")
+                .sameSite("Strict")
                 .build();
     }
 }
