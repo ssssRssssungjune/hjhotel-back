@@ -1,8 +1,10 @@
 package com.hjhotelback.controller.payment;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,6 @@ import com.hjhotelback.dto.payment.PaymentDTO;
 import com.hjhotelback.dto.payment.PaymentStatus;
 import com.hjhotelback.dto.payment.ReservationItem;
 import com.hjhotelback.dto.reservation.ReqReservation;
-import com.hjhotelback.dto.reservation.ResReservation;
 import com.hjhotelback.dto.reservation.ReservationStatus;
 import com.hjhotelback.mapper.payment.PaymentMapper;
 import com.hjhotelback.mapper.payment.paypal.OrderMapper;
@@ -92,10 +93,17 @@ public class PayPalController {
     // 쿼리문과 payment와 order 테이블을 연결하는 외부키 생성해서 공유.
     @Transactional
     @GetMapping("/success")
-    public String success(@RequestParam(name="paymentId") String paymentId, @RequestParam(name="PayerID") String payerID) {
+    public ResponseEntity<?> success(
+    		@RequestParam(name="paymentId") String paymentId, 
+    		@RequestParam(name="PayerID") String payerID,
+    		@RequestParam(name = "token") String token) {
+    	
+    	// 각 값들을 가져오는지 테스트
     	System.out.println("Payment ID: " + paymentId);
     	System.out.println("Payer ID: " + payerID);
-        try {
+    	System.out.println("Token: " + token);
+        
+    	try {
         	// 결제 실행
             Payment payment = payPalService.executePayment(paymentId, payerID);
 
@@ -127,13 +135,17 @@ public class PayPalController {
             updateStatus.status = ReservationStatus.CONFIRMED;
             reservationService.updateReservationForAdmin(updateStatus);
             
-            // 클라이언트에게 success text 반환
-            return "success";
+            // PayPal의 성공 URL을 그대로 반환
+            String paypalRedirectUrl = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + token;
 
+            // PayPal의 URL을 클라이언트로 리디렉션
+            return ResponseEntity.status(HttpStatus.FOUND)
+            					 .location(URI.create(paypalRedirectUrl))
+            					 .build();
             
         } catch (PayPalRESTException e) {
             // 에러 처리
-            return "error";
+        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
