@@ -13,9 +13,17 @@ public class ReqReservation {
     public static class Create{
         public int memberId;
         public int roomId;
-        public Timestamp checkIn;
-        public Timestamp checkOut;
+        public long checkIn;
+        public long checkOut;
         public int totalAmount;
+
+        public Timestamp getCheckIn() {
+            return new Timestamp(checkIn);  // long 값을 Timestamp로 변환
+        }
+    
+        public Timestamp getCheckOut() {
+            return new Timestamp(checkOut); // long 값을 Timestamp로 변환
+        }
     }
 
     public static class Delete{

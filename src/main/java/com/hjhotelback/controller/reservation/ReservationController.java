@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,10 +53,10 @@ public class ReservationController {
     @PostMapping("/")
     @Transactional
     public ResponseEntity<String> POSTCreateReservation(@RequestBody ReqReservation.Create req){
-        if (req.checkIn.compareTo(req.checkOut) > 0) 
-            return new ResponseEntity<>("Error: Check-in date must be earlier than or equal to check-out date.", HttpStatus.BAD_REQUEST);
-        
-        return new ResponseEntity<>(_service.createReservation(req),HttpStatus.OK);
+        if (req.getCheckIn().compareTo(req.getCheckOut()) > 0) 
+            return new ResponseEntity<String>("Error: Check-in date must be earlier than or equal to check-out date.", HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<String>(_service.createReservation(req),HttpStatus.OK);
     }
 
     @GetMapping("/")
@@ -89,9 +90,9 @@ public class ReservationController {
     }
     // -------------------------------------- Admin -------------------------------------------
 
-    @GetMapping("test")
-    public List<ResReservation.Summary> GETReservationSummaryTest(){
-        return _service.getReservationSummaryTest();
+    @GetMapping("summary/{selectedTimestamp}")
+    public List<ResReservation.Summary> GETReservationSummary(@PathVariable("selectedTimestamp") long selectedTimestamp){
+        return _service.getReservationSummary(selectedTimestamp);
     }
 
     @GetMapping("test/room")

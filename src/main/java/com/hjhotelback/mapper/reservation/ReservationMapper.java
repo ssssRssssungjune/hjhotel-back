@@ -1,5 +1,6 @@
 package com.hjhotelback.mapper.reservation;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -34,7 +35,7 @@ public interface ReservationMapper {
     public int deleteReservation(ReqReservation.Delete req);
 
     // Test
-    public List<ResReservation.Summary> getRoomReservationSummary();
+    public List<ResReservation.Summary> getRoomReservationSummary(LocalDate date);
 
     public List<ResReservation.RoomSample> getRoomSample();
 }

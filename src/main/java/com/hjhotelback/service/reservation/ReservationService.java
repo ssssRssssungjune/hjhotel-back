@@ -1,5 +1,8 @@
 package com.hjhotelback.service.reservation;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -87,6 +90,11 @@ public class ReservationService {
             return "Invalid request type";
     }
 
+    // 24.12.09 한택 [내용] : 선택한 현재 월의 예약가능객실 조회
+    public List<ResReservation.Summary> getReservationSummary(long selectedTimestamp){
+        return _mapper.getRoomReservationSummary(convertTimestampToDate(selectedTimestamp));
+    }
+
     //24.12.01 한택 [내용] :
     public boolean UpdateReservationState(ReqReservation.UpdateState data){
 
@@ -114,10 +122,15 @@ public class ReservationService {
         return _mapper.updateReservationRoom(data) > 0;
     }
 
-    public List<ResReservation.Summary> getReservationSummaryTest(){
-        return _mapper.getRoomReservationSummary();
+    // util
+    private LocalDate convertTimestampToDate(long timestamp) {
+        return Instant.ofEpochMilli(timestamp)
+                    .atZone(ZoneId.of("Asia/Seoul"))
+                    .toLocalDate()
+                    .withDayOfMonth(1);
     }
-
+    
+    // test
     public List<ResReservation.RoomSample> getRoomSample(){
         return _mapper.getRoomSample();
     }

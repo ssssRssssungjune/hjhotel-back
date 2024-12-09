@@ -62,7 +62,7 @@
 
 
 
-    <select id="getRoomReservationSummary" resultType="com.hjhotelback.dto.reservation.ResReservation$Summary">
+    <select id="getRoomReservationSummary" parameterType="java.time.LocalDate" resultType="com.hjhotelback.dto.reservation.ResReservation$Summary">
         SELECT 
             RT.room_type_id AS room_type_id,
             D.date AS reservation_date,
@@ -75,15 +75,15 @@
             reservation AS RS ON R.room_id = RS.room_id
         JOIN 
             (
-                SELECT CURRENT_DATE + INTERVAL n DAY AS date
+                SELECT #{date} + INTERVAL n DAY AS date
                 FROM (
                     SELECT @rownum := @rownum + 1 AS n
                     FROM information_schema.columns, 
                     (SELECT @rownum := -1) r
                     LIMIT 31
                 ) AS days
-                WHERE MONTH(CURRENT_DATE + INTERVAL n DAY) = MONTH(CURRENT_DATE)
-                    AND CURRENT_DATE + INTERVAL n DAY &gt;= CURRENT_DATE
+                WHERE MONTH(#{date} + INTERVAL n DAY) = MONTH(#{date})
+                    AND #{date} + INTERVAL n DAY &gt;= #{date}
             ) AS D
             ON RS.check_in &lt;= D.date AND RS.check_out &gt; D.date
         WHERE 
