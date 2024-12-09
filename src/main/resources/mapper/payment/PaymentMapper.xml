@@ -157,7 +157,7 @@
 		FROM reservation r
 		JOIN room rm ON rm.room_id = r.room_id
 		JOIN room_type rt ON rt.room_type_id = rm.room_type_id
-		WHERE r.reservation_id = 1;
+		WHERE r.reservation_id = #{reservationId};
 	</select>
 	
 	<!-- 24.12.06 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가. -->

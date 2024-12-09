@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.payment.Order;
@@ -104,8 +105,8 @@ public class PaymentService {
 	}
 
 	// 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)
-	public PaymentReservationListDTO getReservationPaymentList() {
-		return paymentMapper.getReservationPaymentList();
+	public PaymentReservationListDTO getReservationPaymentList(Integer reservationId) {
+		return paymentMapper.getReservationPaymentList(reservationId);
 	};
 	
 	// 24.12.05 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가.

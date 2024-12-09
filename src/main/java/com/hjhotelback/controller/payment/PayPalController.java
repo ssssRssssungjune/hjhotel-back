@@ -98,7 +98,7 @@ public class PayPalController {
         try {
         	// 결제 실행
             Payment payment = payPalService.executePayment(paymentId, payerID);
-            
+
             // transactionId 추출
             String transactionId = payment.getTransactions().get(0).getRelatedResources().get(0)
                 .getSale().getId();
@@ -114,26 +114,22 @@ public class PayPalController {
             // 결제 완료된 후 주문 상태 업데이트
             orderMapper.updateOrderStatus(paypalOrderId, "COMPLETED");            
             
-            System.out.println("여기까지 테스트"); //테스트 콘솔
-            
             // orderId로 특정 결제내역 가져와서6 paymentId 가져오기.
             PaymentDTO newPaymentDTO = paymentMapper.getPaymentByOrderId(orderId);
-            // transactionId, status, updatedAt 저장
             newPaymentDTO.setTransactionId(transactionId);
             newPaymentDTO.setPaymentStatus(PaymentStatus.COMPLETED);
-            newPaymentDTO.setUpdatedAt(LocalDateTime.now());
-           
-            // 수정된 내용 업데이트
+            newPaymentDTO.setUpdatedAt(LocalDateTime.now());           
             paymentMapper.updatePaymentStatus(newPaymentDTO);
             
             // 예약 상태 CONFIRMED으로 업데이트
             ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
             updateStatus.reservationId = newPaymentDTO.getReservationId();
             updateStatus.status = ReservationStatus.CONFIRMED;
-            
             reservationService.updateReservationForAdmin(updateStatus);
             
+            // 클라이언트에게 success text 반환
             return "success";
+
             
         } catch (PayPalRESTException e) {
             // 에러 처리

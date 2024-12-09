@@ -136,9 +136,19 @@ public class PaymentController {
     }
     
     // 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전)
-    @GetMapping("/reservation-list")
-    public PaymentReservationListDTO reservationPaymentList() {
-    	return paymentService.getReservationPaymentList();
+    @GetMapping("/reservationList/{reservationId}")
+    public ResponseEntity<?> reservationPaymentList(
+    		@PathVariable("reservationId") Integer reservationId) {
+    	try {
+    		PaymentReservationListDTO paymentReservationListDTO = paymentService.getReservationPaymentList(reservationId);
+    		return ResponseEntity.ok(paymentReservationListDTO);
+    	} catch (Exception e) {
+    		// 예외 발생 시 로그 출력
+	        log.error("Error during payment creation", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("예약 내역을 불러오는 도중 오류 발생");
+    	}
+    	
     }
     
     // 24.12.06 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가.

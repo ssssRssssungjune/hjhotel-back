@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.http.ResponseEntity;
 
 import com.hjhotelback.dto.payment.Order;
 import com.hjhotelback.dto.payment.OrderListDTO;
@@ -53,7 +54,7 @@ public interface PaymentMapper {
 	PaymentDTO getPaymentByOrderId(@Param("orderId") Integer orderId);
 	
 	// 24.11.29 지은 [완료] : 예약내역결제조회 (결제 전)
-	PaymentReservationListDTO getReservationPaymentList();
+	PaymentReservationListDTO getReservationPaymentList(Integer reservationId);
 	
 	// 24.12.05 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가.
 	List<OrderListDTO> getPaypalAllList(@Param("size") Integer size, @Param("offset") Integer offset);
