@@ -18,7 +18,7 @@ public interface MemberMapper {
 
     List<MemberAuthEntity> findMemberAuth(@Param("memberId") int memberId); // XML의 findMemberAuth 참조
 
-    Optional<MemberEntity> findMemberByMemberId(@Param("memberId") int memberId); // XML의 findMemberByMemberId 참조
+//    Optional<MemberEntity> findMemberByMemberId(@Param("memberId") int memberId); // XML의 findMemberByMemberId 참조
 
     Optional<MemberEntity> findMemberByUserId(@Param("userId") String userId); // XML의 findMemberByUserId 참조
 
