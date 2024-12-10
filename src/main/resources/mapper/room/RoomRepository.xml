@@ -2,37 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjhotelback.mapper.room.RoomRepository">
 	
-	<!-- test Allroom -->
-		<select id="AllRooms" resultType="com.hjhotelback.dto.room.RoomDto">
-           SELECT * FROM room ORDER BY room_number ASC
-    </select>
-    
 	
 	
-	<!-- 사용자 -->    
+	<!-- 사용자     
    	<select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
            SELECT * FROM room_type ORDER BY room_type_id ASC
+    </select>-->
+    <!-- 사용자 객실 유형별 전체 조회 -->
+    <select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
+           SELECT * FROM room_type WHERE room_type_id =#{typeId}
     </select>
     
     <select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
-			   SELECT 
-				    rt.name AS room_type_name,
-				    rt.description AS room_type_description,
-				    rt.base_occupancy,
-				    rt.max_occupancy,
-				    rt.base_price,
-				    rt.image_path,
-				    ra.name AS amenity_name
-				FROM 
-				    room_type rt
-				LEFT JOIN 
-				    room_amenity ra
-				ON 
-				    rt.room_type_id = ra.room_type_id
-				WHERE 
-				    rt.name = #{roomTypeName}
-				ORDER BY 
-				    rt.room_type_id, ra.amenity_id;
+			  SELECT 
+    rt.name AS room_type_name,  -- 객실 타입 이름
+    rt.description AS room_type_description,  -- 객실 타입 설명
+    rt.base_occupancy,  -- 최소 인원
+    rt.max_occupancy,  -- 최대 인원
+    rt.base_price,  -- 가격
+    rt.image_path,  -- 객실 이미지 경로
+    ra.name AS amenity_name,  -- 어메니티 이름
+    ra.description AS amenity_description  -- 어메니티 설명
+FROM 
+    room_type rt
+LEFT JOIN 
+    room_amenity ra ON rt.room_type_id = ra.room_type_id
+WHERE 
+    rt.name = #{roomTypeName}
+    AND ra.is_active = 1 ;
 </select>
 
   

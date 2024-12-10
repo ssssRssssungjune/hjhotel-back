@@ -22,9 +22,9 @@ public class RoomService {
 	private RoomRepository roomRepository;
 //	======== 사용자 
 
-	public List<RoomTypeDto_Client> getRoomTypes(){
+	public List<RoomTypeDto_Client> getRoomTypes(Integer typeId){
 
-		return roomRepository.AllRoomTypes();
+		return roomRepository.AllRoomTypes(typeId);
 	}
 	
 	public List<TypeDetailDto_Client> getDetailType(String roomTypeName){
@@ -32,12 +32,6 @@ public class RoomService {
 	}
 	
 //  ======== 관리	자
-	
-//	//test
-//	public List<RoomDto> getAdminAllRooms(){
-//
-//		return roomRepository.AllRooms();
-//	}
 	
 	// 24.11.27 진주 : 관리자- 날짜,상태로 객실 리스트 불러오기
 	public List<RoomDto> getAdminRooms(LocalDate date,String resStatus){

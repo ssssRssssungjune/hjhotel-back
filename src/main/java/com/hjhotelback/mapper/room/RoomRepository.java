@@ -16,7 +16,7 @@ import com.hjhotelback.dto.room.RoomTypeDto;
 @Mapper
 public interface RoomRepository {
 	// ===== 사용자
-	 List<RoomTypeDto_Client> AllRoomTypes();
+	 List<RoomTypeDto_Client> AllRoomTypes(Integer typeId);
 	// 상세 조회
 	 List<TypeDetailDto_Client> detailType(String roomTypeName);
 	 // ===== 관리자	
