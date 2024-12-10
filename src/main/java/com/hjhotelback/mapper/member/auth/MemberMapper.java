@@ -23,4 +23,11 @@ public interface MemberMapper {
     Optional<MemberEntity> findMemberByUserId(@Param("userId") String userId); // XML의 findMemberByUserId 참조
 
     List<Map<String, Object>> findAllMembers(); // XML의 findAllMembers 참조
+
+    void updateMemberStatus(@Param("memberId") int memberId, @Param("newStatus") String newStatus);
+
+    void deleteMember(@Param("memberId") int memberId);
+
+
+
 }

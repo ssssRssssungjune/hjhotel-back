@@ -54,6 +54,16 @@ public class MemberService {
     public List<Map<String, Object>> getAllMembers() {
         return memberMapper.findAllMembers();
     }
+
+    public void updateMemberStatus(int memberId, String newStatus) {
+        memberMapper.updateMemberStatus(memberId, newStatus);
+    }
+
+    public void deleteMember(int memberId) {
+        memberMapper.deleteMember(memberId);
+    }
+
+
 }
 
 

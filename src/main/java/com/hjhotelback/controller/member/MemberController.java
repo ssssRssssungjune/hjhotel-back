@@ -16,5 +16,7 @@ public class MemberController {
         this.memberService = memberService;
         this.authService = authService;
     }
+
+
 }
 

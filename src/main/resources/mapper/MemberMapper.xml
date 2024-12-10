@@ -31,6 +31,23 @@
         SELECT * FROM member WHERE user_id = #{userId}
     </select>
 
+
+    <!-- 회원 상태 변경 -->
+    <update id="updateMemberStatus">
+        UPDATE member
+        SET status = #{newStatus}
+        WHERE member_id = #{memberId}
+    </update>
+
+    <!-- 회원 삭제 -->
+    <delete id="deleteMember">
+        DELETE FROM member
+        WHERE member_id = #{memberId}
+    </delete>
+
+
+
+
     <!-- Find All Members -->
     <select id="findAllMembers" resultType="map">
         SELECT

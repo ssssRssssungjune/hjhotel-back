@@ -15,14 +15,14 @@ public class StaffRoleEntity {
     private String permissions;  // 권한 정보 (JSON 또는 문자열)
     private String createdAt;    // 생성 시간
 
-    // JSON을 Java List로 변환하는 메서드
-    public List<String> getPermissionsAsList() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(permissions, new TypeReference<List<String>>() {});
-        } catch (Exception e) {
-            throw new RuntimeException("JSON 파싱 오류: " + e.getMessage());
-        }
-    }
+//    // JSON을 Java List로 변환하는 메서드
+//    public List<String> getPermissionsAsList() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            return mapper.readValue(permissions, new TypeReference<List<String>>() {});
+//        } catch (Exception e) {
+//            throw new RuntimeException("JSON 파싱 오류: " + e.getMessage());
+//        }
+//    }
 }
 
