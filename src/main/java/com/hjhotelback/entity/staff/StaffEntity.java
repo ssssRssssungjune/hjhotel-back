@@ -3,6 +3,8 @@ package com.hjhotelback.entity.staff;
 
 import lombok.Data;
 
+
+
 @Data
 public class StaffEntity {
     private int staffId;

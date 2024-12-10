@@ -2,7 +2,8 @@ package com.hjhotelback.mapper.member.auth;
 
 import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -11,41 +12,15 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
 
-    @Insert("""
-        INSERT INTO member (user_id, email, password, name, phone, status, is_active, created_at)
-        VALUES (#{userId}, #{email}, #{password}, #{name}, #{phone}, 'ACTIVE', 1, CURRENT_TIMESTAMP)
-    """)
-    @Options(useGeneratedKeys = true, keyProperty = "memberId", keyColumn = "member_id")
-    void insertMember(MemberEntity memberEntity);
+    void insertMember(MemberEntity memberEntity); // XML의 insertMember 참조
 
-    @Insert("INSERT INTO member_auth (member_id, auth) values (#{memberId}, #{auth})")
-    void insertMemberAuth(MemberAuthEntity memberAuthEntity);
+    void insertMemberAuth(MemberAuthEntity memberAuthEntity); // XML의 insertMemberAuth 참조
 
-    @Select("SELECT * FROM member_auth WHERE member_id = #{memberId}")
-    List<MemberAuthEntity> findMemberAuth(int memberId);
+    List<MemberAuthEntity> findMemberAuth(@Param("memberId") int memberId); // XML의 findMemberAuth 참조
 
-    //아이디랑 비밀번호 유효성 검사
-    @Select("SELECT * FROM member WHERE member_id = #{memberId}")
-    Optional<MemberEntity> findMemberByMemberId(@Param("memberId") int memberId);
+    Optional<MemberEntity> findMemberByMemberId(@Param("memberId") int memberId); // XML의 findMemberByMemberId 참조
 
-    //회원가입 완료시 나오는페이지 정보 가져오는
-    @Select("SELECT * FROM member WHERE user_id = #{userId}")
-    Optional<MemberEntity> findMemberByUserId(@Param("userId") String userId);
+    Optional<MemberEntity> findMemberByUserId(@Param("userId") String userId); // XML의 findMemberByUserId 참조
 
-    //관리자페이지에서 회원조회
-    @Select("""
-        SELECT 
-            member_id, 
-            user_id, 
-            email, 
-            name, 
-            phone, 
-            status, 
-            is_active, 
-            created_at, 
-            updated_at 
-        FROM member
-    """)
-    List<Map<String, Object>> findAllMembers();
-
+    List<Map<String, Object>> findAllMembers(); // XML의 findAllMembers 참조
 }
