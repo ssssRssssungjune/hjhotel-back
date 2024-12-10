@@ -17,3 +17,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .exposedHeaders("Set-Cookie"); // 응답 헤더 노출
     }
 }
+
