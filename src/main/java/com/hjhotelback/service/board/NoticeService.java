@@ -19,11 +19,18 @@ public class NoticeService {
         this.noticeMapper = noticeMapper;
     }
 
+    // 사용자페이지에서 사용할 공지사항 상세 조회 서비스
     @Transactional
-    public Notice getNoticeById(Integer id) {
+    public Notice getNoticeByIdForUser(Integer id) {
         // 조회수 증가
         noticeMapper.incrementViews(id);
 
+        return noticeMapper.findById(id).orElseThrow(() -> new NoSuchElementException(id + "번을 찾을 수 없습니다."));
+    }
+    
+    // 관리자페이지에서 사용할 공지사항 상세 조회 서비스
+    @Transactional
+    public Notice getNoticeByIdForAdmin(Integer id) {
         return noticeMapper.findById(id).orElseThrow(() -> new NoSuchElementException(id + "번을 찾을 수 없습니다."));
     }
 
