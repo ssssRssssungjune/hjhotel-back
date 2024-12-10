@@ -1,2 +1,15 @@
-// Placeholder content for StaffController.java
-// This file is located in backend/src/main/java/com/hotel/controller/staff/StaffController.java
+package com.hjhotelback.controller.staff;
+
+import com.hjhotelback.service.staff.StaffService;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/admin")
+public class StaffController {
+
+    private final StaffService staffService;
+
+    public StaffController(StaffService staffService) {
+        this.staffService = staffService;
+    }
+}

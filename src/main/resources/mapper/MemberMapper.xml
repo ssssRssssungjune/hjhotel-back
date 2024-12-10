@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hjhotelback.mapper.member.auth.MemberMapper">
+
+    <!-- Insert Member -->
+    <insert id="insertMember" parameterType="com.hjhotelback.entity.MemberEntity">
+        INSERT INTO member (user_id, email, password, name, phone, status, is_active, created_at)
+        VALUES (#{userId}, #{email}, #{password}, #{name}, #{phone}, 'ACTIVE', 1, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- Insert Member Auth -->
+    <insert id="insertMemberAuth" parameterType="com.hjhotelback.entity.MemberAuthEntity">
+        INSERT INTO member_auth (member_id, auth) values (#{memberId}, #{auth})
+    </insert>
+
+    <!-- Find Member Auth -->
+    <select id="findMemberAuth" parameterType="int" resultType="com.hjhotelback.entity.MemberAuthEntity">
+        SELECT * FROM member_auth WHERE member_id = #{memberId}
+    </select>
+
+    <!-- Find Member By Member ID -->
+    <select id="findMemberByMemberId" parameterType="int" resultType="com.hjhotelback.entity.MemberEntity">
+        SELECT * FROM member WHERE member_id = #{memberId}
+    </select>
+
+    <!-- Find Member By User ID -->
+    <select id="findMemberByUserId" parameterType="string" resultType="com.hjhotelback.entity.MemberEntity">
+        SELECT * FROM member WHERE user_id = #{userId}
+    </select>
+
+    <!-- Find All Members -->
+    <select id="findAllMembers" resultType="map">
+        SELECT
+            member_id,
+            user_id,
+            email,
+            name,
+            phone,
+            status,
+            is_active,
+            created_at,
+            updated_at
+        FROM member
+    </select>
+
+</mapper>

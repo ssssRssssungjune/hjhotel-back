@@ -13,8 +13,15 @@ java {
     }
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenCentral() // Maven Central 저장소 사용
+    maven { url 'https://repo.maven.apache.org/maven2' } // Maven 공식 저장소 추가
 }
 
 dependencies {
@@ -29,14 +36,38 @@ dependencies {
     // Database
     implementation 'mysql:mysql-connector-java:8.0.33' // MySQL 드라이버 최신 안정 버전
 
+    // Spring Security 인증
+    implementation 'org.springframework.boot:spring-boot-starter-security' // Spring Security Starter
+
+    // JWT 라이브러리 (JJWT)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6' // 구현체 추가
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6' // Jackson 사용을 위한 JJWT 확장
+
+    // Database
+    runtimeOnly 'com.mysql:mysql-connector-j' // MySQL 드라이버 최신 안정 버전
+
+    // Jakarta Servlet API
+//    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok' // Lombok 컴파일 타임 의존성
+    annotationProcessor 'org.projectlombok:lombok' // Lombok 애노테이션 프로세서
+
+    // 개발용 도구
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // DevTools 의존성
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot 테스트 의존성
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3' // MyBatis 테스트 의존성
     testImplementation 'org.springframework.security:spring-security-test' // Spring Security 테스트
 
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit 플랫폼 런처
+    testCompileOnly 'org.projectlombok:lombok' // Lombok 테스트 컴파일
+    testAnnotationProcessor 'org.projectlombok:lombok' // Lombok 애노테이션 프로세서 (테스트용)
 }
 
 tasks.named('test') {

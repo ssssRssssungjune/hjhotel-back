@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hjhotelback.mapper.staff.StaffRoleMapper">
+
+    <!-- Find Role By Role ID -->
+    <select id="findRoleById" parameterType="int" resultType="com.hjhotelback.entity.staff.StaffRoleEntity">
+        SELECT role_id AS roleId,
+               role_name AS roleName,
+               permissions,
+               created_at AS createdAt
+        FROM staff_role
+        WHERE role_id = #{roleId};
+    </select>
+
+    <!-- Find Role Name By Role ID -->
+    <select id="findRoleNameById" parameterType="int" resultType="string">
+        SELECT role_name FROM staff_role WHERE role_id = #{roleId};
+    </select>
+
+    <!-- Insert Role -->
+    <insert id="insertRole" parameterType="map">
+        INSERT INTO staff_role (role_name, permissions, created_at)
+        VALUES (#{roleName}, #{permissions}, NOW())
+    </insert>
+
+</mapper>
