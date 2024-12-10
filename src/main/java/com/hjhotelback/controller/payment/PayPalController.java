@@ -29,7 +29,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/paypal")
+@RequestMapping("/api/users/paypal")
 @RequiredArgsConstructor
 public class PayPalController {
     private final PayPalService payPalService;
@@ -57,8 +57,8 @@ public class PayPalController {
              		reservationItem.getTotalAmount(),
                      "USD",
                      "Payment for " + reservationItem.getName(),
-                     "http://localhost:8080/api/paypal/cancel",
-                     "http://localhost:8080/api/paypal/success"
+                     "http://localhost:8080/api/users/paypal/cancel",
+                     "http://localhost:8080/api/users/paypal/success"
              );
              order.setPaypalOrderId(payment.getId());
              orderMapper.insert(order);
