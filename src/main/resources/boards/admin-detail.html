@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>공지사항 상세보기</title>
+    <link rel="stylesheet" href="/css/admin-styles.css">
+</head>
+<body>
+<h1>공지사항 상세보기</h1>
+<p><strong>제목:</strong> <span th:text="${board.title}"></span></p>
+<p><strong>작성자:</strong> <span th:text="${board.author}"></span></p>
+<p><strong>작성 날짜:</strong> <span th:text="${board.createdAt}"></span></p>
+<p><strong>내용:</strong></p>
+<p th:text="${board.content}"></p>
+
+<button onclick="location.href='/admin/boards/update/{id}(id=${board.id})'">수정</button>
+<button onclick="location.href='/admin/boards'">목록으로</button>
+</body>
+</html>
