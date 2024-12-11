@@ -69,21 +69,21 @@ WHERE
 			  WHERE DATE(res.check_in) = DATE(#{date});
     </select>
     
-    <!--24.12.10 진주 : 객실 추가 + auto_increment리셋 트랜젝션  ㅜㅜ
+  <!--   24.12.10 진주 : 객실 추가 + auto_increment리셋 트랜젝션  ㅜㅜ
     
-     <select id="getMaxRoomId" resultType="int">
+    <select id="getMaxRoomId" resultType="int">
     	SELECT IFNULL(MAX(room_id), 0) AS maxRoomId FROM room;
 	</select>
 
 	<update id="setAutoIncrement">
 	    ALTER TABLE room AUTO_INCREMENT = #{autoIncrementValue};
 	</update>
-
+-->
 	<insert id="insertRoom" parameterType="com.hjhotelback.dto.room.RoomAddDto">
 	    INSERT INTO room (room_type_id, room_number, floor, view, status, created_at)
 	    VALUES (#{roomTypeId}, #{roomNumber}, #{floor},  #{view}, #{status}, NOW());
 	</insert>
-	-->
+	
 	
      <!-- 24.11.21 진주 : 객실 상태 변경 -->
      <update id="updateStatusRoom" >
@@ -154,6 +154,11 @@ WHERE
 		    AND ra.name = #{amenity};
     </update> 
     
+    <!-- 24.12.12 진주 : amenity 추가 -->
+    <insert id="addAmenity" parameterType="com.hjhotelback.dto.room.AddAmenityDto">
+	    INSERT INTO room_amenity (room_type_id, name, description,is_active)
+	    VALUES (#{roomTypeId}, #{name}, #{description},  #{isActive});
+	</insert>
     
     
 </mapper>
