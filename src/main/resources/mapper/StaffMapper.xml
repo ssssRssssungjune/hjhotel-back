@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hjhotelback.mapper.staff.StaffMapper">
+
+    <!-- Find Staff By User ID -->
+    <select id="findByStaffUserId" parameterType="string" resultType="com.hjhotelback.entity.staff.StaffEntity">
+        SELECT s.*, sr.role_name AS roleName
+        FROM staff s
+                 JOIN staff_role sr ON s.role_id = sr.role_id
+        WHERE s.staff_user_id = #{staffUserId}
+          AND sr.role_name IN ('ADMIN', 'FRONT_DESK', 'HOUSEKEEPING')
+    </select>
+
+</mapper>
