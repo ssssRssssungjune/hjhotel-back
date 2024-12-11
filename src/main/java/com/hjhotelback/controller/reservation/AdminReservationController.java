@@ -42,7 +42,7 @@ public class AdminReservationController {
         return _service.updateReservationForAdmin(req);
     }
 
-    @GetMapping("admin/{direction:next|prev}")
+    @GetMapping("reservation/list/{direction:next|prev}")
     public List<ResReservation.Detail> GETAdminReservationList(
         @RequestParam(value ="last_value",required = false) int lastValue,
         @PathVariable("direction") String direction,
