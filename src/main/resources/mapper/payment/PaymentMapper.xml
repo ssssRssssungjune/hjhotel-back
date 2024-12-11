@@ -8,8 +8,9 @@
 	<select id="getPaymentsList" resultType="com.hjhotelback.dto.payment.PaymentListDTO">
 		SELECT 
 			p.payment_id, 
+			p.order_id,
 			p.reservation_id, 
-			rs.member_id,
+			m.user_id,
 			m.name member_name,
 			p.payment_method, 
 			p.payment_status,
@@ -19,7 +20,17 @@
 		FROM payment p
 		JOIN reservation rs ON p.reservation_id = rs.reservation_id
 		JOIN member m ON m.member_id = rs.member_id
-		ORDER BY p.payment_id DESC;
+		ORDER BY p.payment_id DESC LIMIT #{size} OFFSET #{offset};
+	</select>
+	
+	<!-- 24.12.06 지은 [완료] : 결제 내역 전체 갯수 조회 -->
+	<select id="countTotal" resultType="Integer">
+		SELECT COUNT(*) FROM payment;
+	</select>
+	
+	<!-- 24.12.06 지은 [완료] : payapl 주문 내역 전체 갯수 조회 -->
+	<select id="countTotalPayapl" resultType="Integer">
+		SELECT COUNT(*) FROM orders;
 	</select>
 	
 	<!-- 24.11.22 지은 [완료] : 결제 내역 - 특정 결제 내역 상세 조회 -->
@@ -65,6 +76,7 @@
 	<insert id="createPayment" useGeneratedKeys="true" keyProperty="paymentId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		INSERT INTO payment (
 	        reservation_id,
+	        order_id,
 	        amount,
 	        payment_method,
 	        payment_status,
@@ -74,6 +86,7 @@
 	    )
 	    VALUES (
 	        #{reservationId},
+	        #{orderId},
 	        #{amount},
 	        #{paymentMethod},
 	        #{paymentStatus},
@@ -89,6 +102,12 @@
 		WHERE payment_id = #{paymentId};
 	</delete>
 	
+	<!-- 24.12.07 지은 [완료] : payapl 주문 내역 - 특정 주문 내역 삭제 -->
+	<delete id="deletePaypalOrder" parameterType="com.hjhotelback.dto.payment.Order">
+		DELETE FROM orders
+		WHERE id = #{orderId}
+	</delete>
+	
 	<!-- 24.11.23 지은 [완료] : 결제 내역 - 특정 결제 내역 상태 변경 -->
  	<update id="updatePaymentStatusBasic" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
 		UPDATE payment
@@ -96,6 +115,13 @@
             payment_status = #{paymentStatus},
             updated_at = #{updatedAt}
         WHERE payment_id = #{paymentId}
+	</update>
+	<!-- 24.12.08 지은 [완료] : paypal 주문 내역 - 특정 주문 내역 상태 변경 -->
+	<update id="updatePaymentPaypalStatus" parameterType="com.hjhotelback.dto.payment.Order">
+		UPDATE orders
+		SET
+			status = #{status}
+		WHERE id = #{id}
 	</update>
 	
 	<!-- 24.11.29 지은 [완료] : 결제 내역 - PayPal결제시 특정 결제 내역 상태 변경 -->
@@ -105,12 +131,17 @@
             payment_status = #{paymentStatus},
             transaction_id = #{transactionId},
             updated_at = #{updatedAt}
-        WHERE reservation_id = #{reservationId}
+        WHERE payment_id = #{paymentId}
 	</update>
 	
-	<!-- 24.11.23 지은 [완료] : 결제 내역 - payment DB 속성 전체 가져오기 -->
+	<!-- 24.11.23 지은 [완료] : 결제 내역 - paymentId로 payment DB 속성 전체 가져오기 -->
 	<select id="getPaymentById" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
-		SELECT * FROM payment;
+		SELECT * FROM payment WHERE payment_id = #{paymentId};
+	</select>
+	
+	<!-- 24.12.04 지은 [완료] : 결제 내역 - orderId로 payment DB 특정 orderId 데이터 가져오기 -->
+	<select id="getPaymentByOrderId" parameterType="com.hjhotelback.dto.payment.PaymentDTO">
+		SELECT * FROM payment WHERE order_id = #{orderId};
 	</select>
 	
 	<!-- 24.11.26 지은 [완료] : 예약 결제 내역 조회 (결제 전) -->
@@ -126,6 +157,32 @@
 		FROM reservation r
 		JOIN room rm ON rm.room_id = r.room_id
 		JOIN room_type rt ON rt.room_type_id = rm.room_type_id
-		WHERE r.reservation_id = 1;
+		WHERE r.reservation_id = #{reservationId};
+	</select>
+	
+	<!-- 24.12.06 지은 [완료] : paypal 주문 내역 전체 목록. pagination 기능 추가. -->
+	<select id="getPaypalAllList" resultType="com.hjhotelback.dto.payment.OrderListDTO">
+		SELECT 
+			id,
+			paypal_order_id,
+			status,
+			reservation_id,
+			amount,
+			created_at
+		FROM orders
+		ORDER BY id DESC LIMIT #{size} OFFSET #{offset};
+	</select>
+	
+	<!-- 24.12.06 지은 [완료] : paypal 특정 주문서 내역 조회 -->
+	<select id="getPaymentByPaypalId" resultType="com.hjhotelback.dto.payment.Order">
+		SELECT
+			id,
+			paypal_order_id,
+			STATUS,
+			reservation_id,
+			amount,
+			created_at
+		FROM orders
+		WHERE id = #{id};
 	</select>
 </mapper>
