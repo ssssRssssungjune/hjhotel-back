@@ -34,7 +34,7 @@ public class NoticeController {
 
     // 공지사항 상세 보기
     @GetMapping("/{id}")
-    public ResponseEntity<Notice> getNoticeById(@PathVariable Integer id) {
+    public ResponseEntity<Notice> getNoticeById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(noticeService.getNoticeByIdForUser(id));
     }
 }

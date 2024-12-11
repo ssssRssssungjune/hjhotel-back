@@ -60,13 +60,13 @@ public class AdminNoticeController {
     
     // 공지사항 상세 보기
     @GetMapping("/{id}")
-    public ResponseEntity<Notice> getNoticeById(@PathVariable Integer id) {
+    public ResponseEntity<Notice> getNoticeById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(noticeService.getNoticeByIdForAdmin(id));
     }
 
     // 공지사항 상세 수정
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateNotice(@PathVariable Integer id, @RequestBody @Valid NoticeRequest noticeRequest) {
+    public ResponseEntity<String> updateNotice(@PathVariable("id") Integer id, @RequestBody @Valid NoticeRequest noticeRequest) {
         Notice notice = noticeService.getNoticeByIdForAdmin(id);
         notice.setNoticeId(id);
         notice.setTitle(noticeRequest.getTitle());
@@ -80,7 +80,7 @@ public class AdminNoticeController {
 
     // 공지사항 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteNotice(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteNotice(@PathVariable("id") Integer id) {
         noticeService.deleteNotice(id);
         return ResponseEntity.ok("공지사항 삭제 완료");
     }
