@@ -1,12 +1,15 @@
 package com.hjhotelback.controller.reservation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
+import com.hjhotelback.dto.reservation.ReservationDTO;
 import com.hjhotelback.service.reservation.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/reservation")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
-public class ReservationController {
+public class UserReservationController {
 
     // 24.11.20 한택 [기능 정리]
     // 에약 목록 보기 사용자/관리자 
@@ -49,43 +53,43 @@ public class ReservationController {
      */
     private final ReservationService _service;
 
-    @PostMapping("/")
+    @PostMapping("reservation")
     @Transactional
     public ResponseEntity<String> POSTCreateReservation(@RequestBody ReqReservation.Create req){
-        if (req.checkIn.compareTo(req.checkOut) > 0) 
-            return new ResponseEntity<>("Error: Check-in date must be earlier than or equal to check-out date.", HttpStatus.BAD_REQUEST);
-        
-        return new ResponseEntity<>(_service.createReservation(req),HttpStatus.OK);
+        if (req.getCheckIn().compareTo(req.getCheckOut()) > 0) 
+            return new ResponseEntity<String>("Error: Check-in date must be earlier than or equal to check-out date.", HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<String>(_service.createReservation(req),HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("reservation")
     public ResReservation.Detail GETReservationDetail(@RequestParam("id") int reservationId){
         return _service.getReservationDetail(reservationId);
     }
 
+    @GetMapping("reservation/summary/{selectedTimestamp}")
+    public List<ResReservation.Summary> GETReservationSummary(@PathVariable("selectedTimestamp") long selectedTimestamp){
+        return _service.getReservationSummary(selectedTimestamp);
+    }
+
     //24.11.25 한택 [작업 정리] : 사용자 예약 날짜 변경 - 추가적인 변경 사항이 있을것 같아 POST 와 method 작명을 update로 그대로 사용하였음
-    @PostMapping("update")
+    @PostMapping("reservation/update")
     public ResponseEntity<String> POSTUpdateReservationForUser(@RequestBody ReqReservation.UpdateDate req){
 
         return new ResponseEntity<>(_service.updateReservationForUser(req),HttpStatus.OK);
     }
 
     //24.11.20 한택 [주의] : status PENDING이면 삭제 , PENDING이 아닐 경우에는 status CANCELLED로 변경
-    @DeleteMapping("cancel")
+    @DeleteMapping("reservation/cancel")
     public void DELETECancelReservation(@RequestBody ReqReservation.Delete req){
         _service.cancelReservation(req);
         
     }
 
-    // -------------------------------------- Admin -------------------------------------------
-    @GetMapping("admin")
-    public List<ResReservation.Detail> GETAdminReservationList(){
-        return _service.getReservationList();
-    }
 
-    @PostMapping("admin")
-    public String POSTUpdateReservationForAdmin(@RequestBody ReqReservation.Update req){
-        return _service.updateReservationForAdmin(req);
+    @GetMapping("test/room")
+    public List<ResReservation.RoomSample> GETRoomSample(){
+        System.out.println("GETRoomSample method called");
+        return _service.getRoomSample();
     }
-    // -------------------------------------- Admin -------------------------------------------
 }

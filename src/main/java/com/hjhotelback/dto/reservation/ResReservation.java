@@ -21,4 +21,19 @@ public class ResReservation {
         public int totalAmount;
     }
     
+    public static class Summary{
+        public int roomTypeId;
+        public Timestamp reservationDate;
+        public int bookedRooms;
+    }
+
+    public static class RoomSample{
+        public int roomTypeId;
+        public String roomType;
+        public String description;
+        public int baseOccupancy;
+        public int maxOccupancy;
+        public int basePrice;
+        public int roomCount;
+    }
 }

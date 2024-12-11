@@ -1,11 +1,16 @@
 package com.hjhotelback.service.reservation;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
+import com.hjhotelback.dto.reservation.ReservationDTO;
 import com.hjhotelback.mapper.reservation.ReservationMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -47,8 +52,8 @@ public class ReservationService {
         return _mapper.getReservationById(reservationId);
     }
 
-    public List<ResReservation.Detail> getReservationList(){
-        return _mapper.getReservationList();
+    public List<ResReservation.Detail> getReservationList(Map<String,Object> param){
+        return _mapper.getReservationList(param);
     }
 
     // 예약 수정 사용자/관리자 - 사용자 : {예약대기(결제전) -> 예약완료(결제후), 예약 취소}예약상태변경, 예약날짜변경 / 
@@ -87,25 +92,49 @@ public class ReservationService {
             return "Invalid request type";
     }
 
+    // 24.12.09 한택 [내용] : 선택한 현재 월의 예약가능객실 조회
+    public List<ResReservation.Summary> getReservationSummary(long selectedTimestamp){
+        return _mapper.getRoomReservationSummary(convertTimestampToDate(selectedTimestamp));
+    }
+
+    //24.12.01 한택 [내용] :
+    public boolean UpdateReservationState(ReqReservation.UpdateState data){
+
+        return updateReservationState(data);
+    }
+
     // 예약 날짜 변경 로직
-    private boolean updateReservationDate(ReqReservation.UpdateDate req){
-        if (req.checkIn.compareTo(req.checkOut) > 0)
+    private boolean updateReservationDate(ReqReservation.UpdateDate data){
+        if (data.checkIn.compareTo(data.checkOut) > 0)
             return false;
 
-        return _mapper.updateReservationDate(req) > 0;
+        return _mapper.updateReservationDate(data) > 0;
     }
 
     // 예약 상태 변경 로직
-    private boolean updateReservationState(ReqReservation.UpdateState req){
+    private boolean updateReservationState(ReqReservation.UpdateState data){
         
-        return _mapper.updateReservationState(req) > 0;
+        return _mapper.updateReservationState(data) > 0;
 
     }
 
     // 예약 객실 변경 로직
-    private boolean updateReservationRoom(ReqReservation.UpdateRoom req){
+    private boolean updateReservationRoom(ReqReservation.UpdateRoom data){
 
-        return _mapper.updateReservationRoom(req) > 0;
+        return _mapper.updateReservationRoom(data) > 0;
+    }
+
+    // util
+    private LocalDate convertTimestampToDate(long timestamp) {
+        return Instant.ofEpochMilli(timestamp)
+                    .atZone(ZoneId.of("Asia/Seoul"))
+                    .toLocalDate()
+                    .withDayOfMonth(1);
+    }
+    
+    // test
+    public List<ResReservation.RoomSample> getRoomSample(){
+        return _mapper.getRoomSample();
     }
 }
 

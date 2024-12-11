@@ -1,19 +1,22 @@
 package com.hjhotelback.mapper.reservation;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
+import com.hjhotelback.dto.reservation.ReservationDTO;
 
 
 @Mapper
 public interface ReservationMapper {
 
     //관리자 예약 목록 조회
-    public List<ResReservation.Detail> getReservationList();
+    public List<ResReservation.Detail> getReservationList(Map<String,Object> param);
     
     //사용자/관리자 예약 상세 조회
     public ResReservation.Detail getReservationById(@Param("reservationId") int reservationId);
@@ -32,4 +35,9 @@ public interface ReservationMapper {
     
     //사용자 예약 취소
     public int deleteReservation(ReqReservation.Delete req);
+
+    // Test
+    public List<ResReservation.Summary> getRoomReservationSummary(LocalDate date);
+
+    public List<ResReservation.RoomSample> getRoomSample();
 }
