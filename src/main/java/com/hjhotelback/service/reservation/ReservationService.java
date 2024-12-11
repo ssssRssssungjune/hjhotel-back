@@ -4,11 +4,13 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
+import com.hjhotelback.dto.reservation.ReservationDTO;
 import com.hjhotelback.mapper.reservation.ReservationMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -50,8 +52,8 @@ public class ReservationService {
         return _mapper.getReservationById(reservationId);
     }
 
-    public List<ResReservation.Detail> getReservationList(){
-        return _mapper.getReservationList();
+    public List<ResReservation.Detail> getReservationList(Map<String,Object> param){
+        return _mapper.getReservationList(param);
     }
 
     // 예약 수정 사용자/관리자 - 사용자 : {예약대기(결제전) -> 예약완료(결제후), 예약 취소}예약상태변경, 예약날짜변경 / 
