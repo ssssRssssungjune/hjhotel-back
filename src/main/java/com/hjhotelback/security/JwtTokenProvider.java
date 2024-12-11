@@ -2,6 +2,7 @@ package com.hjhotelback.security;
 
 import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
+import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,98 +29,108 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtTokenProvider {
 
+    private final MemberMapper memberMapper;
+
     @Value("${jwt.token-validity-in-seconds}")
-    private long tokenValidityInSeconds; // 만료시간
+    private long tokenValidityInSeconds; // 토큰 만료 시간 (초 단위)
 
     @Value("${jwt.secret}")
-    private String secretKeyString; // 비밀 키
-
+    private String secretKeyString; // JWT 서명에 사용할 비밀 키
     private Key secretKey;
-
-    private final MemberMapper memberMapper;
 
     @PostConstruct
     public void init() {
+        // 비밀 키 초기화
         this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
     }
 
-    // JWT 생성
-    public String generateToken(MemberEntity memberEntity) {
-        List<MemberAuthEntity> memberAuths = memberMapper.findMemberAuth(memberEntity.getMemberId());
-        List<String> authorities = memberAuths.stream()
-                .map(MemberAuthEntity::getAuth) // MemberAuthEntity에서 auth를 추출
+    // 관리자용 JWT 생성
+    public String generateAdminToken(StaffEntity staffEntity, String roleName) {
+        if (!"ADMIN".equals(roleName)) {
+            throw new IllegalArgumentException("Only ADMIN role can generate admin tokens");
+        }
+        return createToken(
+                staffEntity.getStaffUserId(), // subject
+                roleName, // 역할
+                List.of(roleName), // 권한
+                2 * 3600 * 1000 // 만료 시간: 2시간
+        );
+    }
+
+    // 일반 사용자용 JWT 생성
+    public String generateToken(MemberEntity memberEntity, String role) {
+        List<String> authorities = memberMapper.findMemberAuth(memberEntity.getMemberId())
+                .stream()
+                .map(MemberAuthEntity::getAuth)
                 .collect(Collectors.toList());
+
+        return createToken(
+                memberEntity.getUserId(), // subject
+                role, // 역할
+                authorities, // 권한 리스트
+                tokenValidityInSeconds * 10000 // 만료 시간
+        );
+    }
+
+    // JWT 생성 공통 메서드
+    private String createToken(String subject, String role, List<String> authorities, long expirationTime) {
         long now = System.currentTimeMillis();
-        Date validity = new Date(now + tokenValidityInSeconds * 1000);
+        Date validity = new Date(now + expirationTime);
 
         return Jwts.builder()
-                // Header
                 .signWith(secretKey, SignatureAlgorithm.HS512)
-                // PayLoad
-                // -- 등록 클레임
-                .setSubject(memberEntity.getUserId())
-                .setIssuedAt(new Date(now)) // 토큰 생성 시간
-                .setExpiration(validity) // 만료 시간 설정
-                // -- 사용자 클레임
-                .claim("userName", memberEntity.getName())
+                .setSubject(subject)
+                .setIssuedAt(new Date(now))
+                .setExpiration(validity)
+                .claim("role", role)
                 .claim("auths", authorities)
                 .compact();
     }
 
-    // JWT에서 사용자 ID 추출
-    public String getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey) // 서명 키 설정
-                .build() // JwtParser 생성
-                .parseClaimsJws(token) // JWT 파싱
-                .getBody();
-
-        // 사용자 ID (subject) 반환
-        return claims.getSubject();
+    // JWT 유효성 검사
+    public boolean validateToken(String token) {
+        try {
+            parseClaims(token); // Claims를 파싱하여 유효성 검사
+            return true;
+        } catch (Exception e) {
+            log.error("JWT 유효성 검사 실패: {}", e.getMessage());
+            return false;
+        }
     }
 
-    // JWT에서 사용자 권한을 추출하는 예시 메서드 (optional)
-    public List<String> getRolesFromToken(String token) {
-        Claims claims = Jwts.parser()
+    // JWT에서 Claims 파싱
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        return claims.get("auths", List.class);
     }
 
-    // JWT에서 Authentication 객체를 생성
+    // JWT에서 사용자 ID 추출
+    public String getUserIdFromToken(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    // JWT에서 역할(Role) 추출
+    public String getRoleFromToken(String token) {
+        return parseClaims(token).get("role", String.class);
+    }
+
+    // JWT에서 권한(Auth) 리스트 추출
+    public List<String> getRolesFromToken(String token) {
+        return parseClaims(token).get("auths", List.class);
+    }
+
+    // JWT에서 Authentication 객체 생성
     public Authentication getAuthentication(String token) {
-
-        // 사용자 이름(ID) 가져오기
         String username = getUserIdFromToken(token);
-
-        // 권한 정보 가져오기
-        List<String> roles = getRolesFromToken(token);
-
-        List<SimpleGrantedAuthority> authorities = roles.stream()
+        List<SimpleGrantedAuthority> authorities = getRolesFromToken(token)
+                .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체 생성
         UserDetails userDetails = new User(username, "", authorities);
-
-        // UsernamePasswordAuthenticationToken 생성하여 반환
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
     }
-
-    // JWT 유효성 검증
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                    .setSigningKey(secretKey) // 서명 키 설정
-                    .build() // JwtParser 생성
-                    .parseClaimsJws(token); // JWT 파싱
-            return true; // 유효한 토큰
-        } catch (Exception e) {
-            return false; // 유효하지 않은 토큰
-        }
-    }
-
 }

@@ -27,19 +27,6 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-//    public void registerMember(SignupRequest signupRequest) {
-//        // 비밀번호 암호화
-//        String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
-//
-//        // 데이터베이스에 사용자 정보 저장
-//        memberMapper.insertMember(
-//                signupRequest.getUserId(),
-//                signupRequest.getEmail(),
-//                encodedPassword,
-//                signupRequest.getName(),
-//                signupRequest.getPhone()
-//        );
-//    }
 
     public String login(MemberLoginRequestDto loginRequest) {
         // 사용자 ID로 데이터베이스에서 사용자 조회
@@ -54,14 +41,9 @@ public class MemberService {
         }
 
         // JWT 생성 및 반환
-        return jwtTokenProvider.generateToken(memberEntity);
+        return jwtTokenProvider.generateToken(memberEntity,"USER");
     }
 
-//    public Map<String, String> getUserInfo(String userId) {
-//        // Mapper 호출 결과가 null인 경우 빈 Map 반환
-//        Map<String, String> userInfo = memberMapper.findMemberByUserId(userId);
-//        return userInfo != null ? userInfo : Map.of(); // 빈 Map 반환
-//    }
 
     public MemberEntity getMemberByUserId(String userId) {
         Optional<MemberEntity> result = memberMapper.findMemberByUserId(userId);
@@ -72,6 +54,16 @@ public class MemberService {
     public List<Map<String, Object>> getAllMembers() {
         return memberMapper.findAllMembers();
     }
+
+    public void updateMemberStatus(int memberId, String newStatus) {
+        memberMapper.updateMemberStatus(memberId, newStatus);
+    }
+
+    public void deleteMember(int memberId) {
+        memberMapper.deleteMember(memberId);
+    }
+
+
 }
 
 

@@ -9,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -23,56 +25,72 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String requestUri = request.getRequestURI();
 
-        // 로그아웃 요청은 JWT 필터에서 검증하지 않도록 예외 처리
-        if (isLogoutRequest(request.getRequestURI())) {
+        // 로그인 경로는 필터링 제외
+        if ("/api/admin/login".equals(requestUri) || "/api/users/login".equals(requestUri)) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // JWT 추출
         String jwtToken = extractJwtFromRequest(request);
 
-        if (jwtToken != null && jwtTokenProvider.validateToken(jwtToken)) {
-            // 회원가입 및 로그인 엔드포인트로의 요청을 검사
-            if (isSignupOrLoginRequest(request.getRequestURI()) && jwtTokenProvider.validateToken(jwtToken)) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-
-                String jsonMessage = "{\"message\": \"이미 로그인된 사용자입니다.\"}";
-                response.getWriter().write(jsonMessage);
-                response.getWriter().flush();
-                return; // 이미 토큰이 있는 사용자는 로그인 또는 회원가입을 할 수 없음
-            }
-
-            // JWT가 유효하다면 사용자 인증 정보를 SecurityContext에 설정
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // JWT 검증
+        if (jwtToken == null || !jwtTokenProvider.validateToken(jwtToken)) {
+            log.error("JWT 검증 실패: 토큰이 없거나 유효하지 않음");
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        // 필터 체인의 다음 필터로 요청 전달
+        // JWT에서 Role 추출
+        String role = jwtTokenProvider.getRoleFromToken(jwtToken);
+
+        // 요청 경로와 Role에 따른 접근 권한 확인
+        if (isUnauthorizedAccess(role, requestUri)) {
+            sendForbiddenResponse(response, "접근 권한이 없습니다.");
+            return;
+        }
+
+        // SecurityContext에 Authentication 저장
+        Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         filterChain.doFilter(request, response);
     }
 
+    // JWT에서 쿠키 추출
     private String extractJwtFromRequest(HttpServletRequest request) {
-        // 쿠키 확인
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                // 토큰 확인
-                if (cookie.getName().equals("JWT")) {
+                if ("JWT".equals(cookie.getName())) {
+                    log.debug("JWT 쿠키 발견: {}", cookie.getValue());
                     return cookie.getValue();
                 }
             }
         }
+        log.warn("JWT 쿠키가 요청에 포함되지 않았습니다.");
         return null;
     }
 
-    private boolean isSignupOrLoginRequest(String requestUri) {
-        return requestUri.contains("/signup") || requestUri.contains("/login");
+    // Role에 따른 접근 권한 확인
+    private boolean isUnauthorizedAccess(String role, String requestUri) {
+        if ("ADMIN".equals(role) && requestUri.startsWith("/api/member")) {
+            return true;
+        }
+        if ("USER".equals(role) && requestUri.startsWith("/api/admin")) {
+            return true;
+        }
+        return false;
     }
 
-    // 로그아웃 요청인지 확인하는 메서드
-    private boolean isLogoutRequest(String requestUri) {
-        return requestUri.contains("/logout");
+    // 권한 없는 요청에 Forbidden 응답
+    private void sendForbiddenResponse(HttpServletResponse response, String message) throws IOException {
+        log.error("403 Forbidden 응답: {}", message);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"message\": \"" + message + "\"}");
+        response.getWriter().flush();
     }
 }

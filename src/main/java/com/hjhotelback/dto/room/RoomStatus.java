@@ -1,20 +1,32 @@
 package com.hjhotelback.dto.room;
 
- public enum RoomStatus {
-	
-	    AVAILABLE("AVAILABLE"), 
-	    OCCUPIED("OCCUPIED");
-	 
-	 	private String roomStatus;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-		RoomStatus(String roomStatus) {
-			// TODO Auto-generated constructor stub
-			this.roomStatus = roomStatus;
-			
+public enum RoomStatus {
+	
+	AVAILABLE("AVAILABLE"),
+	OCCUPIED("OCCUPIED");
+	
+	private String status;
+	RoomStatus(String status){
+		this.status = status;
+	}
+		//직렬화
+		@JsonValue
+		public String getStatus() {
+		return this.status;
 		}
-		public String getRoomStatus() {
-	        return this.roomStatus;
-	    }
+	
+		@JsonCreator
+		public static RoomStatus fromString(String value) {
+		    try {
+		        return RoomStatus.valueOf(value.toUpperCase());
+		    } catch(IllegalArgumentException e) {
+		        throw new IllegalArgumentException("Invalid status:" + value);
+		    }
+		}
+
 
 	
 	

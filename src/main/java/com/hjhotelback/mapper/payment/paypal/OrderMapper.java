@@ -22,17 +22,18 @@ public interface OrderMapper {
     
     @Select("SELECT * FROM orders WHERE paypal_order_id = #{paypalOrderId}")
     @Results({
-            @Result(property = "id", column = "id"),
-            @Result(property = "product", column = "product_id",
-                    one = @One(select = "com.hjhotelback.mapper.payment.ProductMapper.findById"))
+        @Result(property = "paypalOrderId", column = "paypal_order_id"),
+        @Result(property = "id", column = "id")
     })
     Order findByPaypalOrderId(String paypalOrderId);
     
-    @Select("SELECT * FROM orders WHERE reservation_id = #{reservationId}")
-    Order findByPaypalReservationId(Integer reservationId);
-    
+    @Select("SELECT * FROM orders WHERE id = #{id}")
+    Order findByPaypalId(Integer id);
+
     @Update("UPDATE orders SET status = #{status} WHERE paypal_order_id = #{paypalOrderId}")
     void updateOrderStatus(@Param("paypalOrderId") String paypalOrderId,
                       @Param("status") String status);
+    
+    
 }
 
