@@ -14,7 +14,7 @@ import com.hjhotelback.dto.room.RoomTypeDto_Client;
 import com.hjhotelback.service.room.RoomService;
 
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/users/rooms")
 public class ClientRoomController {
 	
 	@Autowired RoomService roomService;
