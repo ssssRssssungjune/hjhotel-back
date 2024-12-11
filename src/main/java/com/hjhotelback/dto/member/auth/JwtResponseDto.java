@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class JwtResponseDto {
     private String token;     // JWT 토큰
     private String userId;    // 사용자 ID
+    private String role;
+    private String name;
+    private String phone;
 
     @Override
     public String toString() {

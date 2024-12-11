@@ -64,13 +64,15 @@ public class JwtTokenProvider {
                 .map(MemberAuthEntity::getAuth)
                 .collect(Collectors.toList());
 
+        // 사용자 이름과 전화번호를 페이로드에 포함
         return createToken(
-                memberEntity.getUserId(), // subject
-                role, // 역할
+                memberEntity.getUserId(), // Subject
+                role, // 역할(Role)
                 authorities, // 권한 리스트
-                tokenValidityInSeconds * 10000 // 만료 시간
+                tokenValidityInSeconds * 100000 // 만료 시간
         );
     }
+
 
     // JWT 생성 공통 메서드
     private String createToken(String subject, String role, List<String> authorities, long expirationTime) {
@@ -79,13 +81,15 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS512)
-                .setSubject(subject)
-                .setIssuedAt(new Date(now))
-                .setExpiration(validity)
-                .claim("role", role)
-                .claim("auths", authorities)
+                .setSubject(subject) // 사용자 ID를 Subject로 설정
+                .setIssuedAt(new Date(now)) // 발급 시간
+                .setExpiration(validity) // 만료 시간
+                .claim("role", role) // 역할(Role)
+                .claim("name", "사용자 이름") // 사용자 이름 추가
+                .claim("phone", "010-1234-1234") // 사용자 전화번호 추가
                 .compact();
     }
+
 
     // JWT 유효성 검사
     public boolean validateToken(String token) {
@@ -119,18 +123,27 @@ public class JwtTokenProvider {
 
     // JWT에서 권한(Auth) 리스트 추출
     public List<String> getRolesFromToken(String token) {
-        return parseClaims(token).get("auths", List.class);
+        String role = parseClaims(token).get("role", String.class);
+        return List.of(role); // 단일 role을 리스트로 변환
     }
 
     // JWT에서 Authentication 객체 생성
     public Authentication getAuthentication(String token) {
-        String username = getUserIdFromToken(token);
-        List<SimpleGrantedAuthority> authorities = getRolesFromToken(token)
-                .stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        String username = getUserIdFromToken(token); // 사용자 ID 추출
+        String role = getRoleFromToken(token); // 역할(Role) 추출
 
+        // Role 정보를 SimpleGrantedAuthority로 변환
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+
+        // UserDetails 객체 생성
         UserDetails userDetails = new User(username, "", authorities);
+
+        // Authentication 객체 반환
         return new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
     }
+
+
+
+
+
 }
