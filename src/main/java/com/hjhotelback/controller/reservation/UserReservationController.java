@@ -18,14 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
-import com.hjhotelback.dto.reservation.ReservationDTO;
 import com.hjhotelback.service.reservation.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserReservationController {
 
