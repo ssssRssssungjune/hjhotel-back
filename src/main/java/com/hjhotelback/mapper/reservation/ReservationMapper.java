@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
-import com.hjhotelback.dto.reservation.ReservationDTO;
 
 
 @Mapper

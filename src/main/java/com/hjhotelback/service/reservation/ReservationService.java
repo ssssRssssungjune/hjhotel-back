@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
-import com.hjhotelback.dto.reservation.ReservationDTO;
 import com.hjhotelback.mapper.reservation.ReservationMapper;
 
 import lombok.RequiredArgsConstructor;
