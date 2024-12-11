@@ -20,11 +20,12 @@ public enum RoomStatus {
 	
 		@JsonCreator
 		public static RoomStatus fromString(String value) {
-		    try {
-		        return RoomStatus.valueOf(value.toUpperCase());
-		    } catch(IllegalArgumentException e) {
-		        throw new IllegalArgumentException("Invalid status:" + value);
+		    for (RoomStatus roomStatus : RoomStatus.values()) {
+		        if (roomStatus.getStatus().equalsIgnoreCase(value)) {
+		            return roomStatus;
+		        }
 		    }
+		    throw new IllegalArgumentException("Invalid status:" + value);
 		}
 
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hjhotelback.dto.room.TypeDetailDto_Client;
+import com.hjhotelback.dto.room.CountTypeDto;
 import com.hjhotelback.dto.room.RoomTypeDto_Client;
 import com.hjhotelback.service.room.RoomService;
 
@@ -32,5 +33,12 @@ public class ClientRoomController {
 		return roomService.getDetailType(roomTypeName);
 				
 	}
+	
+	// 24.12.12 진주 : 사용자 - 타입count조회
+			@GetMapping("/types/count")
+			public List<CountTypeDto> getcountTypes(){
+				return roomService.getcountTypes();
+			}
+	
 	
 }
