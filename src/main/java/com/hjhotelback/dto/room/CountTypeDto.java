@@ -12,4 +12,5 @@ public class CountTypeDto {
 	private Integer maxOccupancy;
 	private BigDecimal basePrice;
 	private Integer roomCount;
+	private String imagePath;
 }

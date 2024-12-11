@@ -1,5 +1,4 @@
 package com.hjhotelback.dto.room;
-import java.sql.Date;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
