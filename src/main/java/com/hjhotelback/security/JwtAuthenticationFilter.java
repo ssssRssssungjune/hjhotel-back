@@ -25,19 +25,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String requestUri = request.getRequestURI();
+
+        // 로그인 경로는 필터링 제외
+        if ("/api/admin/login".equals(requestUri) || "/api/users/login".equals(requestUri)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // JWT 추출
         String jwtToken = extractJwtFromRequest(request);
 
-        // 토큰이 유효한 경우 Authentication 객체 생성 후 SecurityContext에 설정
-        if (jwtToken != null && jwtTokenProvider.validateToken(jwtToken)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // JWT 검증
+        if (jwtToken == null || !jwtTokenProvider.validateToken(jwtToken)) {
+            log.error("JWT 검증 실패: 토큰이 없거나 유효하지 않음");
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        // SecurityContext에 Authentication 저장
+        Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
 
-    // JWT에서 쿠키 추출
+    // JWT에서 쿠키 또는 헤더 추출
     private String extractJwtFromRequest(HttpServletRequest request) {
+        // Authorization 헤더 확인
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 접두사 제거 후 반환
+        }
+
+        // 쿠키 확인 (fallback)
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("JWT".equals(cookie.getName())) {
@@ -46,7 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-        log.warn("JWT 쿠키가 요청에 포함되지 않았습니다.");
+
+        log.warn("JWT 토큰을 찾을 수 없습니다.");
         return null;
     }
 }

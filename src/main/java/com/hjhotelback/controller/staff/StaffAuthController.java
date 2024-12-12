@@ -2,6 +2,7 @@ package com.hjhotelback.controller.staff;
 
 import com.hjhotelback.dto.member.auth.StaffLoginRequestDto;
 import com.hjhotelback.dto.member.auth.StaffJwtResponseDto;
+import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.security.JwtTokenProvider;
 import com.hjhotelback.service.staff.StaffService;
 import com.hjhotelback.utils.JwtCookieUtils;
@@ -16,26 +17,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class StaffAuthController {
 
     private final StaffService staffService;
+
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody StaffLoginRequestDto loginRequest, HttpServletResponse response) {
         try {
+            // 관리자 로그인 및 토큰 생성
             StaffJwtResponseDto jwtResponse = staffService.loginWithStaffId(loginRequest);
+            String jwt = jwtResponse.getToken();
 
             // JWT 쿠키 생성
-            ResponseCookie cookie = JwtCookieUtils.createJwtToken(jwtResponse.getToken());
+            ResponseCookie cookie = JwtCookieUtils.createJwtToken(jwt);
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-            return ResponseEntity.ok(jwtResponse);
+            // 사용자 정보 가져오기 (StaffEntity 사용)
+            StaffEntity staff = staffService.findByStaffUserId(jwtResponse.getStaffUserId());
+
+            // 응답 DTO 생성 (StaffJwtResponseDto 사용)
+            StaffJwtResponseDto responseBody = StaffJwtResponseDto.builder()
+                    .token(jwt)
+                    .staffUserId(staff.getStaffUserId())
+                    .roleName(staff.getRoleName())
+//                    .name(staff.getName())
+//                    .email(staff.getEmail())
+                    .build();
+
+            return ResponseEntity.ok(responseBody);
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
         }
@@ -50,28 +65,5 @@ public class StaffAuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<?> getAdminDetails(@CookieValue(name = "JWT", required = false) String jwt) {
-        if (jwt == null || jwt.isEmpty()) {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Unauthorized");
-        }
-
-        try {
-            String staffUserId = jwtTokenProvider.getUserIdFromToken(jwt);
-            var staff = staffService.findByStaffUserId(staffUserId);
-
-            if (!"ADMIN".equals(staff.getRoleName())) {
-                return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body("Forbidden: Not an admin");
-            }
-
-            // roleName을 role 필드로 매핑하여 반환하는 예시
-            Map<String, Object> response = new HashMap<>();
-            response.put("staffUserId", staff.getStaffUserId());
-            response.put("role", staff.getRoleName());
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Invalid token");
-        }
-    }
+    // /api/admin/me 엔드포인트 제거
 }

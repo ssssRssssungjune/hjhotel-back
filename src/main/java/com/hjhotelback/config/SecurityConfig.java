@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                         ////////////////////////////////////////////////////////////////
                         .requestMatchers("/api/admin/login").permitAll()
-                        .requestMatchers("/api/admin/me").authenticated()
+
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN") // ADMIN 권한 필요
                         .anyRequest().authenticated()
                 )
