@@ -38,7 +38,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/login").permitAll() // 로그인은 모두 허용
+                        .requestMatchers("/api/users/paypal/**").hasAuthority("USER") // USER 권한 필요
                         .requestMatchers("/api/users/payments/**").hasAuthority("USER") // USER 권한 필요
+
+                        ////////////////////////////////////////////////////////////////
+                        .requestMatchers("/api/admin/me").authenticated()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN") // ADMIN 권한 필요
                         .anyRequest().authenticated()
                 )
