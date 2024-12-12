@@ -1,6 +1,8 @@
 package com.hjhotelback.controller.staff;
 
 import com.hjhotelback.dto.member.auth.StaffLoginRequestDto;
+import com.hjhotelback.entity.MemberEntity;
+import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.dto.member.auth.StaffJwtResponseDto;
 import com.hjhotelback.security.JwtTokenProvider;
 import com.hjhotelback.service.staff.StaffService;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,19 +27,18 @@ import java.util.Map;
 public class StaffAuthController {
 
     private final StaffService staffService;
-    @Autowired
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody StaffLoginRequestDto loginRequest, HttpServletResponse response) {
         try {
-            StaffJwtResponseDto jwtResponse = staffService.loginWithStaffId(loginRequest);
+            StaffJwtResponseDto jwtResponse = staffService.loginWithStaffId(loginRequest); //staffId, token, 권한(ADMIN) jwtResonse에 저장. (지은 추가)
 
             // JWT 쿠키 생성
             ResponseCookie cookie = JwtCookieUtils.createJwtToken(jwtResponse.getToken());
-            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString()); //http cookie에 저장. http.only
 
-            return ResponseEntity.ok(jwtResponse);
+            return ResponseEntity.ok(jwtResponse); // 생성한 쿠키 발급됐다는 걸 보여주는 용도. 삭제해도 됨(지은 주석 추가)
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
         }
@@ -73,5 +76,14 @@ public class StaffAuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Invalid token");
         }
+    }
+    
+    // 관리자 로그인시 정보 가져오는 api
+    @GetMapping("/admininfo")
+    public ResponseEntity<StaffEntity> getAdminInfo() {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      String userId = authentication.getName();
+      StaffEntity staffEntity = staffService.findByStaffUserId(userId);
+      return ResponseEntity.ok(staffEntity);
     }
 }

@@ -6,12 +6,15 @@ import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.mapper.staff.StaffMapper;
 import com.hjhotelback.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 //import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StaffService {
@@ -23,12 +26,13 @@ public class StaffService {
     /**
      * 관리자 로그인을 처리하는 메서드
      */
-    public StaffJwtResponseDto loginWithStaffId(StaffLoginRequestDto staffLoginRequestDto) {
+    public StaffJwtResponseDto loginWithStaffId(StaffLoginRequestDto loginRequest) {
         // 사용자 조회
-        StaffEntity staff = staffMapper.findByStaffUserId(staffLoginRequestDto.getStaffUserId());
+        StaffEntity staff = staffMapper.findByStaffUserId(loginRequest.getStaffUserId());
+        log.info("Staff 정보: {}", staff); // 테스트 log 출력 (지은 추가)
 
         // 사용자 확인 및 비밀번호 검증
-        if (staff == null || !passwordEncoder.matches(staffLoginRequestDto.getPassword(), staff.getPassword())) {
+        if (staff == null || !passwordEncoder.matches(loginRequest.getPassword(), staff.getPassword())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
@@ -39,7 +43,7 @@ public class StaffService {
 
         // JWT 생성
         String token = jwtTokenProvider.generateAdminToken(staff, staff.getRoleName());
-        return new StaffJwtResponseDto(staff.getStaffUserId(), token, staff.getRoleName());
+        return new StaffJwtResponseDto(staff.getStaffUserId(), token, staff.getRoleName()); //token에 staffUserId, jwt token, 권한(ADMIN)
     }
 
     /**

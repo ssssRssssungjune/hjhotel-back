@@ -52,7 +52,7 @@ public class JwtTokenProvider {
         return createToken(
                 staffEntity.getStaffUserId(), // subject
                 roleName, // 역할
-                List.of(roleName), // 권한
+                List.of(roleName), // 권한처리를 위해 필요 (지은 주석 추가)
                 2 * 3600 * 1000 // 만료 시간: 2시간
         );
     }
@@ -64,12 +64,23 @@ public class JwtTokenProvider {
                 .map(MemberAuthEntity::getAuth)
                 .collect(Collectors.toList());
 
-        return createToken(
+//        return createToken(
+//                memberEntity.getUserId(), // subject
+//                role, // 역할
+//                authorities, // 권한 리스트
+//                tokenValidityInSeconds * 10000 // 만료 시간
+        String token = createToken(
                 memberEntity.getUserId(), // subject
                 role, // 역할
                 authorities, // 권한 리스트
                 tokenValidityInSeconds * 10000 // 만료 시간
         );
+          // 토큰 정보 로그 출력
+        log.info("User: {}, Token: {}, UserId: {}, Role: {}, Authorities: {}", 
+                "User", token, memberEntity.getUserId(), role, authorities);
+        log.info("Authorities: {}", authorities);
+        return token;
+       
     }
 
     // JWT 생성 공통 메서드
@@ -123,14 +134,25 @@ public class JwtTokenProvider {
     }
 
     // JWT에서 Authentication 객체 생성
-    public Authentication getAuthentication(String token) {
-        String username = getUserIdFromToken(token);
-        List<SimpleGrantedAuthority> authorities = getRolesFromToken(token)
+    public Authentication getAuthentication(String jwtToken) {
+        String username = getUserIdFromToken(jwtToken);
+        log.info("토큰에서 추출한 username : {}", username); //(지은 추가)
+        List<SimpleGrantedAuthority> authorities = getRolesFromToken(jwtToken)
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+        
+        log.info("Extracted username: {}", username);
+        log.info("Extracted authorities: {}", authorities);
 
+//        UserDetails userDetails = new User(username, "", authorities);
+//        return new UsernamePasswordAuthenticationToken(userDetails, jwtToken, authorities);
         UserDetails userDetails = new User(username, "", authorities);
-        return new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
+        log.info("추출한 권한 : {}", authorities.toString());
+        
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, jwtToken, authorities);
+        log.info("Generated Authentication: {}", authentication);
+
+        return authentication;
     }
 }

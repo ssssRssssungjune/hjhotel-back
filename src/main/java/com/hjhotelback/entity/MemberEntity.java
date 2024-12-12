@@ -17,7 +17,7 @@ public class MemberEntity {
     private String name;
     private String phone;
     private MemberStatus status;
-    private boolean is_active;
+    private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

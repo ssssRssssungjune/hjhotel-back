@@ -45,6 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // JWT에서 Role 추출
         String role = jwtTokenProvider.getRoleFromToken(jwtToken);
+        
+        log.info(role);
 
         // 요청 경로와 Role에 따른 접근 권한 확인
         if (isUnauthorizedAccess(role, requestUri)) {
@@ -55,7 +57,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // SecurityContext에 Authentication 저장
         Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        
+        log.info(
+                "Authentication 객체 정보: \n" +
+                "  Principal: {}\n" +
+                "  Authenticated: {}\n" +
+                "  Authorities: {}",
+                authentication.getPrincipal(),
+                authentication.isAuthenticated(),
+                authentication.toString()
+               );
         filterChain.doFilter(request, response);
     }
 
