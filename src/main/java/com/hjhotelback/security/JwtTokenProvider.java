@@ -53,37 +53,39 @@ public class JwtTokenProvider {
                 staffEntity.getStaffUserId(), // subject
                 roleName, // 역할
                 List.of(roleName), // 권한
-                2 * 3600 * 1000 // 만료 시간: 2시간
+                2 * 3600 * 1000, // 만료 시간: 2시간
+                staffEntity.getName(), // 사용자 이름
+                staffEntity.getEmail() // 이메일 추가
         );
     }
 
     // 일반 사용자용 JWT 생성
     public String generateToken(MemberEntity memberEntity, String role) {
-        List<String> authorities = memberMapper.findMemberAuth(memberEntity.getMemberId())
-                .stream()
-                .map(MemberAuthEntity::getAuth)
-                .collect(Collectors.toList());
-
         return createToken(
-                memberEntity.getUserId(), // subject
-                role, // 역할
-                authorities, // 권한 리스트
-                tokenValidityInSeconds * 10000 // 만료 시간
+                memberEntity.getUserId(), // Subject
+                role, // 역할(Role)
+                List.of(role), // 권한 리스트
+                tokenValidityInSeconds * 10000, // 만료 시간
+                memberEntity.getName(),
+                memberEntity.getEmail()
         );
     }
 
     // JWT 생성 공통 메서드
-    private String createToken(String subject, String role, List<String> authorities, long expirationTime) {
+    private String createToken(String subject, String role, List<String> authorities, long expirationTime, String userName, String email) {
         long now = System.currentTimeMillis();
         Date validity = new Date(now + expirationTime);
 
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS512)
-                .setSubject(subject)
-                .setIssuedAt(new Date(now))
-                .setExpiration(validity)
-                .claim("role", role)
-                .claim("auths", authorities)
+                .setSubject(subject) // 사용자 ID를 Subject로 설정
+                .setIssuedAt(new Date(now)) // 발급 시간
+                .setExpiration(validity) // 만료 시간
+                .claim("role", role) // 역할(Role)
+//                .claim("roleName", roleName) // 역할(Role) 변경
+                .claim("name", userName) // 사용자 이름
+                .claim("email", email) // 이메일
+                .claim("auths", authorities) // 권한 리스트
                 .compact();
     }
 
@@ -124,13 +126,18 @@ public class JwtTokenProvider {
 
     // JWT에서 Authentication 객체 생성
     public Authentication getAuthentication(String token) {
-        String username = getUserIdFromToken(token);
-        List<SimpleGrantedAuthority> authorities = getRolesFromToken(token)
-                .stream()
+        String username = getUserIdFromToken(token); // 사용자 ID 추출
+        List<String> roles = getRolesFromToken(token); // 역할(Role) 목록 추출
+
+        // Role 정보를 SimpleGrantedAuthority로 변환
+        List<SimpleGrantedAuthority> authorities = roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
+        // UserDetails 객체 생성
         UserDetails userDetails = new User(username, "", authorities);
+
+        // Authentication 객체 반환
         return new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
     }
 }

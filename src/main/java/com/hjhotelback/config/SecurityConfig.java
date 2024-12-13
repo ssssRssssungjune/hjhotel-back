@@ -17,49 +17,40 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // Bean으로 주입받음
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    /**
-     * 비밀번호 인코더 설정
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * 인증 관리자(AuthenticationManager) 설정
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    /**
-     * SecurityFilterChain 설정
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors() // cors() 호출로 WebConfig의 CORS 설정 반영
-                .and()
+                .cors().and()
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/login").permitAll() // 로그인은 모두 허용
+                        .requestMatchers("/api/users/paypal/**").hasAuthority("USER") // USER 권한 필요
+                        .requestMatchers("/api/users/payments/**").hasAuthority("USER") // USER 권한 필요
+
+                        ////////////////////////////////////////////////////////////////
                         .requestMatchers("/api/admin/login").permitAll()
-                        .requestMatchers("/api/admin/me").authenticated()
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/me").hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN") // ADMIN 권한 필요
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-
 
 }
 

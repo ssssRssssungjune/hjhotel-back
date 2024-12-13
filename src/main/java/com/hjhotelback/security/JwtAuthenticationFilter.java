@@ -43,15 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // JWT에서 Role 추출
-        String role = jwtTokenProvider.getRoleFromToken(jwtToken);
-
-        // 요청 경로와 Role에 따른 접근 권한 확인
-        if (isUnauthorizedAccess(role, requestUri)) {
-            sendForbiddenResponse(response, "접근 권한이 없습니다.");
-            return;
-        }
-
         // SecurityContext에 Authentication 저장
         Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -59,8 +50,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // JWT에서 쿠키 추출
+    // JWT에서 쿠키 또는 헤더 추출
     private String extractJwtFromRequest(HttpServletRequest request) {
+        // Authorization 헤더 확인
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 접두사 제거 후 반환
+        }
+
+        // 쿠키 확인 (fallback)
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("JWT".equals(cookie.getName())) {
@@ -69,28 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-        log.warn("JWT 쿠키가 요청에 포함되지 않았습니다.");
+
+        log.warn("JWT 토큰을 찾을 수 없습니다.");
         return null;
-    }
-
-    // Role에 따른 접근 권한 확인
-    private boolean isUnauthorizedAccess(String role, String requestUri) {
-        if ("ADMIN".equals(role) && requestUri.startsWith("/api/member")) {
-            return true;
-        }
-        if ("USER".equals(role) && requestUri.startsWith("/api/admin")) {
-            return true;
-        }
-        return false;
-    }
-
-    // 권한 없는 요청에 Forbidden 응답
-    private void sendForbiddenResponse(HttpServletResponse response, String message) throws IOException {
-        log.error("403 Forbidden 응답: {}", message);
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"message\": \"" + message + "\"}");
-        response.getWriter().flush();
     }
 }

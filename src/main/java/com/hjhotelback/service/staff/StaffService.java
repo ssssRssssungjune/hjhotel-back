@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-//import java.util.List;
+import java.util.List;
+
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,8 @@ public class StaffService {
     private final StaffMapper staffMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
+
 
     /**
      * 관리자 로그인을 처리하는 메서드
@@ -42,17 +45,31 @@ public class StaffService {
         return new StaffJwtResponseDto(staff.getStaffUserId(), token, staff.getRoleName());
     }
 
-    /**
-     * staffUserId로 Staff 정보 조회 메서드 추가
-     */
+    // 스태프 전체 목록 조회
+    public List<StaffEntity> getAllStaff() {
+        return staffMapper.findAllStaff();
+    }
+
+    // 스태프 상세 조회
     public StaffEntity findByStaffUserId(String staffUserId) {
         StaffEntity staff = staffMapper.findByStaffUserId(staffUserId);
         if (staff == null) {
-            throw new IllegalArgumentException("해당 staffUserId에 해당하는 Staff를 찾을 수 없습니다: " + staffUserId);
+            throw new IllegalArgumentException("해당 스태프를 찾을 수 없습니다: " + staffUserId);
         }
         return staff;
     }
+
+    // 스태프 상태 변경
+    public void updateStaffStatus(int staffId, boolean isActive) {
+        staffMapper.updateStaffStatus(staffId, isActive);
+    }
+
+    // 스태프 삭제
+    public void deleteStaff(int staffId) {
+        staffMapper.deleteStaff(staffId);
+    }
 }
+
 
 
 
