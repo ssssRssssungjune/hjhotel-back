@@ -33,26 +33,14 @@ public class AuthController {
             // 사용자 로그인 처리 및 JWT 생성
             String jwt = memberService.login(loginRequest);
 
-            // 역할(role) 가져오기
-            String role = jwtTokenProvider.getRoleFromToken(jwt);
-
-            // 사용자 정보 가져오기
-            MemberEntity member = memberService.getMemberByUserId(loginRequest.getUserId());
 
             // JWT 쿠키 생성
             ResponseCookie jwtCookie = JwtCookieUtils.createJwtToken(jwt);
             response.setHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-            // JwtResponseDto 생성
-            JwtResponseDto responseBody = JwtResponseDto.builder()
-                    .token(jwt)
-                    .userId(member.getUserId())
-                    .role(role)
-                    .name(member.getName())
-                    .phone(member.getPhone())
-                    .build();
 
-            return ResponseEntity.ok(responseBody);
+
+            return ResponseEntity.ok("로그인 완료"); // 또는 ResponseEntity.ok("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
         }
