@@ -43,19 +43,11 @@ public class StaffAuthController {
             ResponseCookie cookie = JwtCookieUtils.createJwtToken(jwt);
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-            // 사용자 정보 가져오기 (StaffEntity 사용)
-            StaffEntity staff = staffService.findByStaffUserId(jwtResponse.getStaffUserId());
 
-            // 응답 DTO 생성 (StaffJwtResponseDto 사용)
-            StaffJwtResponseDto responseBody = StaffJwtResponseDto.builder()
-                    .token(jwt)
-                    .staffUserId(staff.getStaffUserId())
-                    .roleName(staff.getRoleName())
-//                    .name(staff.getName())
-//                    .email(staff.getEmail())
-                    .build();
 
-            return ResponseEntity.ok(responseBody);
+
+
+            return ResponseEntity.ok("로그인 완료"); // 또는 ResponseEntity.ok("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
         }
