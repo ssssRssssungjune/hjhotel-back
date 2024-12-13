@@ -1,6 +1,5 @@
 package com.hjhotelback.security;
 
-import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
 import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -50,7 +48,7 @@ public class JwtTokenProvider {
             throw new IllegalArgumentException("Only ADMIN role can generate admin tokens");
         }
         return createToken(
-                staffEntity.getStaffUserId(), // subject
+                staffEntity.getStaffUserId(), // subject (사용자 ID)
                 roleName, // 역할
                 List.of(roleName), // 권한
                 2 * 3600 * 1000, // 만료 시간: 2시간
@@ -62,12 +60,12 @@ public class JwtTokenProvider {
     // 일반 사용자용 JWT 생성
     public String generateToken(MemberEntity memberEntity, String role) {
         return createToken(
-                memberEntity.getUserId(), // Subject
+                memberEntity.getUserId(), // Subject (사용자 ID)
                 role, // 역할(Role)
                 List.of(role), // 권한 리스트
                 tokenValidityInSeconds * 10000, // 만료 시간
-                memberEntity.getName(),
-                memberEntity.getEmail()
+                memberEntity.getName(), // 사용자 이름
+                memberEntity.getEmail() // 이메일 추가
         );
     }
 
@@ -82,7 +80,6 @@ public class JwtTokenProvider {
                 .setIssuedAt(new Date(now)) // 발급 시간
                 .setExpiration(validity) // 만료 시간
                 .claim("role", role) // 역할(Role)
-//                .claim("roleName", roleName) // 역할(Role) 변경
                 .claim("name", userName) // 사용자 이름
                 .claim("email", email) // 이메일
                 .claim("auths", authorities) // 권한 리스트
@@ -132,7 +129,7 @@ public class JwtTokenProvider {
         // Role 정보를 SimpleGrantedAuthority로 변환
         List<SimpleGrantedAuthority> authorities = roles.stream()
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .toList();
 
         // UserDetails 객체 생성
         UserDetails userDetails = new User(username, "", authorities);

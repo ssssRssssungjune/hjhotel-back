@@ -45,6 +45,12 @@ public class MemberService {
     }
 
 
+
+
+
+
+
+
     public MemberEntity getMemberByUserId(String userId) {
         Optional<MemberEntity> result = memberMapper.findMemberByUserId(userId);
         return result.orElseThrow();
@@ -62,6 +68,8 @@ public class MemberService {
     public void deleteMember(int memberId) {
         memberMapper.deleteMember(memberId);
     }
+
+
 
 
 }

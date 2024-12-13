@@ -40,10 +40,24 @@ public class StaffService {
             throw new IllegalStateException("관리자 권한이 필요합니다.");
         }
 
-        // JWT 생성
+        // JWT 생성 (generateAdminToken 호출 시, staff.getName()과 staff.getEmail() 추가)
         String token = jwtTokenProvider.generateAdminToken(staff, staff.getRoleName());
-        return new StaffJwtResponseDto(staff.getStaffUserId(), token, staff.getRoleName());
+
+        // StaffJwtResponseDto 객체 생성 및 반환
+        return StaffJwtResponseDto.builder()
+                .token(token)
+                .staffUserId(staff.getStaffUserId())
+                .roleName(staff.getRoleName())
+                .build();
     }
+
+
+
+
+
+
+
+
 
     // 스태프 전체 목록 조회
     public List<StaffEntity> getAllStaff() {
@@ -68,6 +82,8 @@ public class StaffService {
     public void deleteStaff(int staffId) {
         staffMapper.deleteStaff(staffId);
     }
+
+
 }
 
 
