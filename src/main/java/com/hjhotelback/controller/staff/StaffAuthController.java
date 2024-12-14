@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,7 +39,7 @@ public class StaffAuthController {
             ResponseCookie cookie = JwtCookieUtils.createJwtToken(jwtResponse.getToken());
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString()); //http cookie에 저장. http.only
 
-            return ResponseEntity.ok(jwtResponse); // 생성한 쿠키 발급됐다는 걸 보여주는 용도. 삭제해도 됨(지은 주석 추가)
+            return ResponseEntity.ok("로그인성공"); // 생성한 쿠키 발급됐다는 걸 보여주는 용도. 삭제해도 됨(지은 주석 추가)
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
         }
@@ -81,9 +82,16 @@ public class StaffAuthController {
     // 관리자 로그인시 정보 가져오는 api
     @GetMapping("/admininfo")
     public ResponseEntity<StaffEntity> getAdminInfo() {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      String userId = authentication.getName();
-      StaffEntity staffEntity = staffService.findByStaffUserId(userId);
-      return ResponseEntity.ok(staffEntity);
+//      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//      String userId = authentication.getName();
+//      StaffEntity staffEntity = staffService.findByStaffUserId(userId);
+//      return ResponseEntity.ok(staffEntity);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName(); // 인증된 사용자의 ID
+            StaffEntity staffEntity = staffService.findByStaffUserId(userId);
+            return ResponseEntity.ok(staffEntity);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);  // 인증 실패
     }
 }

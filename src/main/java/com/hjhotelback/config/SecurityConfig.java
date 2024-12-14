@@ -22,8 +22,8 @@ import com.hjhotelback.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
+//@EnableWebSecurity
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -51,8 +51,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .cors() // cors() 호출로 WebConfig의 CORS 설정 반영
-                .cors().configurationSource(corsConfigurationSource()) // cors() 호출로 WebConfig의 CORS 설정 반영
+//                .cors().configurationSource(corsConfigurationSource()) // cors() 호출로 WebConfig의 CORS 설정 반영
+        		.cors() // cors() 호출로 WebConfig의 CORS 설정 반영
                 .and()
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/login").permitAll()
-                        .requestMatchers("/api/admin/me").authenticated()
+                        .requestMatchers("/api/admin/me", "/api/admin/admininfo").authenticated()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -72,17 +72,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트엔드 주소
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 필요한 HTTP 메서드만 허용
-        configuration.setAllowCredentials(true); // 쿠키 허용 설정
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "X-Requested-With")); // 필요한 헤더만 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration); // 필요한 경로에만 CORS 설정 적용
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트엔드 주소
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // 필요한 HTTP 메서드만 허용
+//        configuration.setAllowCredentials(true); // 쿠키 허용 설정
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "X-Requested-With")); // 필요한 헤더만 허용
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/api/**", configuration); // 필요한 경로에만 CORS 설정 적용
+//        return source;
+//    }
 }
 
