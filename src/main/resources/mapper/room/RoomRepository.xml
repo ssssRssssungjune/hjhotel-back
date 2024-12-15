@@ -4,14 +4,14 @@
 	
 	
 	
-	<!-- 사용자     
+	<!-- 사용자     -->
    	<select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
            SELECT * FROM room_type ORDER BY room_type_id ASC
-    </select>-->
-    <!-- 사용자 객실 유형별 전체 조회 -->
+    </select>
+    <!-- 사용자 객실 유형별 전체 조회 
     <select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
            SELECT * FROM room_type WHERE room_type_id =#{typeId}
-    </select>
+    </select>-->
     
     <select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
 			  SELECT 
@@ -45,7 +45,8 @@ WHERE
 			    r.room_number, 
 			    r.floor, 
 			    r.status,
-			    r.view
+			    r.view,
+			    res.status AS reservationStatus 
 			FROM room r
 			JOIN reservation res ON r.room_id = res.room_id
 			JOIN room_type rt ON rt.room_type_id = r.room_type_id
@@ -62,7 +63,8 @@ WHERE
 			    r.room_number, 
 			    r.floor, 
 			    r.status,
-			    r.view
+			    r.view,
+			    res.status AS reservationStatus 
 			FROM room r
 			JOIN reservation res ON r.room_id = res.room_id
 			JOIN room_type rt ON rt.room_type_id = r.room_type_id

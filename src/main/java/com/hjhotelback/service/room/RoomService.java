@@ -25,9 +25,9 @@ public class RoomService {
 	private RoomRepository roomRepository;
 	//	======== 사용자 
 
-	public List<RoomTypeDto_Client> getRoomTypes(Integer typeId){
+	public List<RoomTypeDto_Client> getRoomTypes(){
 
-		return roomRepository.AllRoomTypes(typeId);
+		return roomRepository.AllRoomTypes();
 	}
 	
 	public List<TypeDetailDto_Client> getDetailType(String roomTypeName){
@@ -55,14 +55,14 @@ public class RoomService {
 	
 	// 24.12.10. 진주 : 관리자 - 객실 추가
 	//	@Transactional
-		public void addRoom(RoomAddDto roomAddDto) {
+		//public void addRoom(RoomAddDto roomAddDto) {
 			//room_id의 최대
 			//int maxRoomId = roomRepository.getMaxRoomId();
 			//Auto_INCREMENT 값 설정
 			//roomRepository.setAutoIncrement(maxRoomId+1);
 			//room 데이터
-			roomRepository.insertRoom(roomAddDto);
-		}
+			//roomRepository.insertRoom(roomAddDto);
+		//}
 
 	// ======= 타입
 	public List<RoomTypeDto> getTypes(){	

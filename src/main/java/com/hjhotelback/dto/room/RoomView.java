@@ -4,20 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum RoomView {
-	CITY_VIEW("City View"),
-    STREET_VIEW("Street View"),
-    DOWNTOWN_VIEW("Downtown View");
+	CITY,
+    STREET,
+    DOWNTOWN;
 	
-	private String code;
-
-	RoomView(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
+	
 //    private String view;
 //    RoomView(String view) {
 //    	this.view = view;

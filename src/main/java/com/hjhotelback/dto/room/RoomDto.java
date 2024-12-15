@@ -13,4 +13,5 @@ public class RoomDto{
 	private Integer floor;
 	private RoomStatus status;
 	private String view;
+	private String reservationStatus; 
 }

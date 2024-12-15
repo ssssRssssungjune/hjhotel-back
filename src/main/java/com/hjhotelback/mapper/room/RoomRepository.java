@@ -19,7 +19,7 @@ import com.hjhotelback.dto.room.RoomTypeDto;
 public interface RoomRepository {
 	
 	// ===== 사용자
-	 List<RoomTypeDto_Client> AllRoomTypes(Integer typeId);
+	 List<RoomTypeDto_Client> AllRoomTypes();
 	// 상세 조회
 	 List<TypeDetailDto_Client> detailType(String roomTypeName);
 	 
@@ -32,7 +32,7 @@ public interface RoomRepository {
 	 // - 관리자 객실 추가
 	// int getMaxRoomId();
 	// void setAutoIncrement(@Param("autoIncrementValue")int autoIncrementValue);
-	 void insertRoom(RoomAddDto roomAddDto);
+//	 void insertRoom(RoomAddDto roomAddDto);
 	
 	 // -관리자 - type
 	 List<RoomTypeDto> allTypes();
