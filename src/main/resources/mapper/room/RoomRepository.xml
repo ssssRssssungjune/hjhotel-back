@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjhotelback.mapper.room.RoomRepository">
+	
+	
+	
+	<!-- 사용자     
+   	<select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
+           SELECT * FROM room_type ORDER BY room_type_id ASC
+    </select>-->
+    <!-- 사용자 객실 유형별 전체 조회 -->
+    <select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
+           SELECT * FROM room_type WHERE room_type_id =#{typeId}
+    </select>
+    
+    <select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
+			  SELECT 
+    rt.name AS room_type_name,  -- 객실 타입 이름
+    rt.description AS room_type_description,  -- 객실 타입 설명
+    rt.base_occupancy,  -- 최소 인원
+    rt.max_occupancy,  -- 최대 인원
+    rt.base_price,  -- 가격
+    rt.image_path,  -- 객실 이미지 경로
+    ra.name AS amenity_name,  -- 어메니티 이름
+    ra.description AS amenity_description  -- 어메니티 설명
+FROM 
+    room_type rt
+LEFT JOIN 
+    room_amenity ra ON rt.room_type_id = ra.room_type_id
+WHERE 
+    rt.name = #{roomTypeName}
+    AND ra.is_active = 1 ;
+</select>
+
+  
+    
+    <!-- 관리자 -->
+    
+    <!-- 24.11.21 진주 : 객실 예약날짜,예약상태로 조회 -->
+     <select id="adminresRooms" resultType="com.hjhotelback.dto.room.RoomDto">
+           SELECT 
+           		res.reservation_id,
+			    r.room_id, 
+    			rt.name,
+			    r.room_number, 
+			    r.floor, 
+			    r.status,
+			    r.view
+			FROM room r
+			JOIN reservation res ON r.room_id = res.room_id
+			JOIN room_type rt ON rt.room_type_id = r.room_type_id
+			WHERE res.status = #{resStatus}
+			  AND DATE(res.check_in) = DATE(#{date});
+    </select>
+    
+    <!-- 24.11.21 진주 : 객실 예약날짜로 전체 조회 -->
+     <select id="AllRoomsDate" resultType="com.hjhotelback.dto.room.RoomDto">
+            SELECT 
+            	res.reservation_id,
+			    r.room_id, 
+    			rt.name,
+			    r.room_number, 
+			    r.floor, 
+			    r.status,
+			    r.view
+			FROM room r
+			JOIN reservation res ON r.room_id = res.room_id
+			JOIN room_type rt ON rt.room_type_id = r.room_type_id
+			  WHERE DATE(res.check_in) = DATE(#{date});
+    </select>
+    
+    <!--24.12.10 진주 : 객실 추가 + auto_increment리셋 트랜젝션  ㅜㅜ
+    
+     <select id="getMaxRoomId" resultType="int">
+    	SELECT IFNULL(MAX(room_id), 0) AS maxRoomId FROM room;
+	</select>
+
+	<update id="setAutoIncrement">
+	    ALTER TABLE room AUTO_INCREMENT = #{autoIncrementValue};
+	</update>
+
+	<insert id="insertRoom" parameterType="com.hjhotelback.dto.room.RoomAddDto">
+	    INSERT INTO room (room_type_id, room_number, floor, view, status, created_at)
+	    VALUES (#{roomTypeId}, #{roomNumber}, #{floor},  #{view}, #{status}, NOW());
+	</insert>
+	-->
+	
+     <!-- 24.11.21 진주 : 객실 상태 변경 -->
+     <update id="updateStatusRoom" >
+           UPDATE room SET status = #{status} WHERE room_number  = #{roomNumber}
+    </update> 
+    
+     
+    <!-- 24.11.25 진주 : 객실 전체 타입 조회 -->
+   <select id="allTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto">
+         SELECT  * from room_type ORDER BY room_type_id ASC
+    </select>
+    
+     <!-- 24.11.25 진주 : 객실 타입 count 조회 -->
+   <select id="countTypes" resultType="com.hjhotelback.dto.room.CountTypeDto">
+         SELECT 
+		    RT.room_type_id,
+		    RT.name, 
+		    RT.description, 
+		    RT.base_occupancy, 
+		    RT.max_occupancy, 
+		    RT.base_price,
+		    RT.image_path,
+		   COUNT(R.room_id) AS room_count
+		FROM 
+		   room_type AS RT
+		LEFT JOIN 
+		   room AS R 
+		ON 
+		   RT.room_type_id = R.room_type_id
+		GROUP BY 
+		   RT.room_type_id, RT.name, RT.description, RT.base_occupancy, RT.max_occupancy, RT.base_price
+		ORDER BY 
+		    RT.room_type_id ASC
+    </select>
+    
+  	 <!-- 24.11.26 진주 : 타입 어메니티 조회 -->
+    <select id= "typeAmenities" resultType="com.hjhotelback.dto.room.RoomAmenityDto">
+           SELECT 
+           rt.name AS room_type_name,
+           ra.name AS amenity_name,
+           ra.description ,
+           ra.is_active AS amenity_active
+           FROM
+           room_type rt
+           JOIN
+           room_amenity ra
+           ON rt.room_type_id = ra.room_type_id
+           WHERE
+           rt.name = #{TypeName};
+    </select>
+    
+    
+     <!-- 24.11.26 진주 : 객실 amenity 활성화(isActive) 변경 -->
+     <update id="updateAmenity" >
+		UPDATE 
+		    room_amenity ra
+		JOIN 
+		    room_type rt
+		ON 
+		    ra.room_type_id = rt.room_type_id
+		SET 
+		    ra.is_active = CASE 
+		        WHEN ra.is_active = 1 THEN 0
+		        ELSE 1
+		    END
+		WHERE 
+		    rt.name = #{TypeName}
+		    AND ra.name = #{amenity};
+    </update> 
+    
+    
+    
+</mapper>
