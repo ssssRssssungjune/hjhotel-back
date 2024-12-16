@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.hjhotelback.dto.room.TypeDetailDto_Client;
 import com.hjhotelback.dto.room.AddAmenityDto;
 import com.hjhotelback.dto.room.CountTypeDto;
-import com.hjhotelback.dto.room.RoomAddDto;
+// import com.hjhotelback.dto.room.RoomAddDto;
 import com.hjhotelback.dto.room.RoomAmenityDto;
 import com.hjhotelback.dto.room.RoomDto;
 import com.hjhotelback.dto.room.RoomTypeDto_Client;
