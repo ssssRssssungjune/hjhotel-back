@@ -18,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -39,7 +42,6 @@ public class AuthController {
             response.setHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
 
-
             return ResponseEntity.ok("로그인 완료"); // 또는 ResponseEntity.ok("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Authentication failed");
@@ -55,4 +57,15 @@ public class AuthController {
 
         return ResponseEntity.ok("로그아웃되었습니다.");
     }
+
+
+    // 회원가입 엔드포인트
+    @PostMapping("/register")
+    public ResponseEntity<String> signup(@RequestBody SignupRequestDto signupRequestDto) { // TODO 유효성검사 추가
+        authService.registerUser(signupRequestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다."); // 201 코드
+    }
+
 }
+
