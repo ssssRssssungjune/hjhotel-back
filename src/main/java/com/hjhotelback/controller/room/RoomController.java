@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hjhotelback.dto.room.AddAmenityDto;
 import com.hjhotelback.dto.room.CountTypeDto;
 import com.hjhotelback.dto.room.RoomAddDto;
 import com.hjhotelback.dto.room.RoomAmenityDto;
@@ -65,20 +67,20 @@ public class RoomController {
 		}
 	}
 	
-//	// 24.12.10 진주 : 관리자 객실 추가
+	// 24.12.10 진주 : 관리자 객실 추가
 //			@PostMapping("/add")
 //			public ResponseEntity<String> addRoom(@RequestBody RoomAddDto roomAddDto){
+//					roomAddDto.setStatus(status);
 //				try {
 //					
 //					roomService.addRoom(roomAddDto);
 //					return ResponseEntity.ok("객실이 추가되었어요!");
 //				}catch(Exception e) {
-//					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("객실 추가를 실패했어요!");
-//				}
-//				
-//			
+//					 e.printStackTrace(); // 예외 정보 출력
+//				        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("객실 추가를 실패했어요!");
+//				    }
 //			}
-			
+//			
 	
 	// 24.11.25 진주 : 관리자- 타입조회
 	@GetMapping("/types")
@@ -100,6 +102,23 @@ public class RoomController {
 		public List<RoomAmenityDto> getTypesRoom(@PathVariable("TypeName")String TypeName){
 			return roomService.getAmenity(TypeName);
 		}
+		
+	//24.12.12 진주 : 관리자 - 어메니티 추가
+		@PostMapping("/addamenity")
+		public ResponseEntity<String> addAmenity(@RequestBody AddAmenityDto addAmenityDto){
+			try {
+				roomService.addAmenity(addAmenityDto);
+				return ResponseEntity.ok("Amenity 추가 완료!");
+			}catch(Exception e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("어메니 추가를 실패했어요!");
+			}
+		}
+		
+	//24.12.13 진주 : 관리자 - 어메니티 삭제
+//		@DeleteMapping("deleteamenity/{roomTypeId}/{amenityName}")
+//		public ResponseEntity<String> deleteamenity(@RequestParam("roomTypeId") Integer roomTypeId,@RequestParam("amenityName") String amenityName){
+//			return();
+//		}
 		
 	
 //	24.11.28 진주 : 관리자 - amenity isActive 활성화

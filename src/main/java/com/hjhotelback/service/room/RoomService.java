@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
 
 import com.hjhotelback.dto.room.TypeDetailDto_Client;
+import com.hjhotelback.dto.room.AddAmenityDto;
 import com.hjhotelback.dto.room.CountTypeDto;
-import com.hjhotelback.dto.room.RoomAddDto;
+// import com.hjhotelback.dto.room.RoomAddDto;
 import com.hjhotelback.dto.room.RoomAmenityDto;
 import com.hjhotelback.dto.room.RoomDto;
 import com.hjhotelback.dto.room.RoomTypeDto_Client;
@@ -24,9 +25,9 @@ public class RoomService {
 	private RoomRepository roomRepository;
 	//	======== 사용자 
 
-	public List<RoomTypeDto_Client> getRoomTypes(Integer typeId){
+	public List<RoomTypeDto_Client> getRoomTypes(){
 
-		return roomRepository.AllRoomTypes(typeId);
+		return roomRepository.AllRoomTypes();
 	}
 	
 	public List<TypeDetailDto_Client> getDetailType(String roomTypeName){
@@ -52,16 +53,16 @@ public class RoomService {
 		return roomRepository.updateStatusRoom(roomDto);
 	}
 	
-//	// 24.12.10. 진주 : 관리자 - 객실 추가
-//	//	@Transactional
-//		public void addRoom(RoomAddDto roomAddDto) {
-//			//room_id의 최대
-//			//int maxRoomId = roomRepository.getMaxRoomId();
-//			//Auto_INCREMENT 값 설정
-//			//roomRepository.setAutoIncrement(maxRoomId+1);
-//			//room 데이터
-//			roomRepository.insertRoom(roomAddDto);
-//		}
+	// 24.12.10. 진주 : 관리자 - 객실 추가
+	//	@Transactional
+		//public void addRoom(RoomAddDto roomAddDto) {
+			//room_id의 최대
+			//int maxRoomId = roomRepository.getMaxRoomId();
+			//Auto_INCREMENT 값 설정
+			//roomRepository.setAutoIncrement(maxRoomId+1);
+			//room 데이터
+			//roomRepository.insertRoom(roomAddDto);
+		//}
 
 	// ======= 타입
 	public List<RoomTypeDto> getTypes(){	
@@ -86,6 +87,11 @@ public class RoomService {
 			return roomRepository.updateAmenity(TypeName,amenity);
 			//return updateRows >0;
 		}
+	// ======= amnenity 추가
+	public void addAmenity(AddAmenityDto addAmenityDto) {
+		// TODO Auto-generated method stub
+		roomRepository.addAmenity(addAmenityDto);
+	}
 
 	
 	

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.hjhotelback.dto.room.TypeDetailDto_Client;
+import com.hjhotelback.dto.room.AddAmenityDto;
 import com.hjhotelback.dto.room.CountTypeDto;
 import com.hjhotelback.dto.room.RoomAddDto;
 import com.hjhotelback.dto.room.RoomAmenityDto;
@@ -18,7 +19,7 @@ import com.hjhotelback.dto.room.RoomTypeDto;
 public interface RoomRepository {
 	
 	// ===== 사용자
-	 List<RoomTypeDto_Client> AllRoomTypes(Integer typeId);
+	 List<RoomTypeDto_Client> AllRoomTypes();
 	// 상세 조회
 	 List<TypeDetailDto_Client> detailType(String roomTypeName);
 	 
@@ -30,7 +31,7 @@ public interface RoomRepository {
 	 
 	 // - 관리자 객실 추가
 	// int getMaxRoomId();
-	 //void setAutoIncrement(@Param("autoIncrementValue")int autoIncrementValue);
+	// void setAutoIncrement(@Param("autoIncrementValue")int autoIncrementValue);
 //	 void insertRoom(RoomAddDto roomAddDto);
 	
 	 // -관리자 - type
@@ -44,4 +45,8 @@ public interface RoomRepository {
 	
 	 // ResponseEntity<String>updateAmenityByType(String roomTypeName,String amenity,boolean isActive);
 	 int updateAmenity(@Param("TypeName")String TypeName,@Param("amenity")String amenity );
+	 
+	//amenity 추가
+		void addAmenity(AddAmenityDto addAmenityDto);
 }
+	
