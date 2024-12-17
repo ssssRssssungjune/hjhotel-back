@@ -24,26 +24,32 @@
                             <if test="direction == 'next'">
                                 <!-- 다음 페이지: lastValue보다 큰 값 -->
                                 AND reservation_id &gt; #{lastValue}
+                                ORDER BY reservation_id ASC 
                             </if>
                             <if test="direction == 'prev'">
                                 <!-- 이전 페이지: lastValue보다 작은 값 -->
                                 AND reservation_id &lt; #{lastValue}
+                                ORDER BY reservation_id DESC 
                             </if>
                         </when>
                         <otherwise>
                             <!-- lastValue가 null일 경우 (첫 번째 페이지 등) -->
                             AND 1=1
+                            ORDER BY reservation_id ASC 
                         </otherwise>
                     </choose>
                 </where>
-                ORDER BY reservation_id
+                LIMIT #{size}
         ) as RS 
         JOIN member AS M ON RS.member_id=M.member_id
         JOIN room AS R ON RS.room_id=R.room_id
         JOIN room_type AS RT ON R.room_type_id = RT.room_type_id
         WHERE #{filterValue} IS NULL OR #{colName} = #{filterValue}
-        LIMIT #{size}
     </select>
+
+    <select id="getLastReservationId" resultType="Integer">
+		SELECT reservation_id FROM reservation ORDER BY reservation_id DESC LIMIT 1;
+	</select>
 
     <!-- 사용자/관리자 예약상세 조회 -->
     <select id="getReservationById" parameterType="int" resultType="com.hjhotelback.dto.reservation.ResReservation$Detail">

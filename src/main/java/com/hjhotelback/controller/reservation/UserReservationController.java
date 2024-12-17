@@ -1,8 +1,6 @@
 package com.hjhotelback.controller.reservation;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users/reservation")
 @RequiredArgsConstructor
 public class UserReservationController {
 
@@ -52,7 +50,8 @@ public class UserReservationController {
      */
     private final ReservationService _service;
 
-    @PostMapping("reservation")
+    // 예약 생성
+    @PostMapping
     @Transactional
     public ResponseEntity<String> POSTCreateReservation(@RequestBody ReqReservation.Create req){
         if (req.getCheckIn().compareTo(req.getCheckOut()) > 0) 
@@ -61,25 +60,27 @@ public class UserReservationController {
         return new ResponseEntity<String>(_service.createReservation(req),HttpStatus.OK);
     }
 
-    @GetMapping("reservation")
+    // 예약 조회
+    @GetMapping
     public ResReservation.Detail GETReservationDetail(@RequestParam("id") int reservationId){
         return _service.getReservationDetail(reservationId);
     }
 
-    @GetMapping("reservation/summary/{selectedTimestamp}")
+    // 객실 유형별 예약 현황 조회
+    @GetMapping("summary/{selectedTimestamp}")
     public List<ResReservation.Summary> GETReservationSummary(@PathVariable("selectedTimestamp") long selectedTimestamp){
         return _service.getReservationSummary(selectedTimestamp);
     }
 
     //24.11.25 한택 [작업 정리] : 사용자 예약 날짜 변경 - 추가적인 변경 사항이 있을것 같아 POST 와 method 작명을 update로 그대로 사용하였음
-    @PostMapping("reservation/update")
+    @PostMapping("update")
     public ResponseEntity<String> POSTUpdateReservationForUser(@RequestBody ReqReservation.UpdateDate req){
 
         return new ResponseEntity<>(_service.updateReservationForUser(req),HttpStatus.OK);
     }
 
     //24.11.20 한택 [주의] : status PENDING이면 삭제 , PENDING이 아닐 경우에는 status CANCELLED로 변경
-    @DeleteMapping("reservation/cancel")
+    @DeleteMapping("cancel")
     public void DELETECancelReservation(@RequestBody ReqReservation.Delete req){
         _service.cancelReservation(req);
         

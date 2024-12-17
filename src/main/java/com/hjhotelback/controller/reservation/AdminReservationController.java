@@ -1,7 +1,6 @@
 package com.hjhotelback.controller.reservation;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,44 +19,46 @@ import com.hjhotelback.service.reservation.ReservationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/reservation")
 @RequiredArgsConstructor
 public class AdminReservationController {
 
     private final ReservationService _service;
 
-     @GetMapping("reservation")
+     @GetMapping
     public ResReservation.Detail GETReservationDetail(@RequestParam("id") int reservationId){
         return _service.getReservationDetail(reservationId);
     }
 
-    @DeleteMapping("reservation/cancel")
+    @DeleteMapping
     public void DELETECancelReservation(@RequestBody ReqReservation.Delete req){
         _service.cancelReservation(req);
         
     }
 
-    @PostMapping("update")
+    @PostMapping
     public String POSTUpdateReservationForAdmin(@RequestBody ReqReservation.Update req){
         return _service.updateReservationForAdmin(req);
     }
 
-    @GetMapping("reservation/list/{direction:next|prev}")
-    public List<ResReservation.Detail> GETAdminReservationList(
-        @RequestParam(value ="last_value",required = false) int lastValue,
-        @PathVariable("direction") String direction,
-        @RequestParam("col") String colName,
-        @RequestParam("filter") String filterValue,
-		@RequestParam("size") int size
+    @GetMapping(value = {"list/{direction}", "list"})
+    public ResReservation.GetList GETAdminReservationList(
+		@RequestParam(value = "size", required = true) Integer size,
+        @RequestParam(value = "lastValue", required = false) Integer lastValue,
+        @PathVariable(value = "direction", required = false) String direction,
+        @RequestParam(value = "colName", required = false) String colName,
+        @RequestParam(value = "filter", required = false) String filterValue
     ){
         Map<String,Object> param = new HashMap<String,Object>();
-        param.put("lastValue",lastValue);
-        param.put("direction",direction);
-        param.put("colName",colName);
-        param.put("filterValue",filterValue);
         param.put("size",size);
+        if(lastValue != null) param.put("lastValue",lastValue);
+        if(direction != null) param.put("direction",direction);
+        if(colName != null) param.put("colName",colName);
+        if(filterValue != null) param.put("filterValue",filterValue);
         
-        return _service.getReservationList(param);
+        ResReservation.GetList resData = _service.getReservationList(param);
+
+        return resData;
     }
 
 }
