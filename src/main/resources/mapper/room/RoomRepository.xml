@@ -8,10 +8,7 @@
    	<select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
            SELECT * FROM room_type ORDER BY room_type_id ASC
     </select>
-    <!-- 사용자 객실 유형별 전체 조회 
-    <select id="AllRoomTypes" resultType="com.hjhotelback.dto.room.RoomTypeDto_Client">
-           SELECT * FROM room_type WHERE room_type_id =#{typeId}
-    </select>-->
+
     
     <select id="detailType" resultType="com.hjhotelback.dto.room.TypeDetailDto_Client">
 			  SELECT 
