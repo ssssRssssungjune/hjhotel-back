@@ -6,10 +6,12 @@
 <mapper namespace="com.hjhotelback.mapper.member.auth.MemberMapper">
 
     <!-- Insert Member -->
-    <insert id="insertMember" parameterType="com.hjhotelback.entity.MemberEntity">
-        INSERT INTO member (user_id, email, password, name, phone, status, is_active, created_at)
-        VALUES (#{userId}, #{email}, #{password}, #{name}, #{phone}, 'ACTIVE', 1, CURRENT_TIMESTAMP)
+    <insert id="insertMember" parameterType="com.hjhotelback.entity.MemberEntity" useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO member (user_id, email, password, name, phone, status, is_active, role, created_at)
+        VALUES (#{userId}, #{email}, #{password}, #{name}, #{phone}, 'ACTIVE', 1, 'USER', CURRENT_TIMESTAMP)
     </insert>
+
+
 
     <!-- Insert Member Auth -->
     <insert id="insertMemberAuth" parameterType="com.hjhotelback.entity.MemberAuthEntity">
