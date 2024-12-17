@@ -71,10 +71,11 @@ public class AuthController {
         // JSON 형식으로 응답
         Map<String, String> response = new HashMap<>();
         response.put("message", "회원가입이 완료되었습니다.");
-
+//        response.put("redirectUrl", "/users/signupcom"); // 리다이렉트 URL 포함
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201 상태 코드
     }
+
 
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfo() {
