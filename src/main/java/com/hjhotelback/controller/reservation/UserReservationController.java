@@ -53,20 +53,6 @@ public class UserReservationController {
     private final ReservationService _service;
 
     // 예약 생성
-    @PostMapping("api/users/reservation")
-
-    void a(){};
-
-    // 예약 조회
-    @GetMapping("api/users/reservation")
-    
-    void b(){};
-
-    // 객실 유형별 예약 현황 조회
-    @GetMapping("api/users/reservation/summary/{selectedTimestamp}")
-    
-    void c(){};
-
     @PostMapping
     @Transactional
     public ResponseEntity<String> POSTCreateReservation(@RequestBody ReqReservation.Create req){
@@ -76,11 +62,13 @@ public class UserReservationController {
         return new ResponseEntity<String>(_service.createReservation(req),HttpStatus.OK);
     }
 
+    // 예약 조회
     @GetMapping
     public ResReservation.Detail GETReservationDetail(@RequestParam("id") int reservationId){
         return _service.getReservationDetail(reservationId);
     }
 
+    // 객실 유형별 예약 현황 조회
     @GetMapping("summary/{selectedTimestamp}")
     public List<ResReservation.Summary> GETReservationSummary(@PathVariable("selectedTimestamp") long selectedTimestamp){
         return _service.getReservationSummary(selectedTimestamp);
