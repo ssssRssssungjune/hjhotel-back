@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ReqReservation {
     
     //24.11.21 한택 [변수이름]
@@ -28,6 +31,15 @@ public class ReqReservation {
 
     public static class Delete{
         public int reservationId;
+    }
+    
+    @Getter
+    @Setter
+    public static class GetList{
+        private int lastValue;
+        private String colName;
+        private String filterValue;        
+        private int size;
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

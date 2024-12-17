@@ -3,10 +3,13 @@ package com.hjhotelback.service.reservation;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hjhotelback.dto.reservation.ReqReservation;
 import com.hjhotelback.dto.reservation.ResReservation;
@@ -51,8 +54,22 @@ public class ReservationService {
         return _mapper.getReservationById(reservationId);
     }
 
-    public List<ResReservation.Detail> getReservationList(Map<String,Object> param){
-        return _mapper.getReservationList(param);
+    @Transactional(readOnly = true)
+    public ResReservation.GetList getReservationList(Map<String,Object> param){
+        
+        List<ResReservation.Detail> reservationList = _mapper.getReservationList(param);
+
+        int lastReservationId = _mapper.getLastReservationId();
+        
+        if (param.containsKey("direction") && "prev".equals(param.get("direction"))) {
+            Collections.sort(reservationList, (o1, o2) -> Integer.compare(o1.reservationId, o2.reservationId));
+        }
+        
+        ResReservation.GetList resData =  new ResReservation.GetList();
+        resData.setLastReservationId(lastReservationId);
+        resData.setReservationList(reservationList);
+
+        return resData;
     }
 
     // 예약 수정 사용자/관리자 - 사용자 : {예약대기(결제전) -> 예약완료(결제후), 예약 취소}예약상태변경, 예약날짜변경 / 
