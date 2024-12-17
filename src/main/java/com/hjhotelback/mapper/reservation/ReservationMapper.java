@@ -16,6 +16,9 @@ public interface ReservationMapper {
 
     //관리자 예약 목록 조회
     public List<ResReservation.Detail> getReservationList(Map<String,Object> param);
+
+    //관리자 예약 목록 마지막 예약Id
+    public int getLastReservationId();
     
     //사용자/관리자 예약 상세 조회
     public ResReservation.Detail getReservationById(@Param("reservationId") int reservationId);
