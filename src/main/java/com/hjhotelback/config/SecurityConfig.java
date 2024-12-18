@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/rooms/**").permitAll()
                         .requestMatchers("/api/users/reservation/**").permitAll()
                         .requestMatchers("/api/users/notices/**").permitAll()
-                        .requestMatchers("/api/users/paypal/**").hasAuthority("USER") // USER 권한 필요
+                        .requestMatchers("/api/users/paypal/**").permitAll()
                         .requestMatchers("/api/users/payments/**").hasAuthority("USER") // USER 권한 필요
 
                         ////////////////////////////////////////////////////////////////
