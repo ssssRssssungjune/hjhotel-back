@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjhotelback.mapper.payment.PaymentProcessMapper">
+
+	<!-- 24.11.23 지은 [완료] : 전체 결제 프로세스 내역 조회 -->
+	<select id="getAllPaymentProcesses" resultType="com.hjhotelback.dto.payment.PaymentProcessListDTO">
+		SELECT 
+			p.payment_id, 
+			pp.process_id, 
+			pp.reservation_id, 
+			p.payment_method, 
+			pp.provider, 
+			pp.session_id, 
+			pp.process_status, 
+			pp.created_at, 
+			p.transaction_id, 
+			pp.redirect_url,
+			pp.created_at
+		FROM payment_process pp
+		JOIN payment p ON p.reservation_id = pp.reservation_id
+		JOIN reservation r ON r.reservation_id = pp.reservation_id
+		ORDER BY pp.created_at DESC;
+	</select>
+	
+	<!-- 24.11.23 지은 [완료] : 결제 프로세스 등록 -->
+	<insert id="insertPaymentProcess" useGeneratedKeys="true" keyProperty="processId"  parameterType="com.hjhotelback.dto.payment.PaymentProcessDTO">
+		INSERT INTO payment_process (
+	        reservation_id, 
+	        provider, 
+	        session_id, 
+	        process_status, 
+	        redirect_url
+		)
+		VALUES (
+	        #{reservationId}, 
+	        #{provider}, 
+	        #{sessionId}, 
+	        #{processStatus}, 
+	        #{redirectUrl}
+		);
+	</insert>
+	
+	<!-- 24.11.23 지은 [완료] : 특정 결제 프로세스 삭제 -->
+	<delete id="deletePaymentProcess" parameterType="com.hjhotelback.dto.payment.PaymentProcessDTO">
+		DELETE FROM payment_process
+		WHERE process_id = #{processId};
+	</delete>
+
+	<!-- 24.11.24 지은 [완료] : 특정 결제 프로세스 상태 수정 -->
+	<update id="updatePaymentProcessStatus" parameterType="com.hjhotelback.dto.payment.PaymentProcessDTO">
+		UPDATE payment_process
+		SET
+	        process_status = #{processStatus},
+	        created_at = #{createdAt}
+		WHERE process_id = #{processId};
+	</update>
+</mapper>
