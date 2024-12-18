@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/login").permitAll() // 로그인은 모두 허용
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/users/rooms/**").permitAll()
+                        .requestMatchers("/api/users/reservation/**").permitAll()
                         .requestMatchers("/api/users/notices/**").permitAll()
                         .requestMatchers("/api/users/paypal/**").hasAuthority("USER") // USER 권한 필요
                         .requestMatchers("/api/users/payments/**").hasAuthority("USER") // USER 권한 필요
