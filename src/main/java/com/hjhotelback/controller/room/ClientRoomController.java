@@ -22,8 +22,8 @@ public class ClientRoomController {
 	
 	// 24.11.27 진주 : 사용자 - 객실 타입별 조회
 	@GetMapping("")
-	public List<RoomTypeDto_Client> getTypes(@RequestParam("typeId") Integer typeId ){
-		return roomService.getRoomTypes(typeId);
+	public List<RoomTypeDto_Client> getTypes(){
+		return roomService.getRoomTypes();
 				
 	}
 	//24.11.27 진주 : 사용자 - 객실 타입 상세 조회 - 스탠다드,디럭스
