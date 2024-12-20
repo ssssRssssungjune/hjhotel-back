@@ -34,19 +34,30 @@ public class ReservationService {
     //sql colName / member_id, room_id, check_in, check_out, status, total_amount
     //java varName ReqReservation.Create.~ / memberId, roomId, checkIn, checkOut, totalAmount
     //24.11.21 한택 [예정 작업] : 유효성 검사 필요 why 안정성을 위해서 / 추가 의문 - 안정성 검사를 서비스 계층까지 와서 작업해야되나
-    public String createReservation(ReqReservation.Create req){
+    public ResReservation.Create createReservation(ReqReservation.Create req){
         // 24.11.24 한택 [작업 정리] : 유효성 검사에 대한 정리 내용 
         // 사용자 고유 id , 객실 고유 id , 예약하려는 기간(checkin , checkout) , 총금액(객실 1인 숙박비용 * 기간)
         // 프론트에서도 유효성검사를 하지만 안정성을 위해 검사하야될 것 
         //  1.  해당 객실이 기간에 사용이 가능한지 - db에서 검사
         //  2.  checin < checkout - 비즈니스 로직에서 처리(백엔드 처리)
-        int rowsInserted = _mapper.createReservation(req);
+        ResReservation.Create res = new ResReservation.Create();
 
-        if (rowsInserted > 0) {
-            return "Reservation created successfully!";
-        } else {
-            return "Failed to create reservation. The room might be unavailable.";
-        }
+        // try {
+            // INSERT 쿼리 실행 및 생성된 키를 res 객체의 reservationId에 설정
+            _mapper.createReservation(req, res);
+
+            if (res.getReservationId() > 0) {
+                res.setMessage("Reservation created successfully!");
+            } else {
+                res.setMessage("Failed to create reservation. The room might be unavailable.");
+            }
+
+        // } catch (Exception e) {
+        //     res.setMessage("An error occurred while creating the reservation.");
+        //     // 또는 예외를 다시 던지기
+        // }
+
+        return res;
     }
 
     //24.11.21 한택 [보류] : 사용자와 관리자 조회를 따로 만들지 생각해봐야 함 / 현재는 기능 동일
@@ -62,7 +73,7 @@ public class ReservationService {
         int lastReservationId = _mapper.getLastReservationId();
         
         if (param.containsKey("direction") && "prev".equals(param.get("direction"))) {
-            Collections.sort(reservationList, (o1, o2) -> Integer.compare(o1.reservationId, o2.reservationId));
+            Collections.sort(reservationList, (obj1, obj2) -> Integer.compare(obj1.reservationId, obj2.reservationId));
         }
         
         ResReservation.GetList resData =  new ResReservation.GetList();

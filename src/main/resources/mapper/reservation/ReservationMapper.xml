@@ -63,14 +63,17 @@
     </select>
 
     <!-- 사용자 예약 생성 -->
-    <insert id="createReservation" parameterType="com.hjhotelback.dto.reservation.ReqReservation$Create">
+    <insert id="createReservation" parameterType="com.hjhotelback.dto.reservation.ReqReservation$Create" statementType="PREPARED">
+        <selectKey keyProperty="res.reservationId" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID() AS reservationId
+        </selectKey>
         INSERT INTO reservation (member_id, room_id, check_in, check_out, total_amount)
-        SELECT #{memberId}, #{roomId}, #{checkIn}, #{checkOut}, #{totalAmount}
+        SELECT #{req.memberId}, #{req.roomId}, #{req.checkIn}, #{req.checkOut}, #{req.totalAmount}
         WHERE NOT EXISTS (
             SELECT 1 
             FROM reservation 
-            WHERE room_id = #{roomId} 
-            AND NOT (#{checkOut} &lt;= check_in OR #{checkIn} &gt;= check_out)
+            WHERE room_id = #{req.roomId} 
+            AND NOT (#{req.checkOut} &lt;= check_in OR #{req.checkIn} &gt;= check_out)
         );
     </insert>
 

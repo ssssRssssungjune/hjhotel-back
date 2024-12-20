@@ -53,11 +53,16 @@ public class UserReservationController {
     // 예약 생성
     @PostMapping
     @Transactional
-    public ResponseEntity<String> POSTCreateReservation(@RequestBody ReqReservation.Create req){
-        if (req.getCheckIn().compareTo(req.getCheckOut()) > 0) 
-            return new ResponseEntity<String>("Error: Check-in date must be earlier than or equal to check-out date.", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResReservation.Create> POSTCreateReservation(@RequestBody ReqReservation.Create req){
 
-        return new ResponseEntity<String>(_service.createReservation(req),HttpStatus.OK);
+        if (req.getCheckIn().compareTo(req.getCheckOut()) > 0){ 
+            ResReservation.Create res = new ResReservation.Create();
+            res.setMessage("Error: Check-in date must be earlier than or equal to check-out date.");
+            res.setReservationId(0);
+            return new ResponseEntity<ResReservation.Create>(res, HttpStatus.BAD_REQUEST);
+        }
+        
+        return new ResponseEntity<ResReservation.Create>(_service.createReservation(req),HttpStatus.OK);
     }
 
     // 예약 조회
