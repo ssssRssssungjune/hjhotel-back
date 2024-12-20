@@ -34,8 +34,11 @@ public class ResReservation {
 
     }
     
+    @Setter
+    @Getter
     public static class Create{
-        public String message;
+        private String message;
+        private long reservationId;
     }
     
     public static class Update{
