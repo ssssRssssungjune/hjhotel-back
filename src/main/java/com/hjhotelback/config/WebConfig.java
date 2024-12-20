@@ -4,7 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+// cors를 스프링 시큐리티로 통합하기 위해 비활성화함.
+//@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
