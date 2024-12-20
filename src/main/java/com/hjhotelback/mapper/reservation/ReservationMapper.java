@@ -24,7 +24,7 @@ public interface ReservationMapper {
     public ResReservation.Detail getReservationById(@Param("reservationId") int reservationId);
     
     //사용자 예약 생성
-    public int createReservation(ReqReservation.Create req);
+    public void createReservation(@Param("req") ReqReservation.Create req, @Param("res") ResReservation.Create res);
     
     // 관리자/사용자 예약 날짜 변경
     public int updateReservationDate(ReqReservation.UpdateDate req);

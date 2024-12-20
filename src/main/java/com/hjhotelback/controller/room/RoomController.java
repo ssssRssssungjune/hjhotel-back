@@ -114,6 +114,7 @@ public class RoomController {
 			}
 		}
 		
+
 	//24.12.13 진주 : 관리자 - 어메니티 삭제
 //		@DeleteMapping("deleteamenity/{roomTypeId}/{amenityName}")
 //		public ResponseEntity<String> deleteamenity(@RequestParam("roomTypeId") Integer roomTypeId,@RequestParam("amenityName") String amenityName){

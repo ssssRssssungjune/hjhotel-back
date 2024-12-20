@@ -61,6 +61,7 @@ public class RoomService {
 			//Auto_INCREMENT 값 설정
 			//roomRepository.setAutoIncrement(maxRoomId+1);
 			//room 데이터
+
 			//roomRepository.insertRoom(roomAddDto);
 		//}
 

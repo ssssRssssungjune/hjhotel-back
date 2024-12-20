@@ -32,6 +32,7 @@ public interface RoomRepository {
 	 // - 관리자 객실 추가
 	// int getMaxRoomId();
 	// void setAutoIncrement(@Param("autoIncrementValue")int autoIncrementValue);
+
 //	 void insertRoom(RoomAddDto roomAddDto);
 	
 	 // -관리자 - type
