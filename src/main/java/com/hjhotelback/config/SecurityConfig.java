@@ -63,6 +63,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://206.189.35.254:8282");
+        configuration.addAllowedOrigin("http://cofile.co.kr:8282");
+        configuration.addAllowedOrigin("http://206.189.35.254:8182");
+        configuration.addAllowedOrigin("http://cofile.co.kr:8182");
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.setAllowCredentials(true); // 인증 정보 허용
