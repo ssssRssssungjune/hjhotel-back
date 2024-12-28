@@ -1,8 +1,11 @@
 package com.hjhotelback.controller.staff;
 
+import com.hjhotelback.dto.member.auth.MemberDTO;
+import com.hjhotelback.dto.member.auth.PageResponseDTO;
 import com.hjhotelback.entity.staff.StaffEntity;
 import com.hjhotelback.service.member.auth.MemberService;
 import com.hjhotelback.service.staff.StaffService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +27,11 @@ public class StaffController {
 
     // 회원 전체 목록 조회
     @GetMapping("/member")
-    public List<Map<String, Object>> getAllMembers() {
-        return memberService.getAllMembers();
+    public ResponseEntity<PageResponseDTO<MemberDTO>> getMembers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponseDTO<MemberDTO> result = memberService.getMembers(page, size);
+        return ResponseEntity.ok(result);
     }
 
     // 회원 상태 변경

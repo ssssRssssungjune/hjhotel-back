@@ -1,7 +1,9 @@
 package com.hjhotelback.service.member.auth;
 
 
+import com.hjhotelback.dto.member.auth.MemberDTO;
 import com.hjhotelback.dto.member.auth.MemberLoginRequestDto;
+import com.hjhotelback.dto.member.auth.PageResponseDTO;
 import com.hjhotelback.entity.MemberEntity;
 import com.hjhotelback.mapper.member.auth.MemberMapper;
 import com.hjhotelback.security.JwtTokenProvider;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,7 +49,34 @@ public class MemberService {
 
 
 
+    public PageResponseDTO<MemberDTO> getMembers(int page, int size) {
+        int totalElements = memberMapper.countMembers();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
 
+        // 페이지가 1부터 시작한다고 가정
+        if (page < 1 || page > totalPages) {
+            // 빈 데이터 반환
+            return new PageResponseDTO<>(
+                    Collections.emptyList(), // 빈 목록
+                    totalElements,
+                    totalPages,
+                    size,
+                    page
+            );
+        }
+
+        // Offset 계산 (1-based 페이지 번호)
+        int offset = (page - 1) * size;
+        List<MemberDTO> members = memberMapper.findMembers(offset, size);
+
+        return new PageResponseDTO<>(
+                members,
+                totalElements,
+                totalPages,
+                size,
+                page
+        );
+    }
 
 
 

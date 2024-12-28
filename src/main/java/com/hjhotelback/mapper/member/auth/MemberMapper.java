@@ -1,5 +1,6 @@
 package com.hjhotelback.mapper.member.auth;
 
+import com.hjhotelback.dto.member.auth.MemberDTO;
 import com.hjhotelback.entity.MemberAuthEntity;
 import com.hjhotelback.entity.MemberEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,6 +28,9 @@ public interface MemberMapper {
     void updateMemberStatus(@Param("memberId") int memberId, @Param("newStatus") String newStatus);
 
     void deleteMember(@Param("memberId") int memberId);
+
+    List<MemberDTO> findMembers(@Param("offset") int offset, @Param("size") int size);
+    int countMembers();
 
 
 
