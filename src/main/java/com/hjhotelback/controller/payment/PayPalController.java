@@ -139,9 +139,10 @@ public class PayPalController {
             String paypalRedirectUrl = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + token;
 
             // PayPal의 URL을 클라이언트로 리디렉션
-            return ResponseEntity.status(HttpStatus.FOUND)
-            					 .location(URI.create(paypalRedirectUrl))
-            					 .build();
+            //return ResponseEntity.status(HttpStatus.FOUND)
+            //					 .location(URI.create(paypalRedirectUrl))
+            //					 .build();
+            return ResponseEntity.ok("결제가 성공되었습니다.");
             
         } catch (PayPalRESTException e) {
             // 에러 처리
@@ -153,17 +154,23 @@ public class PayPalController {
     // 파라미터 부분 paymentId에서 order의 id로 변경
     // 예약 내역, 주문서 내역, 결제 내역 상태 업데이트 작업 끝
     @GetMapping("/cancel")
-    public String cancel(@RequestParam(name="id") Integer id) {
-    	// order id로 상태 업데이트.
-    	Order order = orderMapper.findByPaypalId(id);
-    	orderMapper.updateOrderStatus(order.getPaypalOrderId(), "CANCELLED");
+    public String cancel(@RequestParam(name="paymentId") String paymentId) {
+    	// order 객체 가져오기.
+    	Order order = orderMapper.findByPaypalId(paymentId);
+    	orderMapper.updateOrderStatus(paymentId, "CANCELLED");
     	
     	// 수정된 내용 결제 내역에(payment) 상태 업데이트
-    	PaymentDTO newPaymentDTO = paymentMapper.getPaymentByOrderId(id);
+    	PaymentDTO newPaymentDTO = paymentMapper.getPaymentByOrderId(order.getId());
     	newPaymentDTO.setPaymentStatus(PaymentStatus.CANCELLED);
     	newPaymentDTO.setUpdatedAt(LocalDateTime.now());
     	paymentMapper.updatePaymentStatus(newPaymentDTO);
+    	
+    	ReqReservation.UpdateState updateStatus = new ReqReservation.UpdateState();
+    	updateStatus.reservationId = newPaymentDTO.getReservationId();
+    	updateStatus.status = ReservationStatus.PENDING;
+    	reservationService.updateReservationForAdmin(updateStatus);
+    	
 
-    	return "cancel";
+    	return "결제가 취소 되었습니다.";
     }
 }
