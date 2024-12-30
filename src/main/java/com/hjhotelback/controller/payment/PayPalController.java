@@ -136,7 +136,7 @@ public class PayPalController {
             reservationService.updateReservationForAdmin(updateStatus);
             
             // PayPal의 성공 URL을 그대로 반환
-            String paypalRedirectUrl = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + token;
+            //String paypalRedirectUrl = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + token;
 
             // PayPal의 URL을 클라이언트로 리디렉션
             //return ResponseEntity.status(HttpStatus.FOUND)
