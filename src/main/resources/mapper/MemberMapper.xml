@@ -50,19 +50,25 @@
 
 
 
-    <!-- Find All Members -->
-    <select id="findAllMembers" resultType="map">
+    <select id="findMembers" resultType="com.hjhotelback.dto.member.auth.MemberDTO">
         SELECT
-            member_id,
-            user_id,
+            member_id AS memberId,
+            user_id AS userId,
             email,
             name,
             phone,
             status,
-            is_active,
-            created_at,
-            updated_at
+            is_active AS isActive,
+            role,
+            created_at AS createdAt,
+            updated_at AS updatedAt
         FROM member
+        ORDER BY member_id DESC -- 정렬 기준 수정
+            LIMIT #{size} OFFSET #{offset}
     </select>
 
+    <select id="countMembers" resultType="int">
+        SELECT COUNT(*)
+        FROM member
+    </select>
 </mapper>
