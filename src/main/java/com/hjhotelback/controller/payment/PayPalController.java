@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,16 +38,34 @@ public class PayPalController {
     private final OrderMapper orderMapper;
     private final PaymentMapper paymentMapper;
     private final ReservationService reservationService;
-
+    
     // 24.11.29 지은 [완료] : order(주문서), payment(결제내역) 생성 완료.
     @GetMapping("/checkout/{reservationId}")
-    public String checkout(@PathVariable("reservationId") Integer reservationId) {
-    	 try {
-         	ReservationItem reservationItem = productMapper.findById(reservationId);
-             if (reservationItem == null) {
-                 throw new RuntimeException("Reservation not found");
-             }
-             
+    public String checkout(@PathVariable("reservationId") Integer reservationId,
+    		Authentication authentication) {
+    	
+    	// 인증된 사용자 이름 가져오기
+        String username = authentication.getName();
+        System.out.println("username: " + username);
+    	
+    	try {
+    	
+    		 ReservationItem reservationItem = productMapper.findById(reservationId);
+    		 System.out.println("user id: " + reservationItem.getUserId());
+
+     		 // 예약 내역이 없다면 결제 진행 안됨.
+			 if (reservationItem == null) {
+				 throw new RuntimeException("Reservation not found");
+			 }
+			 // 예약 내역의 상태가 PENDING이 아니면 결제 진행 안됨.
+			 if (reservationItem.getStatus() != ReservationStatus.PENDING) {
+				 throw new RuntimeException("The reservation has already been paid for. status: " + reservationItem.getStatus());
+			 }
+			 // 해당 사용자가 예약내역 사용자와 아이디가 동일한지 검사.
+			 if (!username.equals(reservationItem.getUserId())) {
+				 throw new RuntimeException("예약 내역의 사용자와 로그인한 사용자의 정보가 일치하지 않습니다.");
+			 }
+
              // 주문서 생성
              Order order = new Order();
              order.setReservationId(reservationId);
