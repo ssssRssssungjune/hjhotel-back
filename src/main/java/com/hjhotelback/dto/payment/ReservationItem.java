@@ -3,11 +3,14 @@ package com.hjhotelback.dto.payment;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.hjhotelback.dto.reservation.ReservationStatus;
+
 import lombok.Data;
 
 @Data
 public class ReservationItem {
     private int reservationId;         // 예약 고유 ID
+    private String userId;			   // 회원 아이디
     private String name;               // 회원 이름
     private String email;              // 회원 이메일 주소
     private String phone;              // 회원 연락처
@@ -17,4 +20,5 @@ public class ReservationItem {
     private Timestamp checkIn;         // 체크인 날짜 및 시간
     private Timestamp checkOut;        // 체크아웃 날짜 및 시간
     private BigDecimal totalAmount;	   // 총 가격
+    private ReservationStatus status;  // 상태
 }

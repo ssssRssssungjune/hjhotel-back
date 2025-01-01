@@ -17,6 +17,7 @@ public interface ProductMapper {
 	// 24.11.29 지은 [완료] : 예약ID로 예약내역 조회.
     @Select("SELECT " +
             "r.reservation_id, " +
+    		"m.user_id, " +
             "m.name, " +
             "m.email, " +
             "m.phone, " +
@@ -25,7 +26,8 @@ public interface ProductMapper {
             "rm.floor, " +
             "r.check_in, " +
             "r.check_out, " +
-            "r.total_amount " +
+            "r.total_amount, " +
+            "r.status " +
             "FROM reservation r " +
             "JOIN member m ON m.member_id = r.member_id " +
             "JOIN room rm ON rm.room_id = r.room_id " +
